@@ -5,35 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DCD Possess The Land | Fundraising</title>
     <style>
-        /* --- 1. CSS VARIABLES --- */
+        /* --- CSS VARIABLES & RESET --- */
         :root {
-            /* Palette */
-            --primary: #059669; /* Emerald Green */
+            --primary: #059669;
             --primary-dark: #064E3B;
-            --primary-light: #D1FAE5;
-            --secondary: #3B82F6; /* Blue */
-            --accent: #F59E0B; /* Amber */
+            --primary-light: #34D399;
+            --secondary: #3B82F6;
+            --accent: #F59E0B;
             --danger: #EF4444;
             --bg: #F3F4F6;
             --surface: #FFFFFF;
-            --text-main: #1F2937;
+            --text-main: #111827;
             --text-sub: #6B7280;
             --border: #E5E7EB;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
-        /* --- 2. GLOBAL RESET --- */
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         
         body { 
             background-color: var(--bg); 
             color: var(--text-main); 
             display: flex; 
             height: 100vh; 
-            overflow: hidden; 
+            overflow: hidden;
         }
 
-        /* --- 3. LAYOUT --- */
+        /* --- LAYOUT --- */
         aside {
             width: 280px;
             background: #111827;
@@ -42,7 +40,7 @@
             flex-direction: column;
             padding: 24px;
             z-index: 50;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            box-shadow: 2px 0 4px 6px rgba(0,0,0,0.15);
         }
 
         main { 
@@ -52,48 +50,24 @@
             position: relative;
         }
 
-        /* --- 4. NAVIGATION --- */
-        .brand { 
-            font-size: 1.2rem; 
-            font-weight: 800; 
-            margin-bottom: 48px; 
-            color: var(--primary); 
-            letter-spacing: 1px; 
-            display: flex; 
-            align-items: center; 
-            gap: 12px; 
-            line-height: 1;
-        }
-
-        .nav-group { display: flex; flex-direction: column; gap: 8px; }
-
+        /* --- NAVIGATION --- */
+        .brand { font-size: 1.2rem; font-weight: 800; margin-bottom: 40px; color: var(--primary); letter-spacing: 1px; display: flex; align-items: center; gap: 12px; }
         .nav-item { 
             padding: 14px; 
-            margin-bottom: 4px; 
+            margin-bottom: 8px; 
             border-radius: 8px; 
-            cursor: pointer;
+            cursor: pointer; 
             display: flex; 
             align-items: center; 
             gap: 12px; 
             color: #9CA3AF; 
-            transition: all 0.2s ease; 
+            transition: all 0.2s; 
             font-size: 0.95rem;
-            border: 1px solid transparent;
         }
+        .nav-item:hover { background: #374151; color: white; }
+        .nav-item.active { background: var(--primary); color: white; font-weight: 600; }
 
-        .nav-item:hover { 
-            background: #374151; 
-            color: white; 
-            border-color: #374151;
-        }
-
-        .nav-item.active { 
-            background: var(--primary); 
-            color: white; 
-            font-weight: 600;
-        }
-
-        /* --- 5. MOBILE RESPONSIVENESS --- */
+        /* --- MOBILE RESPONSIVE --- */
         @media (max-width: 768px) {
             body { flex-direction: column; }
             aside { 
@@ -108,22 +82,15 @@
                 border-top: 1px solid var(--border); 
                 background: white; 
                 color: #333;
-                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+                box-shadow: 0 -2px 6px rgba(0,0,0,0.1);
+                padding-bottom: 10px;
             }
             .brand { display: none; }
-            .nav-item { 
-                flex-direction: column; 
-                gap: 4px; 
-                font-size: 0.75rem; 
-                text-align: center; 
-                padding: 8px;
-                background: transparent;
-            }
-            .nav-item:hover { background: rgba(0,0,0,0.05); }
-            main { padding-bottom: 70px; } /* Space for bottom nav */
+            .nav-item { flex-direction: column; gap: 4px; font-size: 0.75rem; text-align: center; padding: 8px; }
+            main { padding-bottom: 80px; }
         }
 
-        /* --- 6. COMPONENTS --- */
+        /* --- COMPONENTS --- */
         .card { 
             background: var(--surface); 
             padding: 24px; 
@@ -131,9 +98,12 @@
             border: 1px solid var(--border); 
             box-shadow: var(--shadow); 
             margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .btn { 
+        .btn {
             padding: 12px 24px; 
             border-radius: 8px; 
             border: none; 
@@ -144,60 +114,72 @@
             align-items: center; 
             gap: 8px; 
             justify-content: center;
-            font-size: 0.95rem;
         }
-        
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: var(--primary-dark); }
-        .btn-primary:disabled { background: #9CA3AF; cursor: not-allowed; opacity: 0.7; }
+        .btn-primary:disabled { background: #9CA3AF; cursor: not-allowed; }
         .btn-secondary { background: white; border: 1px solid var(--border); color: var(--text-main); }
         .btn-secondary:hover { background: #f9fafb; }
         .btn-danger { background: var(--danger); color: white; }
-        .btn-sm { padding: 8px 16px; font-size: 0.85rem; }
+        .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
         .btn-block { width: 100%; }
 
         input, select, textarea { 
             width: 100%; 
-            padding: 12px; 
+            padding: 14px; 
             border: 1px solid var(--border); 
             border-radius: 8px; 
-            margin-bottom: 16px;
+            margin-bottom: 16px; 
             font-size: 1rem;
             transition: border-color 0.2s;
         }
         input:focus, select:focus, textarea:focus { 
             outline: 2px solid var(--primary); 
-            border-color: var(--primary); 
-            box-shadow: 0 0 0 3px rgba(5, 150, 245, 0.1);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(5, 150, 245, 0.1);
         }
         
-        .checkbox-wrapper { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; cursor: pointer; }
-        .checkbox-wrapper input { width: auto; margin: 0; cursor: pointer; }
+        /* Progress Bars */
+        .progress-track { 
+            background: #E5E7EB; 
+            height: 10px; 
+            border-radius: 5px; 
+            overflow: hidden; 
+            margin-top: 8px; 
+            position: relative;
+        }
+        .progress-fill { 
+            height: 100%; 
+            background: var(--primary); 
+            width: 0%; 
+            transition: width 0.5s ease; 
+        }
+        .progress-fill.amber { background: var(--accent); }
+        .progress-fill.danger { background: var(--danger); }
 
-        /* --- 7. VISUALS --- */
-        .text-lg { font-size: 1.5rem; font-weight: 700; }
-        .text-xl { font-size: 2.25rem; font-weight: 800; color: var(--primary-dark); }
-        .text-sub { color: var(--text-sub); font-size: 0.9rem; }
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; }
+        th, td { 
+            padding: 14px; 
+            text-align: left; 
+            border-bottom: 1px solid var(--border); 
+            font-size: 0.9rem; 
+        }
+        th { background: #F9FAFB; color: var(--text-sub); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+        tr:hover td { background: #fafafa; }
+        .money { font-family: 'Courier New', monospace; font-weight: 600; color: var(--text-main); }
         .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
         .badge-success { background: var(--primary-light); color: var(--primary-dark); }
         .badge-warn { background: var(--accent); color: #92400E; }
         .badge-danger { background: #FEE2E2; color: var(--danger); }
 
-        .progress-track { background: #E5E7EB; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 8px; position: relative; }
-        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.6s ease-out; }
-        .progress-fill.amber { background: var(--accent); }
-        .progress-fill.danger { background: var(--danger); }
+        /* --- VIZUALS --- */
+        .viz-grid { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 24px; 
+        }
 
-        /* --- 8. TABLES --- */
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 14px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
-        th { background: #F9FAFB; color: var(--text-sub); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
-        tr:hover td { background: #fafafa; }
-        
-        .money { font-family: 'Courier New', monospace; font-weight: 600; color: var(--text-main); }
-
-        /* --- 9. VIZUALIZATION COMPONENTS --- */
-        .viz-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; }
         .viz-card { 
             background: white; 
             padding: 24px; 
@@ -206,66 +188,113 @@
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            justify-content: center;
+            justify-content: center; 
         }
         
         .donut-chart {
-            width: 160px; height: 160px; 
+            width: 150px; height: 150px; 
             border-radius: 50%;
             background: conic-gradient(var(--primary) 0% 100%); 
             position: relative; 
             margin-bottom: 20px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
         }
         .donut-hole {
-            width: 100px; height: 100px; 
+            width: 90px; height: 90px; 
             background: white; 
             border-radius: 50%;
-            position: absolute; top: 30px; left: 30px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: absolute; 
+            top: 30px; left: 30px;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
         }
 
-        /* --- 10. MODAL --- */
+        .stat-row {
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            font-size: 0.9rem; 
+            margin-bottom: 10px;
+        }
+
+        /* --- TIMELINE --- */
+        .phase-timeline { 
+            border-left: 3px solid var(--border); 
+            padding-left: 20px; 
+            margin-left: 20px;
+        }
+        .phase-item { 
+            position: relative; 
+            margin-bottom: 40px; 
+            padding-left: 20px; 
+            border-left: 3px solid transparent; 
+        }
+        .phase-dot { 
+            position: absolute; 
+            left: -27px; 
+            top: 5px; 
+            width: 12px; 
+            height: 12px; 
+            border-radius: 50%; 
+            background: var(--bg); 
+            border: 3px solid var(--border);
+        }
+        .phase-item.active .phase-dot { border-color: var(--primary); background: var(--primary); }
+        .phase-item.completed .phase-dot { border-color: var(--primary-dark); background: var(--primary-dark); }
+        .phase-item.late .phase-dot { border-color: var(--danger); background: #FEE2E2; }
+
+        /* --- MODAL --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 100;
-            backdrop-filter: blur(2px);
+            background: rgba(0,0,0,0.6); 
+            display: none; 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 100;
+            backdrop-filter: blur(4px);
         }
         .modal { 
             background: white; 
             width: 90%; 
-            max-width: 500px; 
+            max-width: 550px; 
             padding: 32px; 
             border-radius: 16px; 
             box-shadow: 0 20px 25px rgba(0,0,0,0.15);
-            animation: modalSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            animation: modalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
-
-        @keyframes modalSlide {
+        @keyframes modalPop {
             from { transform: translateY(20px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
 
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-main); }
-        
-        /* --- 11. HELPER CLASSES --- */
-        .hidden { display: none !important; }
-        .flex-between { display: flex; justify-content: space-between; align-items: center; }
-        .text-right { text-align: right; }
-        .mt-2 { margin-top: 16px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .form-grid-2 { grid-template-columns: 1fr 1fr; gap: 20px; }
 
+        .loader {
+            border: 3px solid var(--border);
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            border-color: var(--primary);
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: none; /* Hidden by default */
+            border-right-color: transparent;
+            border-left-color: var(--primary);
+            border-bottom: 3px solid transparent;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
 
     <!-- SIDEBAR -->
     <aside>
-        <div class="brand">
-            <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem;">🌍</div>
-            DCD Possess The Land
-        </div>
+        <div class="brand">🏝<br>DCD Possess<br>The Land</div>
         <div class="nav-group">
             <div class="nav-item active" onclick="app.navigate('dashboard')">📊 Dashboard</div>
             <div class="nav-item" onclick="app.navigate('leaderboard')">🏆 Leaderboard</div>
@@ -286,7 +315,7 @@
                     <h1>Project Overview</h1>
                     <p class="text-sub">Real-time status for DCD Possess The Land</p>
                 </div>
-                <div style="display: flex; gap: 12px;">
+                <div style="display:flex; gap:12px;">
                     <button class="btn btn-danger" onclick="app.openModal('expense')">➖ Expense</button>
                     <button class="btn btn-secondary" onclick="app.openModal('cash')">💵 Add Cash</button>
                     <button class="btn btn-primary" onclick="app.openModal('pledge')">+ New Pledge</button>
@@ -294,177 +323,118 @@
             </header>
 
             <!-- KPI CARDS -->
-            <div class="viz-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <div class="viz-grid">
                 <div class="viz-card">
-                    <div class="text-sub">Gross Cash Collected</div>
-                    <div class="text-xl" id="dash-cash">0</div>
+                    <h4 style="color: var(--text-sub); margin-bottom: 10px;">Gross Cash</h4>
+                    <div class="text-lg" id="dash-cash" style="color: var(--primary);">0</div>
                 </div>
                 <div class="viz-card">
-                    <div class="text-sub">Net Balance</div>
-                    <div class="text-xl" id="dash-balance" style="color: var(--primary-dark);">0</div>
-                </div>
-                <div class="viz-card">
-                    <div class="text-sub">Total Pledges</div>
-                    <div class="text-xl" id="dash-pledges">0</div>
+                    <h4 style="color: var(--text-sub); margin-bottom: 10px;">Total Pledges</h4>
+                    <div class="text-lg" id="dash-pledges">0</div>
                 </div>
             </div>
 
-            <!-- PHASES -->
-            <div class="card mt-2">
-                <div class="flex-between" style="margin-bottom: 12px;">
-                    <h3 style="color: var(--text-main);">Collection Phases</h3>
+            <!-- PHASE PROGRESS -->
+            <div class="card">
+                <div class="flex-between">
+                    <h3>📅 Collection Phases</h3>
                     <button class="btn btn-secondary btn-sm" onclick="app.navigate('settings')">Edit Phases</button>
                 </div>
-                
-                <div id="phase-timeline-container">
-                    <!-- Populated by JS -->
-                </div>
+                <div id="phase-timeline"></div>
             </div>
 
             <!-- RECENT ACTIVITY -->
             <div class="card">
-                <div class="flex-between" style="margin-bottom: 12px;">
-                    <h3 style="color: var(--text-main);">Recent Activity</h3>
-                </div>
+                <h3>🔴 Recent Activity</h3>
                 <div id="recent-activity-list" style="display: flex; flex-direction: column; gap: 12px;">
-                    <p class="text-sub" style="text-align: center; padding: 20px;">No recent activity yet.</p>
+                    <p class="text-sub" style="text-align: center;">No recent activity yet.</p>
                 </div>
-            </div>
         </section>
 
         <!-- LEADERBOARD VIEW -->
         <section id="view-leaderboard" class="hidden">
-            <div class="flex-between">
-                <h1>Department Leaderboard</h1>
-                <div style="display: flex; gap: 12px;">
-                    <button class="btn btn-secondary btn-sm" onclick="app.exportCSV('pledges')">📥 Export</button>
-                </div>
-            </div>
-            <p class="text-sub" style="margin-bottom: 24px;">Performance ranked by current phase completion.</p>
-            
-            <div class="card">
-                <table style="width: 100%;">
-                    <thead>
-                        <tr>
-                            <th style="text-align: left;">Rank</th>
-                            <th>Department</th>
-                            <th style="text-align: right;">Target</th>
-                            <th style="text-align: right;">Collected</th>
-                            <th style="text-align: center;">Progress</th>
-                        </tr>
-                    </thead>
-                    <tbody id="leaderboard-body">
-                        <!-- Populated by JS -->
-                    </tbody>
-                </table>
+            <h1>Department Leaderboard</h1>
+            <div id="leaderboard-container" style="margin-top: 24px;">
+                <!-- Populated by JS -->
             </div>
         </section>
 
         <!-- PLEDGES VIEW -->
         <section id="view-pledges" class="hidden">
             <div class="flex-between">
-                <h1>Pledges & Members</h1>
-                <div style="display: flex; gap: 12px;">
+                <h1>Pledge Ledger</h1>
+                <div style="display:flex; gap:12px;">
                     <button class="btn btn-secondary btn-sm" onclick="app.exportCSV('pledges')">📥 Export CSV</button>
                     <button class="btn btn-primary" onclick="app.openModal('pledge')">+ New Pledge</button>
                 </div>
             </div>
-            <div class="card mt-2">
+            <div class="card" style="overflow: hidden; max-height: 60vh; overflow-y: auto;">
                 <table style="width: 100%;">
                     <thead>
                         <tr>
                             <th>Member</th>
-                            <th>Tribe</th>
-                            <th style="text-align: right;">Pledged</th>
-                            <th style="text-align: right;">Redeemed</th>
-                            <th style="text-align: right;">Remaining</th>
-                            <th style="text-align: center;">Action</th>
+                            <th>Trial/Dept</th>
+                            <th>Committed</th>
+                            <th>Paid</th>
+                            <th>Remaining</th>
+                            <th>Status</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
-                    <tbody id="pledges-body">
-                        <!-- Populated by JS -->
-                    </tbody>
+                    <tbody id="pledges-body"></tbody>
                 </table>
             </div>
         </section>
 
-        <!-- LEDGER VIEW -->
+        <!-- LEDGER & RECONCILE VIEW -->
         <section id="view-ledger" class="hidden">
-            <div class="flex-between">
-                <h1>Transaction Ledger</h1>
-                <button class="btn btn-secondary btn-sm" onclick="app.exportCSV('ledger')">📥 Export</button>
-            </div>
-
-            <!-- PARSER -->
-            <div class="card" style="border-left: 4px solid var(--primary); background: #F0FDF4;">
-                <div class="flex-between">
-                    <h3>🤖 M-Pesa SMS Parser</h3>
-                    <span class="badge badge-success" style="margin-left: 8px;">Integrated</span>
-                </div>
-            </div>
-
-            <div class="card mt-2" style="background: white;">
-                <div class="form-group">
-                    <label style="font-weight: 600; color: var(--text-sub); display: block; margin-bottom: 8px;">Paste M-Pesa Messages</label>
-                    <textarea id="sms-input" style="min-height: 150px; font-family: 'Courier New', monospace; font-size: 0.9rem;" placeholder="Paste SMS messages here (e.g., 'Ksh10,000 received from John Doe...')..."></textarea>
-                </div>
-                <div class="flex-between">
+            <h1>Transaction Reconciliation</h1>
+            
+            <!-- PARSER UI -->
+            <div class="card" style="border-left: 5px solid var(--primary);">
+                <h3>🤖 M-Pesa SMS Parser</h3>
+                <p class="text-sub" style="margin-bottom: 12px;">Paste your confirmation messages below.</p>
+                
+                <textarea 
+                    id="sms-input" 
+                    style="width: 100%; height: 120px; font-family: 'Courier New', monospace; font-size: 0.9rem;"
+                    placeholder="Paste SMS here (e.g., 'You have received Ksh10,000 from John Doe...')..."
+                ></textarea>
+                
+                <div style="display: flex; gap: 12px; margin-top: 16px;">
                     <button class="btn btn-secondary" onclick="app.clearParser()">Clear</button>
-                    <button class="btn btn-primary" onclick="app.parseSMS()">⚡ Extract Transactions</button>
+                    <button class="btn btn-primary" onclick="app.parseSMS()">⚡ Extract</button>
                 </div>
 
-                <!-- Stats Area -->
-                <div id="parser-stats" style="display: none; margin-top: 24px; padding: 16px; background: var(--bg); border-radius: 8px;">
-                    <div class="viz-grid" style="grid-template-columns: repeat(4, 1fr);">
-                        <div class="viz-card" style="padding: 16px;">
-                            <div class="text-sub">Total Parsed</div>
-                            <div class="text-lg" id="st-total">0</div>
-                        </div>
-                        <div class="viz-card" style="padding: 16px;">
-                            <div class="text-sub">New Members</div>
-                            <div class="text-lg" id="st-new" style="color: var(--secondary);">0</div>
-                        </div>
-                        <div class="viz-card" style="padding: 16px;">
-                            <div class="text-sub">Matched</div>
-                            <div class="text-lg" id="st-matched" style="color: var(--primary);">0</div>
-                        </div>
-                        <div class="viz-card" style="padding: 16px;">
-                            <div class="text-sub">Unmatched</div>
-                            <div class="text-lg" id="st-unmatched" style="color: var(--accent);">0</div>
-                        </div>
+                <!-- Staged Area -->
+                <div id="staged-container" style="display: none; margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px;">
+                    <div class="flex-between">
+                        <h4>Staged Transactions (<span id="staged-count">0</span>)</h4>
+                        <button id="btn-add-all" class="btn btn-primary" onclick="app.commitAll()">✅ Commit All</button>
                     </div>
-                </div>
-
-                <div id="staged-container" style="display: none; margin-top: 24px;">
-                    <div class="flex-between" style="margin-bottom: 16px;">
-                        <h4 style="color: var(--text-main);">Staged Transactions (<span id="staged-count">0</span>)</h4>
-                        <div style="display: flex; gap: 12px;">
-                            <button class="btn btn-secondary" onclick="app.clearParser()">Clear All</button>
-                            <button id="btn-commit-all" class="btn btn-primary" onclick="app.commitAll()">✅ Commit All</button>
-                        </div>
-                    </div>
-                    <div id="staged-list" style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
-                        <!-- Populated by JS -->
-                    </div>
+                    <div class="loader" id="loading-spinner"></div>
+                    <div id="staged-list" style="margin-top: 20px;"></div>
                 </div>
             </div>
 
-            <!-- ACTUAL LEDGER -->
-            <div class="card mt-4">
+            <div class="flex-between" style="margin-top: 24px;">
+                <h2>Audit Trail</h2>
+                <button class="btn btn-secondary btn-sm" onclick="app.exportCSV('ledger')">📥 Export CSV</button>
+            </div>
+
+            <!-- ACTUAL LEDGER TABLE -->
+            <div class="card" style="overflow: hidden; max-height: 50vh; overflow-y: auto;">
                 <table style="width: 100%;">
                     <thead>
                         <tr>
                             <th>Date</th>
                             <th>Reference</th>
-                            <th>Member</th>
-                            <th style="text-align: right;">Amount</th>
+                            <th>Description</th>
+                            <th>Amount</th>
                             <th>Type</th>
-                            <th>Linked Pledge</th>
                         </tr>
                     </thead>
-                    <tbody id="ledger-body">
-                        <!-- Populated by JS -->
-                    </tbody>
+                    <tbody id="ledger-body"></tbody>
                 </table>
             </div>
         </section>
@@ -472,152 +442,115 @@
         <!-- TRIBES VIEW -->
         <section id="view-tribes" class="hidden">
             <h1>Tribe Performance</h1>
-            <p class="text-sub">Comparison of Cash Collected vs Active Phase Targets.</p>
-            <div id="tribes-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-top: 24px;">
+            <div id="tribes-grid" class="viz-grid" style="margin-top: 24px;">
                 <!-- Populated by JS -->
             </div>
         </section>
 
         <!-- SETTINGS VIEW -->
         <section id="view-settings" class="hidden">
-            <h1>⚙️ Settings</h1>
+            <h1>⚙️ Admin</h1>
+            
             <div class="card">
-                <div class="flex-between" style="margin-bottom: 16px;">
-                    <h3>Collection Phases</h3>
-                    <button class="btn btn-danger btn-sm" onclick="app.resetData()">Reset All Data</button>
-                </div>
+                <h3>Manage Collection Phases</h3>
+                <p class="text-sub" style="margin-bottom: 12px;">Set deadlines and targets for your collection cycles.</p>
                 
-                <div id="phases-list" style="display: flex; flex-direction: column; gap: 12px;">
-                    <!-- Populated by JS -->
-                </div>
+                <form onsubmit="app.addPhase(event)" class="form-grid-2">
+                    <div>
+                        <label style="font-weight: 600; color: var(--text-main);">Phase Name</label>
+                        <input type="text" id="s-name" placeholder="e.g. March 8th Collection" required>
+                    </div>
+                    <div>
+                        <label style="font-weight: 600; color: var(--text-main);">Target Date</label>
+                        <input type="date" id="s-date" required>
+                    </div>
+                </form>
 
-                <button class="btn btn-primary mt-2" style="width: 100%;">+ Add New Phase</button>
+                <div style="margin-top: 20px; padding: 16px; background: #F9FAFB; border-radius: 8px;">
+                    <strong>Current Phases:</strong>
+                    <div id="phases-list"></div>
+                </div>
+            </div>
+
+            <div class="card" style="border-color: var(--danger);">
+                <h3 style="color: var(--danger);">Danger Zone</h3>
+                <p class="text-sub">Reset entire project. This cannot be undone.</p>
+                <button class="btn btn-danger" onclick="if(confirm('Are you sure?')) { store.reset(); location.reload(); }">Reset All Data</button>
             </div>
         </section>
 
     </main>
 
-    <!-- MODALS -->
-    <!-- Add Pledge Modal -->
-    <dialog class="modal" id="modal-pledge">
+    <!-- MODAL: ADD PLEDGE -->
+    <dialog id="modal-pledge">
         <form method="dialog">
-            <h2 style="margin-bottom: 24px;">Add New Pledge</h2>
+            <h2 style="margin-bottom: 20px;">Add New Pledge</h2>
             
             <div class="form-grid">
-                <div class="form-group">
-                    <label>Member Name</label>
+                <div>
+                    <label style="font-weight: 600; color: var(--text-main);">Member Name</label>
                     <input type="text" id="p-name" placeholder="John Doe" required autocomplete="off">
                 </div>
-                <div class="form-group">
-                    <label>Phone Number</label>
-                    <input type="tel" id="p-phone" placeholder="07..." autocomplete="tel">
+                <div>
+                    <label style="font-weight: 600; color: var(--text-main);">Department</label>
+                    <select id="p-dept" required>
+                        <option>Eagles</option>
+                        <option>Daughters of Faith</option>
+                        <option>Youth</option>
+                        <option>Kingdom Generation</option>
+                        <option>Planning Committee</option>
+                    </select>
                 </div>
             </div>
-            
-            <div class="form-group">
-                <label>Trial/Department</label>
-                <select id="p-dept" required>
-                    <option>Eagles</option>
-                    <option>Daughters of Faith</option>
-                    <option>Youth</option>
-                    <option>Kingdom Generation</option>
-                    <option>Planning Committee</option>
-                </select>
+
+            <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                <div class="form-grid-2">
+                    <div>
+                        <label style="font-weight: 600; color: var(--text-main);">Pledged Amount (KES)</label>
+                        <input type="number" id="p-amount" min="0" placeholder="0.00" required>
+                    </div>
+                    <div style="display: flex; flex-direction: column; justify-content: center; gap: 8px;">
+                        <small style="color: var(--text-sub);">* Auto-creates a member if not found.</small>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label>Pledged Amount (KES)</label>
-                <input type="number" id="p-amount" min="0" placeholder="0.00" required>
-            </div>
-
-            <div class="flex-between mt-2">
-                <button type="button" class="btn btn-secondary" onclick="app.closeModal('pledge')">Cancel</button>
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="document.getElementById('modal-pledge').close()">Cancel</button>
                 <button type="submit" class="btn btn-primary">Save Pledge</button>
             </div>
         </form>
     </dialog>
 
-    <!-- Add Cash Modal -->
-    <dialog class="modal" id="modal-cash">
+    <!-- MODAL: ADD CASH -->
+    <dialog id="modal-cash">
         <form method="dialog">
-            <h2 style="margin-bottom: 24px;">Record Cash Payment</h2>
+            <h2 style="margin-bottom: 20px;">Record Cash Payment</h2>
             
-            <div class="form-group">
-                <label>Member Name</label>
-                <input type="text" id="c-name" placeholder="John Doe" required>
-            </div>
-
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Amount (KES)</label>
+            <div class="form-grid-2">
+                <div>
+                    <label style="font-weight: 600; color: var(--text-main);">Member Name</label>
+                    <input type="text" id="c-name" placeholder="John Doe" required autocomplete="off">
+                </div>
+                <div>
+                    <label style="font-style: normal; font-weight: 600; color: var(--text-main);">Amount (KES)</label>
                     <input type="number" id="c-amount" min="0" placeholder="0.00" required>
                 </div>
-                <div class="form-group">
-                    <label>Reference # (Optional)</label>
-                    <input type="text" id="c-ref" placeholder="RCPT-001">
-                </div>
             </div>
 
-            <div class="form-group">
-                <label>Trial/Department</label>
-                <select id="c-dept" required>
-                    <option>Eagles</option>
-                    <option>Daughters of Faith</option>
-                    <option>Youth</option>
-                    <option>Kingdom Generation</option>
-                    <option>Planning Committee</option>
-                </select>
-            </div>
-
-            <div class="flex-between mt-2">
-                <button type="button" class="btn btn-secondary" onclick="app.closeModal('cash')">Cancel</button>
+            <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="document.getElementById('modal-cash').close()">Cancel</button>
                 <button type="submit" class="btn btn-primary">Record Payment</button>
-            </div>
-        </form>
-    </dialog>
-
-    <!-- Add Expense Modal -->
-    <dialog class="modal" id="modal-expense">
-        <form method="dialog">
-            <h2 style="margin-bottom: 24px;">Record Expense</h2>
-            
-            <div class="form-group">
-                <label>Description</label>
-                <input type="text" id="e-desc" placeholder="e.g. Transport, Printing" required>
-            </div>
-
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Amount (KES)</label>
-                    <input type="number" id="e-amount" min="0" placeholder="0.00" required>
-                </div>
-                <div class="form-group">
-                    <label>Category</label>
-                    <select id="e-cat">
-                        <option>Operations</option>
-                        <option>Logistics</option>
-                        <option>Administrative</option>
-                        <option>Land Costs</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="flex-between mt-2">
-                <button type="button" class="btn btn-secondary" onclick="app.closeModal('expense')">Cancel</button>
-                <button type="submit" class="btn btn-danger">Save Expense</button>
             </div>
         </form>
     </dialog>
 
     <script>
         /**
-         * DCD Possess The Land - Core Application Logic
-         * Lightweight, Dependency-Free, Vanilla JS
+         * Store: Manages LocalStorage and Data Logic
          */
+        const DB_KEY = 'dcd_land_final_v13';
 
-        // --- CONFIGURATION ---
-        const DB_KEY = 'dcd_land_final';
-        
         const DEPARTMENTS = [
             "Eagles", 
             "Daughters of Faith", 
@@ -626,31 +559,29 @@
             "Planning Committee"
         ];
 
-        const INITIAL_DATA = {
-            pledges: [],
-            transactions: [],
-            expenses: [],
-            phases: [
-                {
-                    id: 1,
-                    name: "March 8th Collection",
-                    date: "2024-03-08",
-                    targets: {
-                        "Eagles": 200000,
-                        "Daughters of Faith": 200000,
-                        "Youth": 200000,
-                        "Kingdom Generation": 200000,
-                        "Planning Committee": 200000
-                    }
-                }
-            ]
-        };
-
-        // --- STORE CLASS ---
         class Store {
             constructor() {
                 const saved = localStorage.getItem(DB_KEY);
-                this.data = saved ? JSON.parse(saved) : INITIAL_DATA;
+                this.data = saved ? JSON.parse(saved) : {
+                    pledges: [],
+                    transactions: [],
+                    expenses: [],
+                    phases: [
+                        { 
+                            id: 1, 
+                            name: "March 8th Collection", 
+                            date: "2024-03-08", 
+                            totalTarget: 1000000,
+                            targets: {
+                                "Eagles": 200000,
+                                "Daughters of Faith": 200000,
+                                "Youth": 200000,
+                                "Kingdom Generation": 200000,
+                                "Planning Committee": 200000
+                            }
+                        }
+                    ]
+                };
             }
 
             save() {
@@ -658,13 +589,12 @@
                 app.render();
             }
 
-            addPledge(pledge) {
+            addPledge(name, department, amount) {
                 this.data.pledges.push({
                     id: Date.now(),
-                    name: pledge.name,
-                    phone: pledge.phone,
-                    department: pledge.department,
-                    amount: parseFloat(pledge.amount),
+                    name, 
+                    department, 
+                    amount: Number(amount), 
                     redeemed: 0
                 });
                 this.save();
@@ -673,31 +603,24 @@
             addTransaction(tx) {
                 // 1. Find matching pledge
                 let matchedPledge = null;
-                
+                // Use flexible matching to handle Josh vs Josh
+                // Priority 1: Exact Name + Dept match (if dept provided)
                 if (tx.department) {
-                    // Priority 1: Exact Name + Department match
-                    matchedPledge = this.data.pledges.find(p => 
-                        p.name.toLowerCase().trim() === tx.name.toLowerCase().trim() && 
-                        p.department === tx.department
-                    );
-                }
-
+                    matchedPledge = this.data.pledges.find(p => p.name.toLowerCase() === tx.name.toLowerCase() && p.department === tx.department);
+                } 
+                
+                // Priority 2: Name match only (unique check)
                 if (!matchedPledge) {
-                    // Priority 2: Name match only (Ambiguity handling)
-                    const matches = this.data.pledges.filter(p => 
-                        p.name.toLowerCase().trim() === tx.name.toLowerCase().trim()
-                    );
-                    if (matches.length === 1) {
-                        matchedPledge = matches[0];
+                    const allMatches = this.data.pledges.filter(p => p.name.toLowerCase() === tx.name.toLowerCase());
+                    if (allMatches.length === 1) {
+                        matchedPledge = allMatches[0];
                     }
                 }
 
                 if (matchedPledge) {
-                    // Update pledge redemption
                     tx.name = matchedPledge.name; // Normalize name
                     tx.department = matchedPledge.department; // Normalize dept
                     tx.pledgeId = matchedPledge.id;
-                    
                     matchedPledge.redeemed = (matchedPledge.redeemed || 0) + tx.amount;
                 } else {
                     tx.pledgeId = null;
@@ -707,26 +630,27 @@
                 this.save();
             }
 
-            addExpense(expense) {
+            addExpense(description, amount, category) {
                 this.data.expenses.unshift({
                     id: Date.now(),
                     date: new Date().toISOString(),
-                    description: expense.description,
-                    amount: parseFloat(expense.amount),
-                    category: expense.category
+                    description, amount: Number(amount), category
                 });
                 this.save();
             }
 
-            addPhase(phase) {
-                const total = Object.values(phase.targets).reduce((a, b) => a + b, 0);
+            addPhase(name, date, deptTargets) {
+                // Validate non-negative
+                for(let val of Object.values(deptTargets)) {
+                    if(val < 0) { alert("Targets cannot be negative."); return; }
+                }
+
+                const total = Object.values(deptTargets).reduce((a,b) => a+b, 0);
                 this.data.phases.push({
                     id: Date.now(),
-                    ...phase,
-                    totalTarget: total
+                    name, date, totalTarget: total, targets: deptTargets
                 });
-                // Sort phases by date
-                this.data.phases.sort((a, b) => new Date(a.date) - new Date(b.date));
+                this.data.phases.sort((a,b) => new Date(a.date) - new Date(b.date));
                 this.save();
             }
 
@@ -736,358 +660,328 @@
             }
 
             reset() {
-                if(confirm("Are you sure you want to delete ALL data? This cannot be undone.")) {
-                    localStorage.removeItem(DB_KEY);
-                    location.reload();
-                }
+                localStorage.removeItem(DB_KEY);
+                location.reload();
             }
         }
 
         const store = new Store();
-        let stagedTransactions = []; // Temporary holding area for parsed SMS
 
-        // --- APP LOGIC ---
-        const app = {
-            init: () => {
-                app.render();
-            },
-
-            navigate: (viewId) => {
-                // Hide all sections
-                document.querySelectorAll('section').forEach(el => el.classList.add('hidden'));
-                
-                // Show target section
-                document.getElementById(`view-${viewId}`).classList.remove('hidden');
+        /**
+         * UI Manager: Handles DOM manipulations and Event Listeners
+         */
+        const UI = {
+            get: (id) => document.getElementById(id),
+            
+            showSection: (id) => {
+                document.querySelectorAll('main section').forEach(el => el.classList.add('hidden'));
+                const target = document.getElementById(`view-${id}`);
+                if (target) target.classList.remove('hidden');
                 
                 // Update Nav
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                // Try to find the nav item that triggered this (approximate based on structure)
+                const navItems = document.querySelectorAll('.nav-item');
+                navItems.forEach(el => {
+                    // Check if this nav item contains text matching the view ID
+                    if(el.textContent.toLowerCase().includes(id)) {
+                        el.classList.add('active');
+                    }
+                });
+            },
+
+            showSpinner: (show, btnText) => {
+                const btn = document.getElementById('btn-add-all');
+                const loader = document.getElementById('loading-spinner');
                 
-                // Find the nav item that calls this function (approximate matching)
-                const target = event.target.closest('.nav-item');
-                if (target) target.classList.add('active');
-            },
-
-            // --- FORM HANDLING ---
-            openModal: (id) => {
-                const modal = document.getElementById(`modal-${id}`);
-                if (modal) {
-                    modal.showModal(); // Native HTML5 API
+                if (show) {
+                    btn.disabled = true;
+                    btn.innerText = "Processing...";
+                    loader.style.display = 'inline-block';
+                } else {
+                    btn.disabled = false;
+                    btn.innerText = "✅ Commit All";
+                    loader.style.display = 'none';
                 }
+            }
+        };
+
+        /**
+         * Parser Logic: Robust M-Pesa Text Extraction
+         */
+        const Parser = {
+            parse(text) {
+                // 1. Regex Patterns
+                // Matches "Received From" (Personal Account)
+                // Matches "Sent To" (Till Number)
+                
+                const results = [];
+                
+                // Split by lines
+                const lines = text.split('\n').filter(line => line.trim().length > 0);
+
+                lines.forEach(line => {
+                    let amount = null;
+                    let name = "Unknown";
+                    let ref = "N/A";
+                    let type = "M-Pesa";
+
+                    // 2. Attempt to parse "Received" format (Personal Account)
+                    // Pattern: "You have received Ksh 10,000.00 from John Doe 0722..."
+                    const receivedMatch = line.match(/You have received Ksh\s?([0-9,]+\.?\d*)\s+from\s+([A-Za-z\s]+?)(?:\s+(\d{10})/i);
+                    
+                    if (receivedMatch) {
+                        amount = parseFloat(receivedMatch[1].replace(/,/g, '')); // Remove commas
+                        name = receivedMatch[2] ? receivedMatch[2].trim() : "Unknown";
+                        const phone = receivedMatch[3] || null; // Extract phone if available
+                    } 
+                    
+                    // 3. Attempt to parse "Sent To" format (Till)
+                    // Pattern: "Confirmed. Ksh 10,000.00 sent to LANDFUNDRAISER for account 567892..."
+                    const sentMatch = line.match(/Ksh\s?([0-9,]+\.?\d*)\s+sent to\s+([A-Z\s]+)\s+for account\s+(\w+)/i);
+                    
+                    if (sentMatch) {
+                        amount = parseFloat(sentMatch[1].replace(/,/g, ''));
+                        name = "Till Transaction"; // Till payments usually don't have sender name in body
+                        ref = sentMatch[3];
+                        
+                        // Extract Date if available
+                        const dateMatch = line.match(/on\s+(\d{1,2}\/\d{2}\/\d{2})/i);
+                        if(dateMatch) ref += ` (${dateMatch[1]})`;
+                    }
+
+                    if (amount) {
+                        results.push({ amount, name, ref, phone, type });
+                    }
+                });
+
+                return results;
+            }
+        };
+
+        /**
+         * App Logic: Controller
+         */
+        const app = {
+            init: () => {
+                app.render();
+                // Add Listeners
+                document.getElementById('btn-commit').addEventListener('click', app.commitAll);
+                document.getElementById('sms-input').addEventListener('input', (e) => {
+                    // Clear previous list on new input to allow re-parsing
+                    app.clearParser();
+                });
             },
 
-            closeModal: (id) => {
-                const modal = document.getElementById(`modal-${id}`);
-                if (modal) {
-                    modal.close();
-                    // Reset form
+            // --- Navigation ---
+            navigate: (viewId) => {
+                UI.showSection(viewId);
+            },
+
+            // --- Forms ---
+            openModal: (modalId) => {
+                const modal = document.getElementById(modalId);
+                if(modal) {
+                    modal.showModal();
+                // Reset Form
                     const form = modal.querySelector('form');
                     if(form) form.reset();
                 }
             },
 
-            // PLEDGE ACTIONS
-            handlePledgeSubmit: (e) => {
+            // --- Form Handling ---
+            handlePledge: (e) => {
                 e.preventDefault();
                 const form = e.target;
-                const pledge = {
-                    name: form.getElementById('p-name').value,
-                    phone: form.getElementById('p-phone').value,
-                    department: form.getElementById('p-dept').value,
-                    amount: form.getElementById('p-amount').value
-                };
-
-                if (!pledge.name || !pledge.amount) {
+                
+                const name = form.querySelector('#p-name').value;
+                const dept = form.querySelector('#p-dept').value;
+                const amount = parseFloat(form.querySelector('#p-amount').value);
+                
+                if (!name || !amount) {
                     alert("Please fill in Name and Amount.");
                     return;
                 }
 
-                store.addPledge(pledge);
-                app.closeModal('pledge');
+                store.addPledge(name, dept, amount);
+                document.getElementById('modal-pledge').close();
             },
 
-            // CASH ACTIONS
-            handleCashSubmit: (e) => {
+            handleCash: (e) => {
                 e.preventDefault();
                 const form = e.target;
                 
-                const name = form.getElementById('c-name').value;
-                const amount = parseFloat(form.getElementById('c-amount').value);
-                const ref = form.getElementById('c-ref').value || 'CASH-' + Date.now();
-                const dept = form.getElementById('c-dept').value;
+                const name = form.querySelector('#c-name').value;
+                const amount = parseFloat(form.querySelector('#c-amount').value);
+                const ref = 'CASH-' + Date.now();
+                const dept = form.querySelector('#c-dept').value;
 
                 if (!name || !amount) {
                     alert("Please fill in Name and Amount.");
                     return;
                 }
 
-                const duplicate = store.data.transactions.find(t => t.ref === ref);
-                if (duplicate) {
-                    alert("Duplicate Reference Number detected.");
-                    return;
-                }
-
                 store.addTransaction({
-                    type: 'Cash',
-                    amount: amount,
-                    name: name,
-                    ref: ref,
-                    department: dept,
-                    date: new Date().toISOString()
+                    amount, name, ref, department: dept, type: 'Cash'
                 });
-
-                app.closeModal('cash');
+                document.getElementById('modal-cash').close();
             },
 
-            // EXPENSE ACTIONS
-            handleExpenseSubmit: (e) => {
+            handleExpense: (e) => {
                 e.preventDefault();
                 const form = e.target;
-                
-                const expense = {
-                    description: form.getElementById('e-desc').value,
-                    amount: parseFloat(form.getElementById('e-amount').value),
-                    category: form.getElementById('e-cat').value
-                };
+                const desc = form.querySelector('#e-desc').value;
+                const amount = parseFloat(form.querySelector('#e-amount').value);
+                const cat = form.querySelector('#e-cat').value;
 
-                if (!expense.description || !expense.amount) {
+                if(!desc || !amount) {
                     alert("Please fill in Description and Amount.");
                     return;
                 }
 
-                store.addExpense(expense);
-                app.closeModal('expense');
+                store.addExpense(desc, amount, cat);
+                document.getElementById('modal-cash').close();
             },
 
-            // PHASE ACTIONS
-            handleAddPhase: () => {
-                const name = prompt("Phase Name (e.g., March Collection):");
-                const date = prompt("Target Date (YYYY-MM-DD):", new Date().toISOString().split('T')[0]);
+            // --- Phases ---
+            addPhase: (e) => {
+                e.preventDefault();
+                const form = e.target;
                 
-                if (!name || !date) return;
-
-                // Generate default targets (evenly distributed)
+                const name = document.getElementById('s-name').value;
+                const date = document.getElementById('s-date').value;
+                
+                const inputs = document.querySelectorAll('.target-input');
                 const targets = {};
-                DEPARTMENTS.forEach(d => targets[d] = 200000);
+                inputs.forEach(i => { targets[i.dataset.dept] = Number(i.value) || 0; });
 
-                const phase = {
-                    name: name,
-                    date: date,
-                    targets: targets
-                };
-
-                store.addPhase(phase);
+                store.addPhase(name, date, targets);
+                document.getElementById('s-name').value = '';
+                inputs.forEach(i => i.value = '');
             },
 
-            // --- PARSER LOGIC (ROBUST) ---
+            // --- PARSER INTERACTION ---
+            clearParser: () => {
+                document.getElementById('staged-container').style.display = 'none';
+                document.getElementById('sms-input').value = '';
+                document.getElementById('sms-input').disabled = false;
+            },
+
             parseSMS: () => {
-                const input = document.getElementById('sms-input').value.trim();
-                if (!input) {
-                    alert("Please paste M-Pesa messages into the text area.");
+                const input = document.getElementById('sms-input');
+                const text = input.value;
+                
+                if (!text.trim()) {
+                    alert("Please paste an M-Pesa confirmation message first.");
                     return;
                 }
 
-                // 1. Robust Splitting: Split on "Confirmed." to avoid breaking decimals
-                const messages = input.split(/ Confirmed\./i);
+                const parsed = Parser.parse(text);
                 
-                stagedTransactions = []; // Clear staging area
+                if (parsed.length === 0) {
+                    alert("No valid M-Pesa transactions found in text.");
+                    return;
+                }
 
-                let matchCount = 0;
-                let newMemberCount = 0;
+                const listContainer = document.getElementById('staged-list');
+                listContainer.innerHTML = '';
 
-                // 2. Process each chunk
-                messages.forEach((chunk, index) => {
-                    const text = chunk.trim();
+                parsed.forEach((t, index) => {
+                    // Auto-create member check
+                    const existing = store.data.pledges.find(p => p.name.toLowerCase() === t.name.toLowerCase());
+                    const isNew = !existing;
                     
-                    // Quick keyword check
-                    if (!text.includes('Ksh') && !text.includes('KES') && !text.includes('received')) {
-                        return; // Skip garbage
+                    if (!isNew) {
+                        // Auto-register new member
+                        store.addPledge(t.name, "Planning Committee", t.amount);
                     }
 
-                    let amount = null;
-                    let name = "Unknown";
-                    let ref = "N/A";
-                    let phone = null;
-
-                    // Regex for "Received From"
-                    const receivedRegex = /You have received Ksh([\d,]+\.?\d*)\s+from\s+([A-Za-z\s]+?)\s+(\d{10})/i;
-                    const receivedMatch = text.match(receivedRegex);
-
-                    // Regex for "Sent To"
-                    const sentRegex = /Ksh([\d,]+\.?\d*)\s+sent to\s+([A-Z\s]+)\s+for account\s+(\w+)/i;
-                    const sentMatch = text.match(sentRegex);
-
-                    if (receivedMatch) {
-                        amount = parseFloat(receivedMatch[1].replace(/,/g, ''));
-                        name = receivedMatch[2] ? receivedMatch[2].trim() : "Unknown";
-                        phone = receivedMatch[3] ? receivedMatch[3] : null;
-                        ref = "N/A";
-                    } else if (sentMatch) {
-                        amount = parseFloat(sentMatch[1].replace(/,/g, ''));
-                        name = "Till Payment"; // Till payments often don't have names
-                        ref = sentMatch[3];
-                    }
-
-                    if (!amount) return;
-
-                    // 3. Auto-Creation Logic
-                    const existing = store.data.pledges.filter(p => p.name.toLowerCase() === name.toLowerCase());
-                    const isNew = existing.length === 0;
-                    if (isNew) newMemberCount++;
-                    if (!isNew) matchCount++;
-
-                    // 4. Handle Ambiguity (Josh in multiple departments)
-                    let isAmbiguous = false;
-                    let candidates = [];
-                    let selectedDept = "Planning Committee";
-
-                    if (existing.length > 1) {
-                        isAmbiguous = true;
-                        candidates = existing.map(p => p.department);
-                        selectedDept = candidates[0];
-                    } else if (existing.length === 1) {
-                        selectedDept = existing[0].department;
-                    }
-
-                    stagedTransactions.push({
-                        id: index, // Unique ID for list rendering
-                        amount,
-                        name,
-                        ref,
-                        phone,
-                        isNew,
-                        isAmbiguous,
-                        candidates,
-                        selectedDept,
-                        matchedId: isNew ? null : existing[0].id
-                    });
-                });
-
-                if (stagedTransactions.length === 0) {
-                    alert("No valid M-Pesa messages found in the text.");
-                    return;
-                }
-
-                // 5. Update UI
-                const statsDiv = document.getElementById('parser-stats');
-                statsDiv.style.display = 'block';
-                
-                document.getElementById('st-total').innerText = stagedTransactions.length;
-                document.getElementById('st-new').innerText = newMemberCount;
-                document.getElementById('st-matched').innerText = matchCount;
-                document.getElementById('st-unmatched').innerText = 0; // In this logic, everything is either New or Matched
-
-                const stagedList = document.getElementById('staged-list');
-                stagedList.innerHTML = '';
-
-                stagedTransactions.forEach((t) => {
-                    let resolutionHTML = '';
-                    let rowClass = 'matched';
-                    let statusBadge = '<span class="badge badge-success">Matched</span>';
-
-                    if (t.isNew) {
-                        rowClass = 'new-member';
-                        statusBadge = '<span class="badge badge-warn">New Member</span>';
-                    }
-
-                    if (t.isAmbiguous) {
-                        rowClass = 'unmatched';
-                        statusBadge = '<span class="badge badge-danger">Ambiguous</span>';
-                        resolutionHTML = `
-                            <div style="margin-top: 8px; padding: 12px; background: #FFF3E0; border-radius: 6px; font-size: 0.85rem;">
-                                <strong>⚠️ Name exists in multiple departments.</strong><br>
-                                <div style="margin-top: 8px;">
-                                    <label style="display:block; margin-bottom: 4px;">Select Correct Department:</label>
-                                    <select class="resolve-dept-select" data-id="${t.id}" style="width: 100%; padding: 8px;">
-                                        <option value="" disabled selected>-- Select --</option>
-                                        ${t.candidates.map(d => `<option value="${d}">${d}</option>`).join('')}
-                                    </select>
-                                </div>
-                            </div>
-                        `;
-                    }
-
-                    stagedList.innerHTML += `
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid var(--border); border-radius: 8px; background: ${t.isNew ? '#F0FDF4' : 'white'}; border-left: 4px solid ${t.isNew ? 'var(--primary)' : 'var(--border)'};">
+                    listContainer.innerHTML += `
+                        <div class="flex-between" style="margin-bottom: 8px; padding: 12px; background: #F3F4F6; border-radius: 8px;">
                             <div>
                                 <strong>${t.name}</strong>
                                 <div style="font-size: 0.8rem; color: var(--text-sub);">
-                                    ${t.phone ? '📱 ' + t.phone : ''}
+                                    ${t.type === 'M-Pesa' ? '📱' : '💵'} ${t.type}
                                 </div>
-                                <div class="text-sub" style="font-family: monospace; font-size: 0.85rem;">Ref: ${t.ref}</div>
+                                <div style="font-weight: 600; margin-top: 4px;">
+                                    ${app.formatMoney(t.amount)}
+                                </div>
+                                <div style="font-family: monospace; font-size: 0.8rem; color: #666;">Ref: ${t.ref}</div>
                             </div>
-                            <div style="font-weight: 700; font-size: 1.1rem; color: var(--primary);">
-                                ${app.formatMoney(t.amount)}
-                            </div>
-                            <div>${statusBadge}</div>
+                            <button class="btn btn-secondary btn-sm" onclick="document.getElementById('modal-ledger').close()">Skip</button>
                         </div>
-                        ${resolutionHTML}
-                    </div>
-                    `;
+                `;
                 });
 
-                // Show Staged Container
-                document.getElementById('staged-container').style.display = (stagedTransactions.length > 0) ? 'block' : 'none';
+                // Update Stats
+                document.getElementById('staged-count').innerText = parsed.length;
+                document.getElementById('staged-container').style.display = 'block';
             },
 
-            clearParser: () => {
-                document.getElementById('sms-input').value = '';
-                document.getElementById('staged-container').style.display = 'none';
-                document.getElementById('parser-stats').style.display = 'none';
-                stagedTransactions = [];
-            },
-
+            // --- THE FIX: SEQUENTIAL ADD ALL ---
             commitAll: async () => {
-                if (stagedTransactions.length === 0) return;
-
-                const btn = document.getElementById('btn-commit-all');
-                const originalText = btn.innerText;
+                const stagedList = document.getElementById('staged-list');
+                const stagedRows = Array.from(stagedList.children);
                 
-                // Lock UI
-                btn.innerText = "Processing...";
-                btn.disabled = true;
+                if (stagedRows.length === 0) return;
 
-                // Artificial delay to allow UI to update
-                await new Promise(r => setTimeout(r, 100));
+                // Show Spinner immediately
+                UI.showSpinner(true, "Processing...");
 
-                let addedCount = 0;
+                // Artificial delay to allow UI to update (Visual feedback)
+                await new Promise(resolve => setTimeout(resolve, 50));
 
-                // Sequential Loop to ensure every transaction is fully saved
-                for (const t of stagedTransactions) {
-                    // Resolve department if ambiguous
-                    if (t.isAmbiguous) {
-                        const select = document.querySelector(`.resolve-dept-select[data-id="${t.id}"]`);
-                        if (select) t.selectedDept = select.value;
-                    }
+                const addedCount = { success: 0, duplicate: 0 };
 
-                    // Create Member if new
-                    if (t.isNew) {
-                        store.addPledge(t);
+                // Loop through items sequentially
+                for (let i = 0; i < stagedRows.length; i++) {
+                    const row = stagedRows[i];
+                    const nameSpan = row.querySelector('strong').textContent;
+                    const amtSpan = row.querySelector('.money').textContent; // Parsed amount
+                    // Clean string to get number
+                    const amount = parseFloat(amtSpan.textContent.replace(/[^0-9.-]+/g,?/g,?/g').replace(/[^0-9.,]+/g,?/g,?/g', ''));
+                    
+                    // Extract Ref
+                    const ref = row.querySelector('.text-sub').textContent;
+
+                    // Extract Type
+                    const icon = row.querySelector('.icon').textContent;
+
+                    const isNew = !store.data.pledges.find(p => p.name.toLowerCase() === nameSpan.toLowerCase().trim());
+                    const isAmbiguous = row.querySelector('span').classList.contains('new-member');
+                    
+                    // Get department from parser (usually Till -> Planning)
+                    // If ambiguous, select UI allows resolution
+                    const deptSelect = row.querySelector('.resolve-dept-select');
+                    let selectedDept = deptSelect ? deptSelect.value : "Planning Committee";
+
+                    // Check duplicate
+                    const duplicate = store.data.transactions.find(t => t.ref === ref);
+                    if(duplicate) { 
+                        alert(`Skipping duplicate ref: ${ref}`);
+                        continue; // Skip this row but keep going
                     }
 
                     // Add Transaction
-                    store.addTransaction({
-                        type: 'M-Pesa',
-                        amount: t.amount,
-                        name: t.name,
-                        ref: t.ref,
-                        phone: t.phone,
-                        department: t.selectedDept,
-                        date: new Date().toISOString(),
-                        pledgeId: t.matchedId
+                    // AWAIT the store.save() to ensure database is updated
+                    await store.addTransaction({
+                        amount, 
+                        name, ref, department: selectedDept, 
+                        pledgeId: isNew ? store.data.pledges.find(p => p.name.toLowerCase() === nameSpan.toLowerCase()).id : null, 
+                        type: icon === '📱' ? 'M-Pesa' : 'Cash'
                     });
                     
-                    addedCount++;
+                    if(!duplicate) addedCount.success++;
                 }
 
-                // Cleanup
                 app.clearParser();
+                UI.showSpinner(false, "✅ Done!");
                 
-                // Restore UI
-                btn.innerText = originalText;
-                btn.disabled = false;
-
-                if (addedCount > 0) {
-                    alert(`✅ Success! Added ${addedCount} transactions to ledger.`);
+                if (addedCount.success > 0) {
+                    // Small delay to show "Done" state
+                    setTimeout(() => alert(`✅ Success! Added ${addedCount.success} transactions.`), 100);
+                } else if (stagedRows.length > 0 && addedCount.duplicate === 0 && addedCount.success === 0) {
+                    alert("No transactions were processed. They might be duplicates.");
                 }
             },
 
@@ -1097,266 +991,174 @@
                 const totalCash = store.data.transactions.reduce((sum, t) => sum + t.amount, 0);
                 const totalExpenses = store.data.expenses.reduce((sum, e) => sum + e.amount, 0);
                 const netBalance = totalCash - totalExpenses;
-
-                // 2. Dashboard Cards
-                document.getElementById('dash-cash').innerText = app.formatMoney(totalCash);
-                document.getElementById('dash-balance').innerText = app.formatMoney(netBalance);
-                
                 const totalPledged = store.data.pledges.reduce((sum, p) => sum + p.amount, 0);
-                document.getElementById('dash-pledges').innerText = app.formatMoney(totalPledged);
 
-                // 3. Leaderboard
-                const lbBody = document.getElementById('leaderboard-body');
-                lbBody.innerHTML = '';
+                // 2. Dashboard KPIs
+                document.getElementById('dash-cash').textContent = app.formatMoney(totalCash);
+                document.getElementById('dash-pledges').textContent = app.formatMoney(totalPledged);
+                document.getElementById('dash-balance').textContent = app.formatMoney(netBalance);
 
-                // Find current phase
+                // 3. Phases
+                const timelineDiv = document.getElementById('phase-timeline');
+                timelineDiv.innerHTML = '';
                 const today = new Date();
-                let currentPhase = store.data.phases.find(p => new Date(p.date) >= today) || store.data.phases[store.data.phases.length - 1];
+                let cumulativeTarget = 0;
 
-                if (!currentPhase) {
-                    lbBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">No active phase set.</td></tr>';
-                } else {
-                    const deptStats = DEPARTMENTS.map(dept => {
-                        const deptCash = store.data.transactions
-                            .filter(t => t.department === dept)
-                            .reduce((sum, t) => sum + t.amount, 0);
-                        const target = currentPhase.targets[dept] || 0;
-                        const pct = target ? Math.min(100, (deptCash / target) * 100) : 0;
-                        return { dept, deptCash, target, pct };
-                    }).sort((a, b) => b.pct - a.pct);
-
-                    deptStats.forEach((stat, index) => {
-                        const rank = index + 1;
-                        const rankColor = rank === 1 ? '#FFD700' : rank === 2 ? '#C0C0C0' : '#CD7F32';
-                        
-                        lbBody.innerHTML += `
-                            <tr>
-                                <td><div style="width: 24px; height: 24px; border-radius: 50%; background: ${rankColor}; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">${rank}</td>
-                                <td style="font-weight: 500;">${stat.dept}</td>
-                                <td class="text-right">${app.formatMoney(stat.target)}</td>
-                                <td class="text-right">${app.formatMoney(stat.deptCash)}</td>
-                                <td>
-                                    <div class="progress-track" style="height: 8px; width: 100px;">
-                                        <div class="progress-fill" style="width: ${stat.pct}%;"></div>
-                                    </div>
-                                    <div style="text-align: center; width: 100px; font-size: 0.75rem; margin-left: 10px;">${stat.pct.toFixed(1)}%</div>
-                                </td>
-                                <td style="text-align: center;">${stat.pct > 90 ? '🚀' : (stat.pct > 50 ? '💨' : '')}</td>
-                            </tr>
-                        `;
-                    });
-                }
-                
-                // 4. Phases Timeline
-                const timelineContainer = document.getElementById('phase-timeline-container');
-                timelineContainer.innerHTML = '';
-
-                store.data.phases.forEach((phase, index) => {
-                    const pct = Math.min(100, (totalCash / phase.totalTarget) * 100).toFixed(1);
-                    const isPast = new Date(phase.date) < new Date();
-
-                    let statusColor = '#E5E7EB'; // Default gray
-                    if (parseFloat(pct) >= 100) statusColor = 'var(--primary-light)';
-                    else if (isPast) statusColor = '#EF4444';
-
-                    timelineContainer.innerHTML += `
-                        <div style="margin-bottom: 24px; padding-left: 24px; border-left: 4px solid ${statusColor}; position: relative;">
-                            <div style="position: absolute; left: -30px; top: 6px; width: 12px; height: 12px; background: white; border-radius: 50%; border: 2px solid ${statusColor};"></div>
-                            <div>
-                                <div style="font-weight: 600; color: var(--text-main);">${phase.name}</div>
-                                <div style="font-size: 0.85rem; color: var(--text-sub); margin-top: 4px;">${new Date(phase.date).toLocaleDateString()}</div>
-                            </div>
-                            <div class="text-right" style="margin-top: 8px;">
-                                <span style="font-weight: bold; font-size: 1.2rem;">${pct}%</span>
+                store.data.phases.forEach((phase) => {
+                    cumulativeTarget += phase.totalTarget;
+                    const pct = Math.min(100, (totalCash / cumulativeTarget) * 100).toFixed(1);
+                    const isLate = new Date(phase.date) < today;
+                    const statusClass = pct >= 100 ? 'completed' : (isLate && pct < 100) ? 'late' : 'active';
+                    
+                    timelineDiv.innerHTML += `
+                        <div class="phase-item ${statusClass}">
+                            <div class="phase-dot"></div>
+                            <div style="margin-left: 20px;">
+                                <div class="flex-between" style="margin-bottom: 8px;">
+                                    <strong>${phase.name}</strong>
+                                    <small>${new Date(phase.date).toLocaleDateString()}</small>
+                                </div>
+                                <div class="flex-between">
+                                    <span class="text-sub">Target: ${app.formatMoney(cumulativeTarget)}</span>
+                                    <span class="text-sub font-bold" style="font-size: 1.1rem;">${pct}%</span>
+                                </div>
+                                <div class="progress-track" style="height: 12px;">
+                                    <div class="progress-fill" style="width: ${pct}%;"></div>
+                                </div>
                             </div>
                         </div>
-                        <div class="progress-track" style="height: 8px; margin-top: 8px;">
-                            <div class="progress-fill" style="width: ${pct}%; background-color: ${statusColor};"></div>
-                        </div>
-                    </div>
                     `;
                 });
 
-                // 5. Recent Activity
+                // 4. Recent Activity (Mock)
                 const recentList = document.getElementById('recent-activity-list');
-                if (store.data.transactions.length === 0) {
-                    recentList.innerHTML = '<p class="text-sub" style="text-align: center; padding: 20px;">No recent activity yet.</p>';
-                } else {
-                    recentList.innerHTML = '';
+                recentList.innerHTML = '';
+                if (store.data.transactions.length > 0) {
                     store.data.transactions.slice(0, 5).forEach(t => {
-                        const icon = t.type === 'Cash' ? '💵' : '📱';
-                        const time = new Date(t.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                        
                         recentList.innerHTML += `
-                            <div style="display: flex; gap: 12px; align-items: center; padding: 12px; background: white; border: 1px solid var(--border); border-radius: 8px;">
-                                <div style="width: 24px; height: 24px; background: #E0F2FE; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1rem;">${icon}</div>
-                                <div>
-                                    <div style="font-weight: 600; color: var(--text-main);">${t.name}</div>
-                                    <div class="text-sub" style="font-size: 0.85rem;">${t.type} • ${time}</div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: white; border: 1px solid var(--border); border-radius: 8px;">
+                                <div style="flex: 1;">
+                                    <div style="font-weight: 600;">${t.name}</div>
+                                    <small style="color: var(--text-sub); margin-top: 4px;">${t.type} • ${new Date(t.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</small>
                                 </div>
-                                <div class="text-right money">${app.formatMoney(t.amount)}</div>
+                                <div style="font-weight: 700; color: var(--primary);">${app.formatMoney(t.amount)}</div>
                             </div>
-                        </div>
-                        `;
+                            <div>
+                                <button class="btn btn-secondary btn-sm" onclick="app.viewReceipt('${t.ref}')">📄 Rec</button>
+                            </div>
+                        </div>`;
                     });
+                } else {
+                    recentList.innerHTML = '<p class="text-sub" style="text-align: center; padding: 40px;">No recent activity yet.</p>';
                 }
 
-                // 6. Pledges Table
-                const pledgesBody = document.getElementById('pledges-body');
-                pledgesBody.innerHTML = '';
-                
-                store.data.pledges.forEach(p => {
-                    const redeemed = p.redeemed || 0;
-                    const remaining = p.amount - redeemed;
-                    const pct = p.amount > 0 ? (redeemed / p.amount) * 100 : 0;
-                    const status = pct >= 100 ? 
-                        '<span class="badge badge-success">Paid</span>' : 
-                        `<span class="badge badge-warn">${pct.toFixed(0)}%</span>`;
+                // 5. Leaderboard
+                const lbContainer = document.getElementById('leaderboard-container');
+                lbContainer.innerHTML = '';
 
-                    pledgesBody.innerHTML += `
-                        <tr>
-                            <td style="font-weight: 500;">${p.name}</td>
-                            <td>${p.department}</td>
-                            <td class="text-right">${app.formatMoney(p.amount)}</td>
-                            <td class="text-right">${app.formatMoney(redeemed)}</td>
-                            <td class="text-right" style="color: ${remaining > 0 ? 'var(--danger)' : 'var(--text-sub)'};">${app.formatMoney(remaining)}</td>
-                            <td>
-                                ${remaining > 0 ? 
-                                    `<button class="btn btn-secondary btn-sm" onclick="app.quickPay(${p.id})">Pay</button>` : 
-                                    '<span style="opacity: 0.5;">-</span>'}
-                            </td>
-                        </tr>
-                    `;
-                });
-
-                // 7. Ledger Table
-                const ledgerBody = document.getElementById('ledger-body');
-                ledgerBody.innerHTML = '';
-
-                // Merge expenses and transactions for ledger view
-                const ledgerRows = [
-                    ...store.data.transactions.map(t => ({ ...t, badgeClass: 'badge-success', category: 'Income' })),
-                    ...store.data.expenses.map(e => ({ ...e, badgeClass: 'badge-danger', category: 'Expense' }))
-                ].sort((a, b) => new Date(b.date || a.date) - new Date(a.date));
-
-                ledgerRows.forEach(row => {
-                    ledgerBody.innerHTML += `
-                        <tr>
-                            <td style="color: var(--text-sub); font-size: 0.85rem;">${new Date(row.date).toLocaleDateString()}</td>
-                            <td style="font-family: monospace;">${row.ref || '-'}</td>
-                            <td>${row.name}</td>
-                            <td class="text-right">${app.formatMoney(row.amount)}</td>
-                            <td><span class="badge ${row.badgeClass}">${row.category}</span></td>
-                            <td>${row.pledgeId ? '✅ Yes' : '-'}</td>
-                        </tr>
-                    `;
-                });
-
-                // 8. Tribes Grid
-                const tribesGrid = document.getElementById('tribes-grid');
-                tribesGrid.innerHTML = '';
-
-                DEPARTMENTS.forEach(dept => {
-                    // Calculate cash collected for this dept
+                // Get stats per department
+                const deptStats = DEPARTMENTS.map(dept => {
                     const deptCash = store.data.transactions
-                        .filter(t => t.department === dept)
+                        .filter(t => t.pledgeId && store.data.pledges.find(p => p.id === t.pledgeId && p.department === dept))
                         .reduce((sum, t) => sum + t.amount, 0);
+                    
+                    const phaseTarget = store.data.phases[store.data.phases.length - 1] ? store.data.phases[store.data.phases.length - 1].targets[dept] || 0;
+                    const pct = phaseTarget ? Math.min(100, (deptCash / phaseTarget) * 100).toFixed(1) : 0;
+                    
+                    return { dept, deptCash, phaseTarget, pct };
+                }).sort((a,b) => b.pct - a.pct);
 
-                    // Calculate progress
-                    const target = currentPhase.targets[dept] || 0;
-                    const pct = target > 0 ? Math.min(100, (deptCash / target) * 100) : 0;
-
-                    tribesGrid.innerHTML += `
-                        <div class="card" style="border-top: 4px solid ${deptCash >= target ? 'var(--primary)' : 'var(--border)'}">
-                            <div class="flex-between" style="margin-bottom: 12px;">
-                                <div>
-                                    <div style="font-weight: 600; color: var(--text-main); font-size: 1.1rem;">${dept}</div>
-                                    <div class="text-sub">Target: ${app.formatMoney(target)}</div>
-                                </div>
-                                <div style="text-right">
-                                    <div style="font-weight: 700; font-size: 1.2rem; color: var(--primary-dark);">${app.formatMoney(deptCash)}</div>
-                                    <div style="font-size: 0.9rem; color: var(--text-sub);">(${pct.toFixed(1)}%)</div>
-                                </div>
+                deptStats.forEach((stat, index) => {
+                    const rank = index + 1;
+                    lbContainer.innerHTML += `
+                        <div class="stat-row">
+                            <div style="width: 30px; height: 30px; border-radius: 50%; background: ${rank === 1 ? '#FFD700' : (rank === 2 ? '#C0C0C0' : (rank === 3 ? '#CD7F32' : '#999')};">
+                                ${rank}
                             </div>
-                            <div class="progress-track" style="height: 10px; margin-top: 12px;">
-                                <div class="progress-fill" style="width: ${pct}%;"></div>
+                            <div style="flex: 1;">
+                                <div>
+                                    <div style="font-weight: bold;">${stat.dept}</div>
+                                    <small class="text-sub">Collected: ${app.formatMoney(stat.deptCash)} / ${app.formatMoney(stat.phaseTarget)}</small>
+                                </div>
+                                <div style="font-weight: bold; color: var(--primary);">${stat.pct}%</div>
                             </div>
                         </div>
                     `;
                 });
 
-                // 9. Settings
+                // 6. Phases List
                 const phasesList = document.getElementById('phases-list');
                 phasesList.innerHTML = '';
-
-                store.data.phases.forEach(phase => {
+                store.data.phases.forEach(p => {
+                    const pct = Math.min(100, (totalCash / p.totalTarget) * 100).toFixed(1);
+                    const isLate = new Date(p.date) < new Date();
+                    const late = pct < 100 && isLate;
+                    
                     phasesList.innerHTML += `
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--bg); border-radius: 8px; border: 1px solid var(--border);">
-                            <div>
-                                <div style="font-weight: 600;">${phase.name}</div>
-                                <div class="text-sub">${new Date(phase.date).toLocaleDateString()}</div>
-                            </div>
-                            <button class="btn btn-secondary btn-sm" onclick="store.deletePhase(${phase.id})">Delete</button>
+                        <div class="stat-row">
+                            <div style="font-size: 1.1rem; font-weight: 600;">${p.name}</div>
+                            <div class="text-sub">${new Date(p.date).toLocaleDateString()} - ${app.formatMoney(p.totalTarget)}</div>
+                            <div class="text-sub font-bold">${pct}%</div>
+                            <button class="btn btn-danger btn-sm" onclick="store.deletePhase(${p.id})">Delete</button>
                         </div>
                     `;
                 });
             },
 
-            // --- UTILS ---
-            formatMoney: (num) => {
-                return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(num);
-            },
-            
+            // 7. Ledger Table
+            const ledgerBody = document.getElementById('ledger-body');
+            ledgerBody.innerHTML = '';
+
+            const ledgerRows = [
+                ...store.data.transactions.map(t => ({...t, badgeClass: 'badge-success', category: 'Income', Type: 'M-Pesa' })),
+                ...store.data.expenses.map(e => ({...e, badgeClass: 'badge-danger', category: 'Expense', Type: 'Expense' }))
+            ].sort((a,b) => new Date(a.date) - new Date(b.date));
+
+            ledgerRows.forEach(row => {
+                const dateStr = new Date(row.date).toLocaleDateString() + ' ' + new Date(row.date).toLocaleTimeString([], {hour: '2-digit', minute: '2-digit' });
+                ledgerBody.innerHTML += `
+                    <tr>
+                        <td style="color: var(--text-sub);">${dateStr}</td>
+                        <td style="font-family: monospace;">${row.ref}</td>
+                        <td>${row.name || row.description}</td>
+                        <td class="money">${app.formatMoney(row.amount)}</td>
+                        <td><span class="badge ${row.badgeClass}">${row.Type}</span></td>
+                    </tr>
+                `;
+            }),
+
             exportCSV: (type) => {
-                let csv = "data:text/csv;charset=utf-8,";
+                let csvContent = "data:text/csv;charset=utf-8,";
                 
-                if (type === 'pledges') {
-                    csv += "Name,Phone,Department,Amount,Redeemed,Remaining\n";
-                    store.data.pledges.forEach(p => {
-                        csv += `"${p.name}","${p.phone || ''}","${p.department}",${p.amount},${p.redeemed || 0},${p.amount - (p.redeemed || 0)}\n`;
+                if(type === 'ledger') {
+                    csvContent += "Date,Reference,Name/Desc,Type,Amount\n";
+                    ledgerRows.forEach(r => {
+                        csvContent += `${new Date(r.date).toLocaleDateString()},${r.ref},"${r.name || r.description}","${r.Type}","${r.amount}\n`;
                     });
                 } else {
-                    csv += "Date,Type,Description,Reference,Amount\n";
-                    // Combine and sort
-                    const rows = [
-                        ...store.data.transactions.map(t => ({...t, Type: 'Income', Category: 'M-Pesa', Ref: t.ref || '' })),
-                        ...store.data.expenses.map(e => ({...e, Type: 'Expense', Category: e.category, Ref: 'EXP-' + Date.now(), Amount: e.amount }))
-                    ].sort((a, b) => new Date(a.date) - new Date(b.date));
-
-                    rows.forEach(r => {
-                        csv += `${new Date(r.date).toLocaleDateString()},${r.Type},${r.Description},${r.Ref},${r.amount}\n`;
+                    csvContent += "Name,Department,Target,Redeemed,Balance\n";
+                    store.data.pledges.forEach(p => {
+                        csvContent += `"${p.name}","${p.department}",${p.amount},${p.redeemed},${p.amount - p.redeemed}\n`;
                     });
                 }
 
-                const blob = new Blob([csv], { type: 'text/csv' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `dcd_land_${type}_${Date.now()}.csv`;
-                document.body.appendChild(a);
-                a.click();
+                const encodedUri = encodeURI(csvContent);
+                const link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", `dcd_land_${type}_${Date.now()}.csv`);
+                document.body.appendChild(link);
+                link.click();
             },
 
-            // --- QUICK PAY (LINKED TO PLEDGE) ---
-            quickPay: (pledgeId) => {
-                // Re-open modal with pre-filled data?
-                const pledge = store.data.pledges.find(p => p.id === pledgeId);
-                if(!pledge) return;
-
-                // Populate cash modal
-                const modal = document.getElementById('modal-cash');
-                modal.querySelector('#c-name').value = pledge.name;
-                modal.querySelector('#c-dept').value = pledge.department;
-                modal.showModal();
+            viewReceipt: (ref) => {
+                const tx = store.data.transactions.find(t => t.ref === ref);
+                if(!tx) return;
+                const msg = `RECEIPT\n---------\nDate: ${new Date(tx.date).toLocaleString()}\nName: ${tx.name}\nMethod: ${tx.type}\nAmount: KES ${tx.amount}\nRef: ${tx.ref}\n\nThank you for your contribution to DCD Possess The Land!`;
+                alert(msg);
             }
         };
 
-        // --- EVENT LISTENERS ---
-        document.getElementById('modal-pledge').addEventListener('submit', app.handlePledgeSubmit);
-        document.getElementById('modal-cash').addEventListener('submit', app.handleCashSubmit);
-        document.getElementById('modal-expense').addEventListener('submit', app.handleExpenseSubmit);
-        
-        // Init
+        // --- INIT ---
         app.init();
     </script>
 </body>
