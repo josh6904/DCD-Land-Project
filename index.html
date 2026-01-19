@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LandQuest Mobilizer</title>
+    <style>
+        :root {
+            --primary: #10B981; /* Emerald */
+            --primary-dark: #064E3B;
+            --secondary: #3B82F6; /* Blue */
+            --accent: #F59E0B; /* Amber */
+            --danger: #EF4444;
+            --bg: #F3F4F6;
+            --surface: #FFFFFF;
+            --text-main: #1F2937;
+            --text-sub: #6B7280;
+            --border: #E5E7EB;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        
+        body { background-color: var(--bg); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+        /* --- Layout --- */
+        aside {
+            width: 260px;
+            background: #111827;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            z-index: 50;
+        }
+
+        main { flex: 1; overflow-y: auto; padding: 24px; position: relative; }
+
+        /* --- Sidebar Nav --- */
+        .brand { font-size: 1.25rem; font-weight: 800; margin-bottom: 40px; color: var(--primary); letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
+        .nav-item {
+            padding: 12px; margin-bottom: 5px; border-radius: 8px; cursor: pointer;
+            display: flex; align-items: center; gap: 12px; color: #9CA3AF; transition: 0.2s;
+        }
+        .nav-item:hover { background: #374151; color: white; }
+        .nav-item.active { background: var(--primary); color: white; font-weight: 600; }
+
+        /* --- Mobile Nav --- */
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            aside { 
+                width: 100%; height: auto; position: fixed; bottom: 0; left: 0; 
+                flex-direction: row; padding: 10px; justify-content: space-around; 
+                border-top: 1px solid var(--border); background: white; color: #333;
+            }
+            .brand { display: none; }
+            .nav-item { flex-direction: column; gap: 4px; font-size: 0.7rem; text-align: center; padding: 5px; }
+            main { padding-bottom: 80px; } /* Space for bottom nav */
+        }
+
+        /* --- Components --- */
+        .card { background: var(--surface); padding: 20px; border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow); margin-bottom: 24px; }
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+
+        @media(max-width: 1000px) { .grid-4 { grid-template-columns: 1fr 1fr; } }
+        @media(max-width: 768px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+
+        h1, h2, h3 { margin-bottom: 12px; color: var(--text-main); }
+        .text-sub { color: var(--text-sub); font-size: 0.9rem; }
+        .text-lg { font-size: 1.5rem; font-weight: 700; }
+        .text-xl { font-size: 2rem; font-weight: 800; color: var(--primary-dark); }
+
+        /* --- Buttons & Inputs --- */
+        .btn {
+            padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600;
+            transition: 0.2s; display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-secondary { background: white; border: 1px solid var(--border); color: var(--text-main); }
+        .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
+
+        input, select, textarea {
+            width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px;
+        }
+        input:focus { outline: 2px solid var(--primary); border-color: transparent; }
+
+        /* --- Progress Bars --- */
+        .progress-track { background: #E5E7EB; height: 10px; border-radius: 5px; overflow: hidden; margin-top: 8px; }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.5s ease; }
+        .progress-fill.amber { background: var(--accent); }
+
+        /* --- Tables --- */
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        th { background: #F9FAFB; color: var(--text-sub); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+        .badge { padding: 4px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; }
+        .badge-success { background: #D1FAE5; color: #065F46; }
+        .badge-warn { background: #FEF3C7; color: #92400E; }
+
+        /* --- Reconciler Box --- */
+        .reconciler-area { background: #ECFDF5; border: 2px dashed var(--primary); padding: 20px; border-radius: 12px; text-align: center; cursor: text; }
+        .reconciler-area:focus { background: white; border-style: solid; outline: none; }
+        .staged-list { margin-top: 20px; border-top: 1px solid var(--border); }
+
+        /* --- Utility Classes --- */
+        .hidden { display: none !important; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .flex-center { display: flex; justify-content: center; align-items: center; }
+        .mt-4 { margin-top: 16px; }
+
+        /* --- Modal --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 100;
+        }
+        .modal { background: white; width: 90%; max-width: 500px; padding: 24px; border-radius: 12px; }
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside>
+        <div class="brand">🌍 LandQuest</div>
+        <div class="nav-item active" onclick="app.nav('dashboard')">📊 Dashboard</div>
+        <div class="nav-item" onclick="app.nav('pledges')">🤝 Pledges</div>
+        <div class="nav-item" onclick="app.nav('ledger')">💰 Ledger & Reconcile</div>
+        <div class="nav-item" onclick="app.nav('tribes')">🏢 Tribes (Depts)</div>
+        <div class="nav-item" onclick="app.nav('strategy')">🧠 Strategy AI</div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        
+        <!-- DASHBOARD VIEW -->
+        <section id="view-dashboard">
+            <header class="flex-between" style="margin-bottom: 20px;">
+                <div>
+                    <h1>Mobilization Status</h1>
+                    <p class="text-sub">Target: 6,000,000 KES</p>
+                </div>
+                <button class="btn btn-primary" onclick="app.openModal('pledge')">+ New Pledge</button>
+            </header>
+
+            <div class="grid-3">
+                <div class="card">
+                    <h3 class="text-sub">Total Cash Collected</h3>
+                    <div class="text-xl" id="dash-cash">0</div>
+                    <div class="progress-track"><div class="progress-fill" id="bar-cash"></div></div>
+                    <small class="text-sub mt-4" id="txt-cash-pct">0% of Target</small>
+                </div>
+                <div class="card">
+                    <h3 class="text-sub">Total Pledges</h3>
+                    <div class="text-xl" id="dash-pledges">0</div>
+                    <div class="progress-track"><div class="progress-fill amber" id="bar-pledges"></div></div>
+                    <small class="text-sub mt-4" id="txt-pledges-pct">0% of Target</small>
+                </div>
+                <div class="card">
+                    <h3 class="text-sub">Redemption Rate</h3>
+                    <div class="text-xl" id="dash-rate">0%</div>
+                    <p class="text-sub mt-4">Cash collected vs Total Pledged</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Progress Visualization</h3>
+                <div class="progress-track" style="height: 30px; margin-top: 15px;">
+                    <div class="progress-fill" id="main-progress-bar" style="width: 0%;"></div>
+                </div>
+                <div class="flex-between mt-4">
+                    <small>0</small>
+                    <small>1.5M</small>
+                    <small>3M</small>
+                    <small>4.5M</small>
+                    <small>6M</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- PLEDGES VIEW -->
+        <section id="view-pledges" class="hidden">
+            <div class="flex-between">
+                <h1>Smart Pledge Ledger</h1>
+                <button class="btn btn-primary" onclick="app.openModal('pledge')">+ Add Pledge</button>
+            </div>
+            <div class="card mt-4">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Member</th>
+                            <th>Dept</th>
+                            <th>Committed</th>
+                            <th>Redeemed</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pledges-table">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- LEDGER & RECONCILE VIEW -->
+        <section id="view-ledger" class="hidden">
+            <h1>Transaction Reconciliation</h1>
+            
+            <!-- The AI/M-Pesa Reconciler -->
+            <div class="card mt-4" style="border-left: 5px solid var(--primary);">
+                <h3>🤖 M-Pesa SMS Parser</h3>
+                <p class="text-sub">Paste raw M-Pesa confirmation messages below. We will extract Amount, Name, and match them to Pledges.</p>
+                
+                <div class="reconciler-area" contenteditable="true" id="sms-input" 
+                     oninput="app.parseSMS(this.innerText)"
+                     onclick="if(this.innerText === 'Paste M-Pesa messages here...') { this.innerText = ''; }">
+                    Paste M-Pesa messages here...
+                </div>
+
+                <div id="staged-container" class="hidden">
+                    <div class="flex-between mt-4">
+                        <h4>Staged Transactions (<span id="staged-count">0</span>)</h4>
+                        <button class="btn btn-primary btn-sm" onclick="app.commitStaged()">✅ Add All Transactions</button>
+                        <button class="btn btn-secondary btn-sm" onclick="app.clearStaged()">Clear</button>
+                    </div>
+                    <div id="staged-list" class="staged-list"></div>
+                </div>
+            </div>
+
+            <h2 class="mt-4">Verified Ledger</h2>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Ref</th>
+                            <th>Member</th>
+                            <th>Amount</th>
+                            <th>Linked Pledge</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ledger-table"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TRIBES VIEW -->
+        <section id="view-tribes" class="hidden">
+            <h1>Department Performance</h1>
+            <div class="grid-2 mt-4" id="tribes-grid">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+        <!-- STRATEGY VIEW -->
+        <section id="view-strategy" class="hidden">
+            <h1>🧠 Strategy Engine</h1>
+            <div class="card mt-4" style="background: #F0FDF4; border-color: var(--primary);">
+                <h2 style="color: var(--primary-dark);">AI Insights</h2>
+                <p class="text-sub">Based on current data patterns:</p>
+                <div id="strategy-content" class="mt-4">
+                    <!-- JS Generated -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL: ADD PLEDGE -->
+    <div class="modal-overlay" id="modal-pledge">
+        <div class="modal">
+            <h2>Add New Pledge</h2>
+            <form onsubmit="app.addPledge(event)">
+                <label class="text-sub">Member Name</label>
+                <input type="text" id="p-name" required>
+                
+                <label class="text-sub">Department</label>
+                <select id="p-dept" required>
+                    <option>Operations</option>
+                    <option>Finance</option>
+                    <option>Sales & Marketing</option>
+                    <option>HR</option>
+                    <option>Engineering</option>
+                </select>
+
+                <label class="text-sub">Pledged Amount (KES)</label>
+                <input type="number" id="p-amount" required>
+
+                <div class="flex-between mt-4">
+                    <button type="button" class="btn btn-secondary" onclick="app.closeModal('pledge')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Pledge</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA STORE ---
+        const DB_KEY = 'landquest_db';
+        
+        const initialData = {
+            target: 6000000,
+            pledges: [],
+            transactions: [],
+            depts: [
+                { name: "Operations", target: 1200000 },
+                { name: "Finance", target: 1200000 },
+                { name: "Sales & Marketing", target: 1200000 },
+                { name: "HR", target: 1200000 },
+                { name: "Engineering", target: 1200000 }
+            ]
+        };
+
+        class Store {
+            constructor() {
+                const saved = localStorage.getItem(DB_KEY);
+                this.data = saved ? JSON.parse(saved) : initialData;
+            }
+
+            save() {
+                localStorage.setItem(DB_KEY, JSON.stringify(this.data));
+                app.render();
+            }
+
+            addPledge(name, dept, amount) {
+                this.data.pledges.push({
+                    id: Date.now(),
+                    name, dept, amount: Number(amount), redeemed: 0
+                });
+                this.save();
+            }
+
+            addTransaction(tx) {
+                // 1. Add to ledger
+                this.data.transactions.unshift({
+                    id: Date.now(),
+                    date: new Date().toISOString(),
+                    amount: tx.amount,
+                    name: tx.name,
+                    ref: tx.ref,
+                    pledgeId: tx.matchedId
+                });
+
+                // 2. If matched, update pledge redemption
+                if(tx.matchedId) {
+                    const pledge = this.data.pledges.find(p => p.id === tx.matchedId);
+                    if(pledge) {
+                        pledge.redeemed = (pledge.redeemed || 0) + tx.amount;
+                    }
+                }
+                this.save();
+            }
+        }
+
+        // --- APP LOGIC ---
+        const store = new Store();
+        let stagedTransactions = [];
+
+        const app = {
+            init: () => {
+                app.render();
+            },
+
+            nav: (viewId) => {
+                // Hide all sections
+                document.querySelectorAll('main section').forEach(el => el.classList.add('hidden'));
+                // Show target
+                document.getElementById(`view-${viewId}`).classList.remove('hidden');
+                
+                // Update Sidebar
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                event.currentTarget.classList.add('active');
+            },
+
+            render: () => {
+                // 1. Dashboard Calculations
+                const totalCash = store.data.transactions.reduce((sum, t) => sum + t.amount, 0);
+                const totalPledged = store.data.pledges.reduce((sum, p) => sum + p.amount, 0);
+                const totalRedeemed = store.data.pledges.reduce((sum, p) => sum + (p.redeemed || 0), 0);
+                const rate = totalPledged > 0 ? ((totalRedeemed / totalPledged) * 100).toFixed(1) : 0;
+
+                document.getElementById('dash-cash').textContent = app.formatMoney(totalCash);
+                document.getElementById('bar-cash').style.width = `${(totalCash / store.data.target) * 100}%`;
+                document.getElementById('txt-cash-pct').textContent = `${((totalCash / store.data.target) * 100).toFixed(1)}% of Target`;
+
+                document.getElementById('dash-pledges').textContent = app.formatMoney(totalPledged);
+                document.getElementById('bar-pledges').style.width = `${(totalPledged / store.data.target) * 100}%`;
+                document.getElementById('txt-pledges-pct').textContent = `${((totalPledged / store.data.target) * 100).toFixed(1)}% of Target`;
+
+                document.getElementById('dash-rate').textContent = `${rate}%`;
+                
+                // Main Bar
+                document.getElementById('main-progress-bar').style.width = `${Math.min(100, (totalCash / store.data.target) * 100)}%`;
+
+                // 2. Pledge Table
+                const pTable = document.getElementById('pledges-table');
+                pTable.innerHTML = '';
+                store.data.pledges.forEach(p => {
+                    const pct = ((p.redeemed || 0) / p.amount) * 100;
+                    const status = pct >= 100 ? '<span class="badge badge-success">Paid</span>' : `<span class="badge badge-warn">${pct.toFixed(0)}%</span>`;
+                    
+                    pTable.innerHTML += `
+                        <tr>
+                            <td><strong>${p.name}</strong></td>
+                            <td>${p.dept}</td>
+                            <td>${app.formatMoney(p.amount)}</td>
+                            <td>${app.formatMoney(p.redeemed || 0)}</td>
+                            <td>${status}</td>
+                            <td>
+                                <button class="btn btn-secondary btn-sm" onclick="app.quickPay(${p.id})">+ Pay</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                // 3. Ledger Table
+                const lTable = document.getElementById('ledger-table');
+                lTable.innerHTML = '';
+                store.data.transactions.forEach(t => {
+                    const linked = t.pledgeId ? '✅ Yes' : '-';
+                    lTable.innerHTML += `
+                        <tr>
+                            <td>${new Date(t.date).toLocaleDateString()}</td>
+                            <td style="font-family:monospace;">${t.ref}</td>
+                            <td>${t.name}</td>
+                            <td>${app.formatMoney(t.amount)}</td>
+                            <td>${linked}</td>
+                        </tr>
+                    `;
+                });
+
+                // 4. Tribes Grid
+                const tGrid = document.getElementById('tribes-grid');
+                tGrid.innerHTML = '';
+                store.data.depts.forEach(dept => {
+                    // Calculate dept stats
+                    const deptPledges = store.data.pledges.filter(p => p.dept === dept.name);
+                    const deptPledgedTotal = deptPledges.reduce((sum, p) => sum + p.amount, 0);
+                    const deptCash = deptPledges.reduce((sum, p) => sum + (p.redeemed || 0), 0);
+                    const activeMembers = deptPledges.length;
+
+                    tGrid.innerHTML += `
+                        <div class="card">
+                            <div class="flex-between">
+                                <h3>${dept.name}</h3>
+                                <small class="badge badge-warn">${activeMembers} Members</small>
+                            </div>
+                            <div class="mt-4">
+                                <small class="text-sub">Target: ${app.formatMoney(dept.target)}</small>
+                                <div class="progress-track"><div class="progress-fill amber" style="width: ${(deptPledgedTotal/dept.target)*100}%"></div></div>
+                                <small class="text-sub">Pledged: ${app.formatMoney(deptPledgedTotal)}</small>
+                            </div>
+                            <div class="mt-4">
+                                <small class="text-sub">Collected: ${app.formatMoney(deptCash)}</small>
+                                <div class="progress-track"><div class="progress-fill" style="width: ${(deptCash/dept.target)*100}%"></div></div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // 5. Strategy Engine (Mock AI)
+                const stratDiv = document.getElementById('strategy-content');
+                let advice = [];
+                
+                // Logic 1: Pledges vs Cash
+                if(totalRedeemed < totalPledged * 0.5) {
+                    advice.push("🚨 <strong>Urgent:</strong> Your redemption rate is below 50%. Immediate follow-up calls are needed on pending pledges.");
+                } else {
+                    advice.push("✅ <strong>Good Health:</strong> Your members are honoring their commitments. Keep the momentum.");
+                }
+
+                // Logic 2: Target Gap
+                if(totalCash < store.data.target * 0.2) {
+                    advice.push("📢 <strong>Mobilization:</strong> We are in the early phase. Focus on getting the 'big fish' pledges to set the tone.");
+                }
+
+                // Logic 3: Dept Leader
+                let leader = { name: 'None', val: 0 };
+                store.data.depts.forEach(d => {
+                    const dCash = store.data.pledges.filter(p => p.dept === d.name).reduce((s,p) => s + (p.redeemed||0), 0);
+                    if(dCash > leader.val) leader = { name: d.name, val: dCash };
+                });
+                advice.push(`🏆 <strong>Current Leader:</strong> The <strong>${leader.name}</strong> team is leading collections. Challenge other teams to beat them!`);
+
+                stratDiv.innerHTML = advice.map(a => `<p style="margin-bottom:10px; padding:10px; background:white; border-radius:6px;">${a}</p>`).join('');
+            },
+
+            // --- PLEDGE ACTIONS ---
+            openModal: (type) => document.getElementById(`modal-${type}`).style.display = 'flex',
+            closeModal: (type) => document.getElementById(`modal-${type}`).style.display = 'none',
+            
+            addPledge: (e) => {
+                e.preventDefault();
+                const name = document.getElementById('p-name').value;
+                const dept = document.getElementById('p-dept').value;
+                const amount = document.getElementById('p-amount').value;
+                store.addPledge(name, dept, amount);
+                app.closeModal('pledge');
+                document.getElementById('p-name').value = '';
+                document.getElementById('p-amount').value = '';
+            },
+
+            quickPay: (pledgeId) => {
+                const amount = prompt("Enter payment amount (KES):");
+                if(amount && !isNaN(amount)) {
+                    // Mock a manual transaction
+                    store.addTransaction({
+                        amount: Number(amount),
+                        name: 'Manual Entry',
+                        ref: 'MAN-' + Date.now(),
+                        matchedId: pledgeId
+                    });
+                }
+            },
+
+            // --- RECONCILER LOGIC (NO AI) ---
+            parseSMS: (text) => {
+                // 1. Regex to extract transactions
+                // Looks for pattern: "received Ksh 5,000 from John Doe 07..." or "confirmed... Ksh..."
+                // This splits by common sentence delimiters if multiple messages are pasted
+                const sentences = text.split(/[\.!?]+/).filter(s => s.includes('Ksh') || s.includes('KES') || s.includes('received'));
+                
+                stagedTransactions = []; // Reset staging
+                
+                sentences.forEach(s => {
+                    // Amount Regex
+                    const amtMatch = s.match(/(?:Ksh|KES)\s?([0-9,]+(?:\.\d{2})?)/i);
+                    if(!amtMatch) return;
+                    const amount = parseFloat(amtMatch[1].replace(/,/g, ''));
+
+                    // Name Regex (Heuristic: "from" followed by words until numbers or "Account")
+                    // Handles: "from John Doe 07..." or "from John Doe Account..."
+                    let name = "Unknown";
+                    const nameMatch = s.match(/from\s+([A-Za-z\s\.]+?)(?:\s+07\d{8}|\s+Account|\s+on\s+\d{1,2}\/)/i);
+                    if(nameMatch) {
+                        name = nameMatch[1].trim();
+                    }
+
+                    // Ref Regex
+                    let ref = "N/A";
+                    const refMatch = s.match(/(?:Account\s+Number|Confirmation\s+Code)\s+([A-Za-z0-9]+)/i);
+                    if(refMatch) ref = refMatch[1];
+
+                    // --- MATCHING ENGINE ---
+                    let matchedId = null;
+                    // Simple fuzzy match: check if pledge name is contained in extracted name or vice versa
+                    const match = store.data.pledges.find(p => 
+                        name.toLowerCase().includes(p.name.toLowerCase()) || 
+                        p.name.toLowerCase().includes(name.toLowerCase())
+                    );
+
+                    if(match) {
+                        // Calculate remaining to see if this payment fits
+                        const remaining = match.amount - (match.redeemed || 0);
+                        if(remaining >= amount) {
+                            matchedId = match.id;
+                            name = match.name; // Normalize to ledger name
+                        }
+                    }
+
+                    stagedTransactions.push({ amount, name, ref, matchedId, id: Math.random() });
+                });
+
+                // Render Staged List
+                if(stagedTransactions.length > 0) {
+                    document.getElementById('staged-container').classList.remove('hidden');
+                    document.getElementById('staged-count').innerText = stagedTransactions.length;
+                    const list = document.getElementById('staged-list');
+                    list.innerHTML = '';
+                    
+                    stagedTransactions.forEach((t, idx) => {
+                        const badge = t.matchedId ? '<span class="badge badge-success">Pledge Matched ✅</span>' : '<span class="badge badge-warn">New Donor ⚠️</span>';
+                        list.innerHTML += `
+                            <div style="padding: 10px; border-bottom: 1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <strong>${t.name}</strong> - ${app.formatMoney(t.amount)} <br>
+                                    <small class="text-sub">Ref: ${t.ref}</small>
+                                </div>
+                                ${badge}
+                            </div>
+                        `;
+                    });
+                } else {
+                    document.getElementById('staged-container').classList.add('hidden');
+                }
+            },
+
+            commitStaged: () => {
+                stagedTransactions.forEach(t => store.addTransaction(t));
+                app.clearStaged();
+                alert(`Processed ${stagedTransactions.length} transactions!`);
+            },
+
+            clearStaged: () => {
+                stagedTransactions = [];
+                document.getElementById('staged-container').classList.add('hidden');
+                document.getElementById('sms-input').innerText = 'Paste M-Pesa messages here...';
+            },
+
+            // --- UTILS ---
+            formatMoney: (num) => {
+                return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(num);
+            }
+        };
+
+        // Start
+        app.init();
+
+    </script>
+</body>
+</html>
