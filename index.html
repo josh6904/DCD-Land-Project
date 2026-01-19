@@ -463,7 +463,7 @@
                     <input type="number" name="amount" required min="1" placeholder="0.00">
                     
                     <small style="color: var(--accent); display:block; margin-top:10px;">
-                        ℹ️ <strong>Note:</strong> If this specific Name + Department combination already exists, the amount will be added to their existing pledge.
+                        ℹ️ <strong>Note:</strong> If this specific Name + Department combination already exists, amount will be added to their existing pledge.
                     </small>
                 </div>
                 <div class="modal-footer">
@@ -545,7 +545,7 @@
             "Eagles", "Daughters of Faith", "Youth", 
             "Kingdom Generation", "Planning Committee", "Guests"
         ];
-        const DB_KEY = 'dcd_possess_land_v5';
+        const DB_KEY = 'dcd_possess_land_v6'; // Version bump for update
 
         // --- STORE ---
         const store = {
@@ -775,7 +775,7 @@
                 }
             },
 
-            // --- SMS PARSER LOGIC ---
+            // --- SMS PARSER LOGIC (FIXED) ---
             processSMS() {
                 const text = document.getElementById('sms-input').value;
                 if(!text.trim()) return;
@@ -785,7 +785,8 @@
 
                 lines.forEach(line => {
                     // Pattern 1: Personal (Incoming)
-                    const matchPerson = line.match(/(?:You have received|Received)\s+Ksh\s+([\d,]+\.?\d*)\s+from\s+([A-Za-z\s]+?)(?:\s+\d{10,}|\.)/i);
+                    // FIX: Changed \s+ to \s* to allow "Ksh5000" or "Ksh 5000"
+                    const matchPerson = line.match(/(?:You have received|Received)\s+Ksh\s*([\d,]+\.?\d*)\s+from\s+([A-Za-z\s]+?)(?:\s+\d{10,}|\.)/i);
                     
                     if (matchPerson) {
                         results.push({
@@ -798,7 +799,8 @@
                     }
 
                     // Pattern 2: Till/Paybill (Outgoing to Business)
-                    const matchTill = line.match(/Confirmed\.\s+Ksh\s+([\d,]+\.?\d*)\s+sent to\s+([A-Z0-9\s]+?)\s+for\s+account/i);
+                    // FIX: Changed \s+ to \s* for amount capture
+                    const matchTill = line.match(/Confirmed\.\s+Ksh\s*([\d,]+\.?\d*)\s+sent to\s+([A-Z0-9\s]+?)\s+for\s+account/i);
                     
                     if (matchTill) {
                         results.push({
@@ -829,9 +831,6 @@
                 list.innerHTML = '';
 
                 this.stagedTx.forEach((tx, idx) => {
-                    // FIX: If multiple matches exist (Josh in Eagles AND Josh in Youth), 
-                    // we need a way to distinguish. For now, we default to finding ANY match 
-                    // or requiring Dept selection if none/new.
                     const existing = store.data.pledges.find(p => p.name.toLowerCase() === tx.name.toLowerCase());
                     
                     let deptSelect = '';
@@ -1009,7 +1008,7 @@
             renderTribes() {
                 const container = document.getElementById('tribes-container');
                 
-                // Get the latest active phase for targets
+                // Get latest active phase for targets
                 const activePhase = store.data.phases[store.data.phases.length - 1];
                 
                 const deptStats = DEPARTMENTS.map(dept => {
