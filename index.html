@@ -545,13 +545,13 @@
             "Eagles", "Daughters of Faith", "Youth", 
             "Kingdom Generation", "Planning Committee", "Guests"
         ];
-        const DB_KEY = 'dcd_possess_land_v6'; // Version bump for update
+        const DB_KEY = 'dcd_possess_land_v7'; // Updated version for duplicate logic
 
         // --- STORE ---
         const store = {
             data: {
                 pledges: [], // { id, name, department, amount, date }
-                transactions: [], // { id, pledgeId, amount, type, ref, date, method }
+                transactions: [], // { id, pledgeId, amount, type, ref, date, method, department }
                 phases: [] // { id, name, target, date, deptTargets: {Eagles: 1000, ...} }
             },
 
@@ -577,7 +577,7 @@
                 app.render();
             },
 
-            // FIX: Match based on Name AND Department
+            // Match based on Name AND Department
             addPledge(name, dept, amount) {
                 const existing = this.data.pledges.find(p => 
                     p.name.toLowerCase() === name.toLowerCase() &&
@@ -606,6 +606,7 @@
             },
 
             addTransaction(tx) {
+                // FIX: Include 'department' in the transaction object for filtering
                 this.data.transactions.unshift({
                     id: Date.now().toString(),
                     ...tx,
@@ -615,9 +616,7 @@
             },
 
             addPhase(name, date, deptTargets) {
-                // Calculate total
                 const total = Object.values(deptTargets).reduce((a,b) => a+b, 0);
-
                 this.data.phases.push({
                     id: Date.now(),
                     name, 
@@ -684,7 +683,6 @@
             },
 
             renderSettingsForm() {
-                // Generate inputs for Dept Targets in Settings
                 const container = document.getElementById('dept-targets-container');
                 container.innerHTML = '';
                 
@@ -698,9 +696,8 @@
                     container.appendChild(div);
                 });
                 
-                // Add event listener to form
                 document.getElementById('phase-form').addEventListener('submit', (e) => {
-                    e.preventDefault(); // prevent default refresh
+                    e.preventDefault();
                     this.addPhaseFromForm();
                 });
             },
@@ -741,10 +738,19 @@
                 e.preventDefault();
                 const name = document.getElementById('cash-name').value;
                 const dept = document.getElementById('cash-dept').value;
-                const amount = document.getElementById('cash-amount').value;
+                const amount = parseFloat(document.getElementById('cash-amount').value);
                 const ref = document.getElementById('cash-ref').value || 'Manual Cash';
+                const timestamp = new Date(); // Use CURRENT time for manual cash
 
-                // FIX: Match by Name AND Dept
+                // 1. Check Duplicate
+                const dupe = this.checkDuplicate(name, dept, amount, timestamp);
+
+                if (dupe) {
+                    this.showToast(`Duplicate: Same amount from ${name} (${dept}) within 30 minutes.`, 'error');
+                    return;
+                }
+
+                // 2. Find or Create Pledge
                 let pledge = store.data.pledges.find(p => 
                     p.name.toLowerCase() === name.toLowerCase() &&
                     p.department.toLowerCase() === dept.toLowerCase()
@@ -755,13 +761,16 @@
                     pledge = store.data.pledges.find(p => p.id === pid);
                 }
 
+                // 3. Add Transaction
                 store.addTransaction({
                     pledgeId: pledge.id,
                     name: pledge.name,
-                    amount: parseFloat(amount),
+                    department: dept, // Explicitly save dept
+                    amount: amount,
                     type: 'credit',
                     method: 'Cash',
-                    ref: ref
+                    ref: ref,
+                    date: timestamp.toISOString()
                 });
 
                 this.closeModal('manual-cash');
@@ -775,7 +784,25 @@
                 }
             },
 
-            // --- SMS PARSER LOGIC (FIXED) ---
+            // --- DUPLICATE CHECKER ---
+            checkDuplicate(name, dept, amount, dateObj) {
+                const THIRTY_MINS = 30 * 60 * 1000;
+                const checkTime = dateObj.getTime();
+
+                // Look for any transaction with Same Name, Same Dept, Same Amount
+                // AND where time difference is less than 30 mins
+                return store.data.transactions.some(t => {
+                    const isSamePerson = t.name.toLowerCase() === name.toLowerCase() && 
+                                         t.department.toLowerCase() === dept.toLowerCase();
+                    const isSameAmount = Math.abs(t.amount - amount) < 0.01; // float comparison
+                    const txTime = new Date(t.date).getTime();
+                    const isRecent = Math.abs(txTime - checkTime) < THIRTY_MINS;
+
+                    return isSamePerson && isSameAmount && isRecent;
+                });
+            },
+
+            // --- SMS PARSER LOGIC ---
             processSMS() {
                 const text = document.getElementById('sms-input').value;
                 if(!text.trim()) return;
@@ -784,30 +811,40 @@
                 const results = [];
 
                 lines.forEach(line => {
-                    // Pattern 1: Personal (Incoming)
-                    // FIX: Changed \s+ to \s* to allow "Ksh5000" or "Ksh 5000"
-                    const matchPerson = line.match(/(?:You have received|Received)\s+Ksh\s*([\d,]+\.?\d*)\s+from\s+([A-Za-z\s]+?)(?:\s+\d{10,}|\.)/i);
+                    // Pattern 1: Personal (Incoming) with Date Capture
+                    const matchPerson = line.match(/(?:You have received|Received)\s+Ksh\s*([\d,]+\.?\d*)\s+from\s+([A-Za-z\s]+?)\s+(?:on\s+(\d{1,2}\/\d{1,2}\/\d{2,4})\s+at\s+(\d{1,2}:\d{2}\s*[AP]M))?(?:\s+\d{10,}|\.)/i);
                     
                     if (matchPerson) {
+                        let dateObj = new Date(); // Fallback
+                        if(matchPerson[3]) {
+                            dateObj = this.parseMpesaDate(matchPerson[3], matchPerson[4]);
+                        }
+
                         results.push({
                             amount: parseFloat(matchPerson[1].replace(/,/g, '')),
                             name: matchPerson[2].trim(),
                             method: 'M-Pesa',
-                            ref: 'SMS-' + Math.floor(Math.random()*10000)
+                            ref: 'SMS-' + Math.floor(Math.random()*10000),
+                            date: dateObj
                         });
                         return;
                     }
 
-                    // Pattern 2: Till/Paybill (Outgoing to Business)
-                    // FIX: Changed \s+ to \s* for amount capture
-                    const matchTill = line.match(/Confirmed\.\s+Ksh\s*([\d,]+\.?\d*)\s+sent to\s+([A-Z0-9\s]+?)\s+for\s+account/i);
+                    // Pattern 2: Till/Paybill with Date Capture
+                    const matchTill = line.match(/Confirmed\.\s+Ksh\s*([\d,]+\.?\d*)\s+sent to\s+([A-Z0-9\s]+?)\s+for\s+account.*?(?:on\s+(\d{1,2}\/\d{1,2}\/\d{2,4})\s+at\s+(\d{1,2}:\d{2}\s*[AP]M))?/i);
                     
                     if (matchTill) {
+                        let dateObj = new Date();
+                        if(matchTill[3]) {
+                            dateObj = this.parseMpesaDate(matchTill[3], matchTill[4]);
+                        }
+
                         results.push({
                             amount: parseFloat(matchTill[1].replace(/,/g, '')),
                             name: matchTill[2].trim(), 
                             method: 'Till/Paybill',
-                            ref: 'TILL-' + Math.floor(Math.random()*10000)
+                            ref: 'TILL-' + Math.floor(Math.random()*10000),
+                            date: dateObj
                         });
                     }
                 });
@@ -823,6 +860,24 @@
                 document.getElementById('staged-area').classList.remove('hidden');
                 document.getElementById('btn-parse-trigger').classList.add('hidden');
                 document.getElementById('btn-commit-trigger').classList.remove('hidden');
+            },
+
+            // Helper to parse "19/1/26 at 2:45 PM" format
+            parseMpesaDate(dateStr, timeStr) {
+                const dParts = dateStr.split('/');
+                const day = parseInt(dParts[0]);
+                const month = parseInt(dParts[1]) - 1; // JS months 0-11
+                let year = parseInt(dParts[2]);
+                if(year < 100) year += 2000; // Handle 19 -> 2019
+
+                const tMatch = timeStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+                let hours = parseInt(tMatch[1]);
+                const mins = parseInt(tMatch[2]);
+                
+                if (tMatch[3].toUpperCase() === 'PM' && hours !== 12) hours += 12;
+                if (tMatch[3].toUpperCase() === 'AM' && hours === 12) hours = 0;
+
+                return new Date(year, month, day, hours, mins);
             },
 
             renderStaged() {
@@ -851,7 +906,7 @@
                         <div class="card" style="padding: 12px; margin-bottom: 8px; display:flex; justify-content:space-between; align-items:center;">
                             <div>
                                 <div style="font-weight:700;">${tx.name}</div>
-                                <div style="font-size:0.85rem; color:var(--text-light);">${tx.method} • Ref: ${tx.ref}</div>
+                                <div style="font-size:0.85rem; color:var(--text-light);">${tx.method} • ${this.formatDate(tx.date)}</div>
                             </div>
                             <div class="text-right">
                                 <div style="font-weight:700; color:var(--primary);">${this.formatMoney(tx.amount)}</div>
@@ -870,7 +925,16 @@
                         return;
                     }
 
-                    // FIX: Find or Create based on Name AND Dept
+                    // 1. DUPLICATE CHECK HERE TOO
+                    // We use the tx.date (from SMS) as the reference point
+                    const dupe = this.checkDuplicate(tx.name, tx.assignedDept, tx.amount, tx.date);
+                    
+                    if (dupe) {
+                        this.showToast(`Duplicate Skipped: ${tx.name} (${tx.assignedDept})`, 'error');
+                        return;
+                    }
+
+                    // 2. Find or Create Pledge
                     let pledge = store.data.pledges.find(p => 
                         p.name.toLowerCase() === tx.name.toLowerCase() &&
                         p.department.toLowerCase() === tx.assignedDept.toLowerCase()
@@ -881,13 +945,16 @@
                         pledge = store.data.pledges.find(p => p.id === pid);
                     }
 
+                    // 3. Add Transaction
                     store.addTransaction({
                         pledgeId: pledge.id,
                         name: pledge.name,
+                        department: tx.assignedDept, // Save Dept
                         amount: tx.amount,
                         type: 'credit',
                         method: tx.method,
-                        ref: tx.ref
+                        ref: tx.ref,
+                        date: tx.date.toISOString() // Use SMS time
                     });
                     count++;
                 });
@@ -948,7 +1015,7 @@
                         <div class="flex-between" style="padding-bottom:8px; border-bottom:1px solid #eee;">
                             <div>
                                 <div style="font-weight:600;">${t.name}</div>
-                                <small class="text-light">${t.method} • ${this.formatDate(t.date)}</small>
+                                <small class="text-light">${t.method} • ${this.formatDateTime(t.date)}</small>
                             </div>
                             <div style="font-weight:700; color:var(--primary);">+${this.formatMoney(t.amount)}</div>
                         </div>
@@ -996,7 +1063,7 @@
 
                 tbody.innerHTML = store.data.transactions.map(t => `
                     <tr>
-                        <td style="font-size:0.85rem; color:var(--text-light);">${this.formatDate(t.date)}</td>
+                        <td style="font-size:0.85rem; color:var(--text-light);">${this.formatDateTime(t.date)}</td>
                         <td style="font-family:monospace;">${t.ref}</td>
                         <td>${t.name}</td>
                         <td><span class="badge badge-success">${t.method}</span></td>
@@ -1008,20 +1075,17 @@
             renderTribes() {
                 const container = document.getElementById('tribes-container');
                 
-                // Get latest active phase for targets
                 const activePhase = store.data.phases[store.data.phases.length - 1];
                 
                 const deptStats = DEPARTMENTS.map(dept => {
                     const deptPledges = store.data.pledges.filter(p => p.department === dept);
                     const target = deptPledges.reduce((sum, p) => sum + p.amount, 0);
                     
-                    // Get collected
                     const pIds = deptPledges.map(p => p.id);
                     const collected = store.data.transactions
                         .filter(t => pIds.includes(t.pledgeId))
                         .reduce((sum, t) => sum + t.amount, 0);
 
-                    // Use Phase Target if available, else fall back to Pledged total
                     const phaseTarget = (activePhase && activePhase.deptTargets && activePhase.deptTargets[dept]) 
                         ? activePhase.deptTargets[dept] 
                         : target;
@@ -1078,6 +1142,12 @@
                 return new Date(isoStr).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
             },
 
+            formatDateTime(isoStr) {
+                const d = new Date(isoStr);
+                return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) + 
+                       ' ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+            },
+
             showToast(msg, type = 'success') {
                 const container = document.getElementById('toast-container');
                 const toast = document.createElement('div');
@@ -1091,7 +1161,7 @@
                 setTimeout(() => {
                     toast.classList.remove('show');
                     setTimeout(() => toast.remove(), 300);
-                }, 3000);
+                }, 4000); // Increased time for reading error messages
             },
 
             exportCSV(type) {
