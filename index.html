@@ -72,6 +72,7 @@
         .text-lg { font-size: 1.5rem; font-weight: 700; }
         .text-xl { font-size: 2rem; font-weight: 800; color: var(--primary-dark); }
         .text-sm { font-size: 0.8rem; }
+        .mb-4 { margin-bottom: 16px; }
 
         /* --- Buttons & Inputs --- */
         .btn {
@@ -80,7 +81,8 @@
         }
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: var(--primary-dark); }
-        .btn-secondary { background: white; border:1px solid var(--border); color: var(--text-main); }
+        .btn-primary:disabled { background: #9CA3AF; cursor: not-allowed; }
+        .btn-secondary { background: white; border: 1px solid var(--border); color: var(--text-main); }
         .btn-danger { background: var(--danger); color: white; }
         .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
         .btn-block { width: 100%; }
@@ -107,7 +109,32 @@
         .progress-fill.amber { background: var(--accent); }
         .progress-fill.danger { background: var(--danger); }
 
-        /* --- Visualizations (New) --- */
+        /* --- Phase Timeline --- */
+        .phase-timeline { border-left: 3px solid var(--border); padding-left: 20px; margin-left: 10px; }
+        .phase-item { position: relative; margin-bottom: 30px; padding-left: 20px; }
+        .phase-item::before {
+            content: ''; position: absolute; left: -26px; top: 5px;
+            width: 16px; height: 16px; border-radius: 50%; background: var(--bg); border: 3px solid var(--border);
+        }
+        .phase-item.active::before { border-color: var(--primary); background: var(--primary); }
+        .phase-item.completed::before { border-color: var(--primary-dark); background: var(--primary-dark); }
+
+        /* --- Tables --- */
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        th { background: #F9FAFB; color: var(--text-sub); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+        .expense-row { background-color: #FEF2F2; color: var(--danger); }
+        .income-row { background-color: white; }
+        .badge { padding: 4px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; }
+        .badge-success { background: #D1FAE5; color: #065F46; }
+        .badge-warn { background: #FEF3C7; color: #92400E; }
+        .badge-danger { background: #FEE2E2; color: #991B1B; }
+
+        /* --- Reconciler Box --- */
+        .reconciler-area { background: #ECFDF5; border: 2px dashed var(--primary); padding: 20px; border-radius: 12px; text-align: center; cursor: text; }
+        .reconciler-area:focus { background: white; border-style: solid; outline: none; }
+
+        /* --- Visualizations --- */
         
         /* Donut Chart */
         .viz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -127,31 +154,6 @@
         .bar-container { background: #eee; height: 10px; border-radius: 5px; overflow: hidden; }
         .bar-fill { height: 100%; background: var(--primary); transition: width 0.5s; }
 
-        /* Phase Timeline */
-        .phase-timeline { border-left: 3px solid var(--border); padding-left: 20px; margin-left: 10px; }
-        .phase-item { position: relative; margin-bottom: 30px; padding-left: 20px; }
-        .phase-item::before {
-            content: ''; position: absolute; left: -26px; top: 5px;
-            width: 16px; height: 16px; border-radius: 50%; background: var(--bg); border: 3px solid var(--border);
-        }
-        .phase-item.active::before { border-color: var(--primary); background: var(--primary); }
-        .phase-item.completed::before { border-color: var(--primary-dark); background: var(--primary-dark); }
-
-        /* Tables */
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
-        th { background: #F9FAFB; color: var(--text-sub); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
-        .expense-row { background-color: #FEF2F2; color: var(--danger); }
-        .income-row { background-color: white; }
-        .badge { padding: 4px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; }
-        .badge-success { background: #D1FAE5; color: #065F46; }
-        .badge-warn { background: #FEF3C7; color: #92400E; }
-        .badge-danger { background: #FEE2E2; color: #991B1B; }
-
-        /* Reconciler Box */
-        .reconciler-area { background: #ECFDF5; border: 2px dashed var(--primary); padding: 20px; border-radius: 12px; text-align: center; cursor: text; }
-        .reconciler-area:focus { background: white; border-style: solid; outline: none; }
-
         /* --- Utility Classes --- */
         .hidden { display: none !important; }
         .flex-between { display: flex; justify-content: space-between; align-items: center; }
@@ -166,7 +168,7 @@
         
         /* Resolution Box (Staging) */
         .resolution-box {
-            border:1px solid var(--accent);
+            border: 1px solid var(--accent);
             padding: 10px;
             background: #FFFBEB;
             border-radius: 8px;
@@ -185,7 +187,7 @@
             background: white;
             padding: 20px;
             border-radius: 12px;
-            border:1px solid var(--border);
+            border: 1px solid var(--border);
         }
 
         .trans-stat-label { font-size: 13px; color: #666; margin-bottom: 8px; }
@@ -230,7 +232,7 @@
                 </div>
             </header>
 
-            <!-- VISUAL DATA PRESENTATION (New) -->
+            <!-- VISUAL DATA PRESENTATION -->
             <div class="viz-grid mb-4" style="margin-bottom: 24px;">
                 <!-- Donut Chart: Income vs Expense -->
                 <div class="viz-card">
@@ -337,9 +339,10 @@
         <section id="view-ledger" class="hidden">
             <h1>Transaction Reconciliation</h1>
             
+            <!-- Enhanced Parser UI -->
             <div class="card mt-4" style="border-left: 5px solid var(--primary);">
                 <h3>🤖 M-Pesa SMS Parser (Integrated)</h3>
-                <p class="text-sub">Pastes M-Pesa messages. Auto-creates new members if not found.</p>
+                <p class="text-sub">Paste M-Pesa messages. Auto-creates new members if not found.</p>
                 
                 <div class="reconciler-area" contenteditable="true" id="sms-input">
                     Paste M-Pesa messages here...
@@ -373,7 +376,7 @@
                         <h4>Staged Transactions (<span id="staged-count">0</span>)</h4>
                         <div>
                             <button class="btn btn-secondary btn-sm" onclick="app.clearStaged()">Clear</button>
-                            <button class="btn btn-primary btn-sm" onclick="app.commitStaged()">✅ Add All</button>
+                            <button id="btn-commit" class="btn btn-primary btn-sm" onclick="app.commitStaged()">✅ Add All</button>
                         </div>
                     </div>
                     <div id="staged-list" style="margin-top:15px;"></div>
@@ -757,10 +760,10 @@
                 const recentList = document.getElementById('recent-activity-list');
                 recentList.innerHTML = '';
                 if (store.data.transactions.length > 0) {
-                    store.data.transactions.slice(0, 5).forEach(t => {
+                    store.data.transactions.slice(0,5).forEach(t => {
                         const timeStr = new Date(t.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
                         recentList.innerHTML += `
-                            <div style="display:flex; gap:10px; align-items:center; padding: 8px; background:white; border:1px solid var(--border); border-radius:6px;">
+                            <div style="display:flex; gap:10px; align-items:center; padding:8px; background:white; border:1px solid var(--border); border-radius:6px;">
                                 <div style="width:30px; height:30px; border-radius:50%; background: #D1FAE5; display:flex; align-items:center; justify-content:center;">💵</div>
                                 <div style="flex:1;">
                                     <div style="font-weight:bold; font-size:0.9rem;">${t.name}</div>
@@ -771,7 +774,6 @@
                         `;
                     });
                 }
-
 
                 // 2. Phase Timeline
                 const timelineDiv = document.getElementById('phase-timeline-container');
@@ -865,7 +867,7 @@
                 lTable.innerHTML = '';
                 
                 const allRows = [
-                    ...store.data.transactions.map(t => ({...t, type: 'Income', desc: t.name, sign:1})),
+                    ...store.data.transactions.map(t => ({...t, type: 'Income', desc: t.name, sign: 1})),
                     ...store.data.expenses.map(e => ({...e, type: 'Expense', desc: e.description, sign: -1}))
                 ].sort((a,b) => new Date(b.date) - new Date(a.date));
 
@@ -1034,12 +1036,12 @@
                 link.click();
             },
 
-            // --- INTEGRATED PARSER LOGIC (FIXED V9) ---
+            // --- INTEGRATED PARSER LOGIC (FINAL V10) ---
             parseSMS: () => {
                 const text = document.getElementById('sms-input').innerText;
                 if(text.includes('Paste')) { alert("Please paste messages first."); return; }
                 
-                // FIX 1: Split on " Confirmed." instead of "." to keep Ksh context intact.
+                // 1. Split on " Confirmed." instead of "." to keep Ksh context intact.
                 // Also handle cases where it might be lower case.
                 const chunks = text.split(/ Confirmed\./i);
                 
@@ -1165,26 +1167,40 @@
             },
 
             commitStaged: () => {
+                // 1. Get button element safely by ID (avoids event.currentTarget error)
+                const btn = document.getElementById('btn-commit');
+                
+                // 2. Lock UI
+                const originalText = btn.innerText;
+                btn.innerText = "Processing...";
+                btn.disabled = true;
+
                 const entryTime = new Date().toISOString();
                 let addedCount = 0;
                 
-                for(let i=0; i<parsedList.length; i++) {
-                    let t = parsedList[i];
+                // 3. Process every staged transaction
+                for(let i=0; i<stagedTransactions.length; i++) {
+                    let t = stagedTransactions[i];
                     
                     // 1. AUTO-CREATE MEMBER IF NEEDED
                     if(t.isNewMember) {
                         store.addPledge(t.name, t.phone || 'Unknown', "Planning Committee", 0, false);
                     }
 
-                    // 2. Resolve Dept if Ambiguous
+                    // 2. Resolve Dept if Ambiguous (THE FIX)
                     if(t.isAmbiguous) {
-                        const select = document.querySelector(`.resolve-dept-select[data-idx="${i}"]`);
+                        // Use querySelectorAll with index [i] to get the SPECIFIC dropdown for this row.
+                        // Old code used querySelector(...), which always got the first one.
+                        const select = document.querySelectorAll('.resolve-dept-select')[i];
                         if(select) t.selectedDept = select.value;
                     }
 
                     // 3. Validate Duplicate Ref
                     const duplicate = store.data.transactions.find(tx => tx.ref === t.ref);
-                    if(duplicate) { alert(`Skipping duplicate ref: ${t.ref}`); continue; }
+                    if(duplicate) { 
+                        alert(`Skipping duplicate ref: ${t.ref}`); 
+                        continue; // Skip this one but keep going
+                    }
                     
                     // 4. Add Transaction
                     store.addTransaction({
@@ -1194,12 +1210,26 @@
                     });
                     addedCount++;
                 }
+
+                // 5. Clear Staged Data (Only after processing is done)
+                // This ensures querySelectorAll works next time and prevents duplicates
                 app.clearStaged();
-                if(addedCount > 0) alert(`Processed ${addedCount} transactions successfully!`);
+                
+                // 6. Unlock UI
+                btn.innerText = originalText;
+                btn.disabled = false;
+                
+                // 7. Feedback
+                if(addedCount > 0) {
+                    alert(`✅ Success! Processed ${addedCount} transactions.`);
+                } else if (stagedTransactions.length > 0 && addedCount === 0) {
+                    // If we had items but added 0, it means they were all duplicates
+                    alert("No transactions were processed. They might be duplicates.");
+                }
             },
 
             clearStaged: () => {
-                parsedList = [];
+                stagedTransactions = [];
                 document.getElementById('staged-container').classList.add('hidden');
                 document.getElementById('parser-stats').classList.add('hidden');
                 document.getElementById('sms-input').innerText = 'Paste M-Pesa messages here...';
