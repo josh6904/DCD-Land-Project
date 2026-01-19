@@ -5,80 +5,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DCD Possess The Land | Fundraising</title>
     <style>
+        /* --- VARIABLES --- */
         :root {
-            --primary: #059669; /* Emerald Green */
-            --primary-dark: #064E3B;
-            --secondary: #3B82F6; /* Blue */
-            --accent: #F59E0B; /* Amber */
-            --danger: #EF4444;
-            --bg: #F3F4F6;
-            --surface: #FFFFFF;
-            --text-main: #1F2937;
-            --text-sub: #6B7280;
-            --border: #E5E7EB;
-            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --primary: #059669; --primary-dark: #064E3B; --secondary: #3B82F6;
+            --accent: #F59E0B; --danger: #EF4444; --bg: #F3F4F6;
+            --surface: #FFFFFF; --text-main: #1F2937; --text-sub: #6B7280;
+            --border: #E5E7EB; --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
         }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
         
         body { background-color: var(--bg); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
-        /* --- Layout --- */
-        aside {
-            width: 260px;
-            background: #111827;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            z-index: 50;
-        }
-
+        /* --- LAYOUT --- */
+        aside { width: 260px; background: #111827; color: white; display: flex; flex-direction: column; padding: 20px; z-index: 50; }
         main { flex: 1; overflow-y: auto; padding: 24px; position: relative; }
 
-        /* --- Sidebar Nav --- */
-        .brand { font-size: 1.1rem; font-weight: 800; margin-bottom: 40px; color: var(--primary); letter-spacing: 1px; display: flex; align-items: center; gap: 10px; line-height: 1.2;}
-        .nav-item {
-            padding: 12px; margin-bottom: 5px; border-radius: 8px; cursor: pointer;
-            display: flex; align-items: center; gap: 12px; color: #9CA3AF; transition: 0.2s; font-size: 0.95rem;
-        }
+        /* --- NAV --- */
+        .brand { font-size: 1.1rem; font-weight: 800; margin-bottom: 40px; color: var(--primary); line-height: 1.2; display: flex; align-items: center; gap: 10px;}
+        .nav-item { padding: 12px; margin-bottom: 5px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: #9CA3AF; transition: 0.2s; font-size: 0.95rem; }
         .nav-item:hover { background: #374151; color: white; }
         .nav-item.active { background: var(--primary); color: white; font-weight: 600; }
 
-        /* --- Mobile Nav --- */
         @media (max-width: 768px) {
             body { flex-direction: column; }
-            aside { 
-                width: 100%; height: auto; position: fixed; bottom: 0; left: 0; 
-                flex-direction: row; padding: 10px; justify-content: space-around; 
-                border-top: 1px solid var(--border); background: white; color: #333;
-            }
+            aside { width: 100%; height: auto; position: fixed; bottom: 0; left: 0; flex-direction: row; padding: 10px; justify-content: space-around; border-top: 1px solid var(--border); background: white; color: #333; }
             .brand { display: none; }
             .nav-item { flex-direction: column; gap: 4px; font-size: 0.7rem; text-align: center; padding: 5px; }
             main { padding-bottom: 80px; }
         }
 
-        /* --- Components --- */
+        /* --- COMPONENTS --- */
         .card { background: var(--surface); padding: 20px; border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow); margin-bottom: 24px; }
+        
         .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
         .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
         
-        @media(max-width: 1200px) { .grid-4 { grid-template-columns: 1fr 1fr; } }
-        @media(max-width: 768px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+        @media (max-width: 768px) { .grid-2, .grid-4 { grid-template-columns: 1fr; } }
+        @media (max-width: 1200px) { .grid-4 { grid-template-columns: 1fr 1fr; } }
 
+        /* Text Styles */
         h1, h2, h3 { margin-bottom: 12px; color: var(--text-main); }
         .text-sub { color: var(--text-sub); font-size: 0.9rem; }
         .text-lg { font-size: 1.5rem; font-weight: 700; }
         .text-xl { font-size: 2rem; font-weight: 800; color: var(--primary-dark); }
-        .text-sm { font-size: 0.8rem; }
         .mb-4 { margin-bottom: 16px; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
 
-        /* --- Buttons & Inputs --- */
-        .btn {
-            padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600;
-            transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center;
-        }
+        /* Inputs & Buttons */
+        .btn { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: var(--primary-dark); }
         .btn-primary:disabled { background: #9CA3AF; cursor: not-allowed; }
@@ -87,119 +61,66 @@
         .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
         .btn-block { width: 100%; }
 
-        input, select, textarea {
-            width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px;
-        }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; }
         input:focus { outline: 2px solid var(--primary); border-color: transparent; }
         
-        /* Checkbox for Anon */
         .checkbox-wrapper { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
         .checkbox-wrapper input { width: auto; margin: 0; }
 
-        /* --- Leaderboard --- */
-        .rank-item { display: flex; align-items: center; padding: 12px; background: white; border-bottom: 1px solid #eee; }
-        .rank-badge { width: 30px; height: 30px; border-radius: 50%; background: #eee; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 15px; }
-        .rank-1 .rank-badge { background: #FFD700; color: #fff; } /* Gold */
-        .rank-2 .rank-badge { background: #C0C0C0; color: #fff; } /* Silver */
-        .rank-3 .rank-badge { background: #CD7F32; color: #fff; } /* Bronze */
-
-        /* --- Progress Bars --- */
+        /* Visuals */
         .progress-track { background: #E5E7EB; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 8px; position: relative; }
         .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.5s ease; }
         .progress-fill.amber { background: var(--accent); }
         .progress-fill.danger { background: var(--danger); }
 
-        /* --- Phase Timeline --- */
+        /* Phase Timeline */
         .phase-timeline { border-left: 3px solid var(--border); padding-left: 20px; margin-left: 10px; }
         .phase-item { position: relative; margin-bottom: 30px; padding-left: 20px; }
-        .phase-item::before {
-            content: ''; position: absolute; left: -26px; top: 5px;
-            width: 16px; height: 16px; border-radius: 50%; background: var(--bg); border: 3px solid var(--border);
-        }
+        .phase-item::before { content: ''; position: absolute; left: -26px; top: 5px; width: 16px; height: 16px; border-radius: 50%; background: var(--bg); border: 3px solid var(--border); }
         .phase-item.active::before { border-color: var(--primary); background: var(--primary); }
         .phase-item.completed::before { border-color: var(--primary-dark); background: var(--primary-dark); }
 
-        /* --- Tables --- */
+        /* Tables */
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
         th { background: #F9FAFB; color: var(--text-sub); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
-        .expense-row { background-color: #FEF2F2; color: var(--danger); }
-        .income-row { background-color: white; }
         .badge { padding: 4px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; }
         .badge-success { background: #D1FAE5; color: #065F46; }
         .badge-warn { background: #FEF3C7; color: #92400E; }
         .badge-danger { background: #FEE2E2; color: #991B1B; }
 
-        /* --- Reconciler Box --- */
+        /* Reconciler */
         .reconciler-area { background: #ECFDF5; border: 2px dashed var(--primary); padding: 20px; border-radius: 12px; text-align: center; cursor: text; }
         .reconciler-area:focus { background: white; border-style: solid; outline: none; }
 
-        /* --- Visualizations --- */
+        /* Modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 100; }
+        .modal { background: white; width: 90%; max-width: 500px; padding: 24px; border-radius: 12px; max-height: 90vh; overflow-y: auto; }
         
-        /* Donut Chart */
+        /* Resolution Box */
+        .resolution-box { border: 1px solid var(--accent); padding: 10px; background: #FFFBEB; border-radius: 8px; margin-top: 5px; }
+
+        /* Stats */
+        .trans-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+        .trans-stat-card { background: white; padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
+        .trans-stat-label { font-size: 13px; color: #666; margin-bottom: 8px; }
+        .trans-stat-value { font-size: 24px; font-weight: 700; }
+        .trans-row { padding: 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .trans-row.new-member { background: #E3F2FD; border-left: 4px solid #2196F3; }
+        .trans-row.matched { background: #E8F5E9; border-left: 4px solid #4CAF50; }
+        .trans-row.unmatched { background: #FFF3E0; border-left: 4px solid #FF9800; }
+
+        /* Visualization */
         .viz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         .viz-card { background: white; padding: 24px; border-radius: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .donut-chart {
-            width: 140px; height: 140px; border-radius: 50%;
-            background: conic-gradient(var(--primary) 0% 100%); 
-            position: relative; margin-bottom: 15px;
-        }
-        .donut-hole {
-            width: 90px; height: 90px; background: white; border-radius: 50%;
-            position: absolute; top: 25px; left: 25px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
+        .donut-chart { width: 140px; height: 140px; border-radius: 50%; background: conic-gradient(var(--primary) 0% 100%); position: relative; margin-bottom: 15px; }
+        .donut-hole { width: 90px; height: 90px; background: white; border-radius: 50%; position: absolute; top: 25px; left: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .bar-chart-row { width: 100%; margin-bottom: 10px; }
         .bar-label { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px; }
         .bar-container { background: #eee; height: 10px; border-radius: 5px; overflow: hidden; }
         .bar-fill { height: 100%; background: var(--primary); transition: width 0.5s; }
 
-        /* --- Utility Classes --- */
         .hidden { display: none !important; }
-        .flex-between { display: flex; justify-content: space-between; align-items: center; }
-        .mt-4 { margin-top: 16px; }
-
-        /* --- Modal --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 100;
-        }
-        .modal { background: white; width: 90%; max-width: 500px; padding: 24px; border-radius: 12px; max-height: 90vh; overflow-y: auto; }
-        
-        /* Resolution Box (Staging) */
-        .resolution-box {
-            border: 1px solid var(--accent);
-            padding: 10px;
-            background: #FFFBEB;
-            border-radius: 8px;
-            margin-top: 5px;
-        }
-
-        /* --- Enhanced Ledger Styles (From Parser) --- */
-        .trans-stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-
-        .trans-stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-
-        .trans-stat-label { font-size: 13px; color: #666; margin-bottom: 8px; }
-        .trans-stat-value { font-size: 24px; font-weight: 700; }
-
-        .trans-row {
-            padding: 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;
-        }
-        .trans-row.new-member { background: #E3F2FD; border-left: 4px solid #2196F3; }
-        .trans-row.matched { background: #E8F5E9; border-left: 4px solid #4CAF50; }
-        .trans-row.unmatched { background: #FFF3E0; border-left: 4px solid #FF9800; }
-        
     </style>
 </head>
 <body>
@@ -220,10 +141,10 @@
         
         <!-- DASHBOARD VIEW -->
         <section id="view-dashboard">
-            <header class="flex-between" style="margin-bottom: 20px;">
+            <header class="flex-between mb-4">
                 <div>
                     <h1>Project Overview</h1>
-                    <p class="text-sub">Real-time status of collections & expenses for DCD Possess The Land</p>
+                    <p class="text-sub">Real-time status for DCD Possess The Land</p>
                 </div>
                 <div style="display:flex; gap:10px;">
                     <button class="btn btn-danger" onclick="app.openModal('expense')">➖ Expense</button>
@@ -232,11 +153,10 @@
                 </div>
             </header>
 
-            <!-- VISUAL DATA PRESENTATION -->
-            <div class="viz-grid mb-4" style="margin-bottom: 24px;">
-                <!-- Donut Chart: Income vs Expense -->
+            <!-- VIZ -->
+            <div class="viz-grid mb-4">
                 <div class="viz-card">
-                    <h4 style="margin-bottom: 10px; color: var(--text-sub);">Income vs Expense</h4>
+                    <h4 class="text-sub" style="margin-bottom: 10px;">Income vs Expense</h4>
                     <div class="donut-chart" id="income-donut">
                         <div class="donut-hole">
                             <span class="text-lg" style="color: var(--primary);" id="viz-net-bal">0</span>
@@ -244,51 +164,42 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- Department Bar Chart -->
                 <div class="viz-card" style="align-items: stretch; justify-content: flex-start;">
-                    <h4 style="margin-bottom: 10px; color: var(--text-sub);">Top Department Performance</h4>
-                    <div id="viz-bar-chart" style="width: 100%; display: flex; flex-direction: column; justify-content: center;">
-                        <!-- Populated by JS -->
-                    </div>
+                    <h4 class="text-sub" style="margin-bottom: 10px;">Top Department Performance</h4>
+                    <div id="viz-bar-chart" style="width: 100%; display: flex; flex-direction: column; justify-content: center;"></div>
                 </div>
             </div>
 
             <!-- KPIs -->
             <div class="grid-4">
                 <div class="card">
-                    <h3 class="text-sub">Gross Cash Collected</h3>
+                    <h3 class="text-sub">Gross Cash</h3>
                     <div class="text-xl" id="dash-cash">0</div>
                 </div>
                 <div class="card">
-                    <h3 class="text-sub">Total Expenses</h3>
+                    <h3 class="text-sub">Expenses</h3>
                     <div class="text-xl" style="color: var(--danger);" id="dash-expenses">0</div>
                 </div>
                 <div class="card">
-                    <h3 class="text-sub">Net Balance (Cash)</h3>
+                    <h3 class="text-sub">Net Balance</h3>
                     <div class="text-xl" style="color: var(--primary-dark);" id="dash-balance">0</div>
                 </div>
                 <div class="card">
                     <h3 class="text-sub">Redemption Rate</h3>
                     <div class="text-xl" id="dash-rate">0%</div>
-                    <p class="text-sub">Cash / Pledged</p>
                 </div>
             </div>
 
-            <!-- PHASE PROGRESS -->
+            <!-- PHASES -->
             <div class="card">
                 <div class="flex-between">
-                    <h3>📅 Collection Phases Timeline</h3>
+                    <h3>📅 Collection Phases</h3>
                     <button class="btn btn-secondary btn-sm" onclick="app.nav('settings')">Edit Phases</button>
                 </div>
-                <p class="text-sub">Progress towards specific deadlines</p>
-                
-                <div id="phase-timeline-container" class="phase-timeline mt-4">
-                    <!-- Populated by JS -->
-                </div>
+                <div id="phase-timeline-container" class="phase-timeline mt-4"></div>
             </div>
 
-            <!-- RECENT ACTIVITY STREAM -->
+            <!-- RECENT ACTIVITY -->
             <div class="card">
                 <h3>🔴 Recent Activity</h3>
                 <div id="recent-activity-list" style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">
@@ -297,17 +208,14 @@
             </div>
         </section>
 
-        <!-- LEADERBOARD VIEW -->
+        <!-- LEADERBOARD -->
         <section id="view-leaderboard" class="hidden">
             <h1>Department Leaderboard</h1>
             <p class="text-sub mb-4">Current ranking based on Phase Target completion</p>
-            
-            <div class="card" id="leaderboard-container">
-                <!-- Populated by JS -->
-            </div>
+            <div class="card" id="leaderboard-container"></div>
         </section>
 
-        <!-- PLEDGES VIEW -->
+        <!-- PLEDGES -->
         <section id="view-pledges" class="hidden">
             <div class="flex-between">
                 <h1>Member & Pledge Ledger</h1>
@@ -318,66 +226,32 @@
             </div>
             <div class="card mt-4">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Member</th>
-                            <th>Contact</th>
-                            <th>Tribe</th>
-                            <th>Committed</th>
-                            <th>Paid</th>
-                            <th>Debt</th>
-                            <th>Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Member</th><th>Contact</th><th>Tribe</th><th>Committed</th><th>Paid</th><th>Debt</th><th>Status</th><th>Action</th></tr></thead>
                     <tbody id="pledges-table"></tbody>
                 </table>
             </div>
         </section>
 
-        <!-- LEDGER & RECONCILE VIEW -->
+        <!-- LEDGER -->
         <section id="view-ledger" class="hidden">
             <h1>Transaction Reconciliation</h1>
-            
-            <!-- Enhanced Parser UI -->
             <div class="card mt-4" style="border-left: 5px solid var(--primary);">
                 <h3>🤖 M-Pesa SMS Parser (Integrated)</h3>
                 <p class="text-sub">Paste M-Pesa messages. Auto-creates new members if not found.</p>
-                
-                <div class="reconciler-area" contenteditable="true" id="sms-input">
-                    Paste M-Pesa messages here...
-                </div>
-                <div style="margin-top: 10px; text-align: right;">
-                    <button class="btn btn-primary" onclick="app.parseSMS()">⚡ Extract Transactions</button>
-                </div>
+                <div class="reconciler-area" contenteditable="true" id="sms-input">Paste M-Pesa messages here...</div>
+                <div style="margin-top: 10px; text-align: right;"><button class="btn btn-primary" onclick="app.parseSMS()">⚡ Extract Transactions</button></div>
 
-                <!-- Stats from Parser -->
                 <div id="parser-stats" class="trans-stats mt-4 hidden">
-                    <div class="trans-stat-card">
-                        <div class="trans-stat-label">Total Parsed</div>
-                        <div class="trans-stat-value" id="st-total">0</div>
-                    </div>
-                    <div class="trans-stat-card">
-                        <div class="trans-stat-label">New Members</div>
-                        <div class="trans-stat-value" style="color:var(--secondary);" id="st-new">0</div>
-                    </div>
-                    <div class="trans-stat-card">
-                        <div class="trans-stat-label">Matched</div>
-                        <div class="trans-stat-value" style="color:var(--primary);" id="st-matched">0</div>
-                    </div>
-                    <div class="trans-stat-card">
-                        <div class="trans-stat-label">Unmatched</div>
-                        <div class="trans-stat-value" style="color:var(--accent);" id="st-unmatched">0</div>
-                    </div>
+                    <div class="trans-stat-card"><div class="trans-stat-label">Total Parsed</div><div class="trans-stat-value" id="st-total">0</div></div>
+                    <div class="trans-stat-card"><div class="trans-stat-label">New Members</div><div class="trans-stat-value" style="color:var(--secondary);" id="st-new">0</div></div>
+                    <div class="trans-stat-card"><div class="trans-stat-label">Matched</div><div class="trans-stat-value" style="color:var(--primary);" id="st-matched">0</div></div>
+                    <div class="trans-stat-card"><div class="trans-stat-label">Unmatched</div><div class="trans-stat-value" style="color:var(--accent);" id="st-unmatched">0</div></div>
                 </div>
 
                 <div id="staged-container" class="hidden">
                     <div class="flex-between mt-4">
                         <h4>Staged Transactions (<span id="staged-count">0</span>)</h4>
-                        <div>
-                            <button class="btn btn-secondary btn-sm" onclick="app.clearStaged()">Clear</button>
-                            <button id="btn-commit" class="btn btn-primary btn-sm" onclick="app.commitStaged()">✅ Add All</button>
-                        </div>
+                        <div><button class="btn btn-secondary btn-sm" onclick="app.clearStaged()">Clear</button><button id="btn-commit" class="btn btn-primary btn-sm" onclick="app.commitStaged()">✅ Add All</button></div>
                     </div>
                     <div id="staged-list" style="margin-top:15px;"></div>
                 </div>
@@ -389,104 +263,59 @@
             </div>
             <div class="card">
                 <table>
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Ref</th>
-                            <th>Description/Member</th>
-                            <th>Amount</th>
-                            <th>Type</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
+                    <thead><tr><th>Date</th><th>Ref</th><th>Description/Member</th><th>Amount</th><th>Type</th><th>Action</th></tr></thead>
                     <tbody id="ledger-table"></tbody>
                 </table>
             </div>
         </section>
 
-        <!-- TRIBES VIEW -->
+        <!-- TRIBES -->
         <section id="view-tribes" class="hidden">
             <h1>Tribe Performance</h1>
             <p class="text-sub mb-4">Comparing Cash Collected vs Active Phase Target</p>
-            <div class="grid-2 mt-4" id="tribes-grid">
-                <!-- Populated by JS -->
-            </div>
+            <div class="grid-2 mt-4" id="tribes-grid"></div>
         </section>
 
-        <!-- SETTINGS VIEW (ADMIN) -->
+        <!-- SETTINGS -->
         <section id="view-settings" class="hidden">
             <h1>⚙️ Admin Configuration</h1>
-            
             <div class="card">
                 <h3>Manage Collection Phases</h3>
                 <p class="text-sub">Set targets for specific deadlines. Assign targets per department.</p>
-                
                 <form onsubmit="app.addPhase(event)" class="mt-4" style="background: #f9fafb; padding: 15px; border-radius: 8px;">
                     <div class="grid-2">
-                        <div>
-                            <label class="text-sm">Phase Name</label>
-                            <input type="text" id="s-name" placeholder="e.g. March 8th Collection" required>
-                        </div>
-                        <div>
-                            <label class="text-sm">Target Date</label>
-                            <input type="date" id="s-date" required>
-                        </div>
+                        <div><label class="text-sm">Phase Name</label><input type="text" id="s-name" placeholder="e.g. March 8th Collection" required></div>
+                        <div><label class="text-sm">Target Date</label><input type="date" id="s-date" required></div>
                     </div>
-                    
                     <label class="text-sm mt-4">Department Targets</label>
-                    <div id="s-targets-container" class="target-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-                        <!-- JS generates inputs here -->
-                    </div>
-
-                    <div style="margin-top: 15px; padding: 10px; background: #e5e7eb; border-radius: 6px; text-align: center;">
-                        <strong>Total Phase Target: <span id="s-total-display">0</span></strong>
-                    </div>
-
+                    <div id="s-targets-container" class="target-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
+                    <div style="margin-top: 15px; padding: 10px; background: #e5e7eb; border-radius: 6px; text-align: center;"><strong>Total Phase Target: <span id="s-total-display">0</span></strong></div>
                     <button type="submit" class="btn btn-primary mt-4 btn-block">+ Add Phase</button>
                 </form>
-
-                <div id="settings-phase-list" class="mt-4">
-                    <!-- List of phases with delete buttons -->
-                </div>
+                <div id="settings-phase-list" class="mt-4"></div>
             </div>
-
             <div class="card" style="border-color: var(--danger);">
                 <h3 style="color: var(--danger);">Danger Zone</h3>
                 <p class="text-sub">Reset entire project. This cannot be undone.</p>
-                <button class="btn btn-danger btn-sm mt-4" onclick="if(confirm('Are you sure? This deletes all data.')) { localStorage.removeItem('dcd_possess_land'); location.reload(); }">Reset All Data</button>
+                <button class="btn btn-danger btn-sm mt-4" onclick="if(confirm('Are you sure?')) { localStorage.removeItem('dcd_possess_land'); location.reload(); }">Reset All Data</button>
             </div>
         </section>
 
     </main>
 
-    <!-- MODAL: ADD PLEDGE -->
+    <!-- MODALS -->
     <div class="modal-overlay" id="modal-pledge">
         <div class="modal">
             <h2>Add New Pledge / Member</h2>
             <form onsubmit="app.addPledge(event)">
-                <label class="text-sub">Member Name</label>
-                <input type="text" id="p-name" required>
-                
-                <label class="text-sub">Phone Contact</label>
-                <input type="text" id="p-phone" placeholder="07...">
-
-                <div class="checkbox-wrapper">
-                    <input type="checkbox" id="p-anon">
-                    <label for="p-anon">Keep Anonymous (Hide in public lists)</label>
-                </div>
-                
+                <label class="text-sub">Member Name</label><input type="text" id="p-name" required>
+                <label class="text-sub">Phone Contact</label><input type="text" id="p-phone" placeholder="07...">
+                <div class="checkbox-wrapper"><input type="checkbox" id="p-anon"><label for="p-anon">Keep Anonymous (Hide in public lists)</label></div>
                 <label class="text-sub">Tribe (Department)</label>
                 <select id="p-dept" required>
-                    <option>Eagles</option>
-                    <option>Daughters of Faith</option>
-                    <option>Youth</option>
-                    <option>Kingdom Generation</option>
-                    <option>Planning Committee</option>
+                    <option>Eagles</option><option>Daughters of Faith</option><option>Youth</option><option>Kingdom Generation</option><option>Planning Committee</option>
                 </select>
-
-                <label class="text-sub">Pledged Amount (KES)</label>
-                <input type="number" id="p-amount" min="0" required>
-
+                <label class="text-sub">Pledged Amount (KES)</label><input type="number" id="p-amount" min="0" required>
                 <div class="flex-between mt-4">
                     <button type="button" class="btn btn-secondary" onclick="app.closeModal('pledge')">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save Pledge</button>
@@ -495,29 +324,17 @@
         </div>
     </div>
 
-    <!-- MODAL: ADD CASH -->
     <div class="modal-overlay" id="modal-cash">
         <div class="modal">
             <h2>Record Cash Payment</h2>
             <form onsubmit="app.addCash(event)">
-                <label class="text-sub">Member Name</label>
-                <input type="text" id="c-name" required>
-                
-                <label class="text-sub">Amount (KES)</label>
-                <input type="number" id="c-amount" min="0" required>
-
-                <label class="text-sub">Receipt/Reference</label>
-                <input type="text" id="c-ref" placeholder="e.g. RCPT-001">
-
-                <label class="text-sub">Tribe (Department) - Required for Accuracy</label>
+                <label class="text-sub">Member Name</label><input type="text" id="c-name" required>
+                <label class="text-sub">Amount (KES)</label><input type="number" id="c-amount" min="0" required>
+                <label class="text-sub">Receipt/Reference</label><input type="text" id="c-ref" placeholder="e.g. RCPT-001">
+                <label class="text-sub">Tribe (Department)</label>
                 <select id="c-dept" required>
-                    <option>Eagles</option>
-                    <option>Daughters of Faith</option>
-                    <option>Youth</option>
-                    <option>Kingdom Generation</option>
-                    <option>Planning Committee</option>
+                    <option>Eagles</option><option>Daughters of Faith</option><option>Youth</option><option>Kingdom Generation</option><option>Planning Committee</option>
                 </select>
-
                 <div class="flex-between mt-4">
                     <button type="button" class="btn btn-secondary" onclick="app.closeModal('cash')">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save Cash Record</button>
@@ -526,28 +343,14 @@
         </div>
     </div>
 
-    <!-- MODAL: ADD EXPENSE -->
     <div class="modal-overlay" id="modal-expense">
         <div class="modal">
             <h2>Record Expense</h2>
             <form onsubmit="app.addExpense(event)">
-                <label class="text-sub">Description (e.g. Land Survey, Transport)</label>
-                <input type="text" id="e-desc" required>
-                
-                <label class="text-sub">Amount (KES)</label>
-                <input type="number" id="e-amount" min="0" required>
-
-                <label class="text-sub">Category</label>
-                <select id="e-cat">
-                    <option>Operations</option>
-                    <option>Logistics</option>
-                    <option>Administrative</option>
-                    <option>Land Costs</option>
-                </select>
-
-                <label class="text-sub">Receipt/Ref</label>
-                <input type="text" id="e-ref" placeholder="EXP-001">
-
+                <label class="text-sub">Description (e.g. Land Survey, Transport)</label><input type="text" id="e-desc" required>
+                <label class="text-sub">Amount (KES)</label><input type="number" id="e-amount" min="0" required>
+                <label class="text-sub">Category</label><select id="e-cat"><option>Operations</option><option>Logistics</option><option>Administrative</option><option>Land Costs</option></select>
+                <label class="text-sub">Receipt/Ref</label><input type="text" id="e-ref" placeholder="EXP-001">
                 <div class="flex-between mt-4">
                     <button type="button" class="btn btn-secondary" onclick="app.closeModal('expense')">Cancel</button>
                     <button type="submit" class="btn btn-danger">Record Expense</button>
@@ -559,31 +362,10 @@
     <script>
         // --- DATA STORE ---
         const DB_KEY = 'dcd_possess_land';
-        
-        const DEPARTMENTS = [
-            "Eagles", 
-            "Daughters of Faith", 
-            "Youth", 
-            "Kingdom Generation", 
-            "Planning Committee"
-        ];
-
+        const DEPARTMENTS = ["Eagles", "Daughters of Faith", "Youth", "Kingdom Generation", "Planning Committee"];
         const initialData = {
-            pledges: [],
-            transactions: [], // Income
-            expenses: [],    // Outgoings
-            phases: [
-                { 
-                    id: 1, name: "March 8th Collection", date: "2024-03-08", totalTarget: 1000000,
-                    targets: {
-                        "Eagles": 200000,
-                        "Daughters of Faith": 200000,
-                        "Youth": 200000,
-                        "Kingdom Generation": 200000,
-                        "Planning Committee": 200000
-                    }
-                }
-            ]
+            pledges: [], transactions: [], expenses: [],
+            phases: [{ id: 1, name: "March 8th Collection", date: "2024-03-08", totalTarget: 1000000, targets: { "Eagles":200000, "Daughters of Faith":200000, "Youth":200000, "Kingdom Generation":200000, "Planning Committee":200000 } }]
         };
 
         class Store {
@@ -591,641 +373,269 @@
                 const saved = localStorage.getItem(DB_KEY);
                 this.data = saved ? JSON.parse(saved) : initialData;
             }
-
-            save() {
-                localStorage.setItem(DB_KEY, JSON.stringify(this.data));
-                app.render();
-            }
-
-            addPledge(name, phone, dept, amount, isAnon) {
-                this.data.pledges.push({
-                    id: Date.now(),
-                    name, phone, dept, amount: Number(amount), redeemed: 0, isAnon
-                });
-                this.save();
-            }
-
+            save() { localStorage.setItem(DB_KEY, JSON.stringify(this.data)); app.render(); }
+            addPledge(n, p, d, a, i) { this.data.pledges.push({ id: Date.now(), name:n, phone:p, dept:d, amount:Number(a), redeemed:0, isAnon:i }); this.save(); }
             addTransaction(tx) {
-                // MATCHING LOGIC: Josh vs Josh
-                // Priority 1: Exact Name + Dept match (if dept provided)
-                let matchedPledge = null;
-
-                if (tx.dept) {
-                    matchedPledge = this.data.pledges.find(p => p.name.toLowerCase() === tx.name.toLowerCase() && p.dept === tx.dept);
-                } 
-                
-                // Priority 2: Name match only (unique check)
-                if (!matchedPledge) {
-                    const allMatches = this.data.pledges.filter(p => p.name.toLowerCase() === tx.name.toLowerCase());
-                    if (allMatches.length === 1) {
-                        matchedPledge = allMatches[0];
-                    }
-                }
-
-                if (matchedPledge) {
-                    tx.name = matchedPledge.name; // Normalize name
-                    tx.dept = matchedPledge.dept; // Normalize dept
-                    tx.pledgeId = matchedPledge.id;
-                    matchedPledge.redeemed = (matchedPledge.redeemed || 0) + tx.amount;
-                } else {
-                    tx.pledgeId = null;
-                }
-
-                this.data.transactions.unshift(tx);
+                let m = null;
+                if(tx.dept) { m = this.data.pledges.find(p => p.name.toLowerCase() === tx.name.toLowerCase() && p.dept === tx.dept); }
+                if(!m) { const all = this.data.pledges.filter(p => p.name.toLowerCase() === tx.name.toLowerCase()); if(all.length===1) m=all[0]; }
+                if(m) { tx.name=m.name; tx.dept=m.dept; tx.pledgeId=m.id; m.redeemed=(m.redeemed||0)+tx.amount; }
+                else { tx.pledgeId=null; }
+                this.data.transactions.unshift(tx); this.save();
+            }
+            addExpense(d,a,c,r) { this.data.expenses.unshift({ id:Date.now(), date:new Date().toISOString(), description:d, category:c, amount:Number(a), ref:r }); this.save(); }
+            addPhase(n,d,t) {
+                for(let v of Object.values(t)) if(v<0) { alert("Targets cannot be negative."); return; }
+                const tot = Object.values(t).reduce((a,b)=>a+b,0);
+                this.data.phases.push({ id:Date.now(), name:n, date:d, totalTarget:tot, targets:t });
+                this.data.phases.sort((a,b) => new Date(a.date)-new Date(b.date));
                 this.save();
             }
-
-            addExpense(desc, amount, cat, ref) {
-                this.data.expenses.unshift({
-                    id: Date.now(),
-                    date: new Date().toISOString(),
-                    description: desc,
-                    category: cat,
-                    amount: Number(amount),
-                    ref: ref
-                });
-                this.save();
-            }
-
-            addPhase(name, date, deptTargets) {
-                // Validate non-negative
-                for(let val of Object.values(deptTargets)) {
-                    if(val < 0) { alert("Targets cannot be negative."); return; }
-                }
-
-                const total = Object.values(deptTargets).reduce((a,b) => a+b, 0);
-                this.data.phases.push({
-                    id: Date.now(),
-                    name, date, totalTarget: total,
-                    targets: deptTargets
-                });
-                this.data.phases.sort((a,b) => new Date(a.date) - new Date(b.date));
-                this.save();
-            }
-
-            deletePhase(id) {
-                this.data.phases = this.data.phases.filter(p => p.id !== id);
-                this.save();
-            }
+            deletePhase(id) { this.data.phases = this.data.phases.filter(p => p.id !== id); this.save(); }
         }
 
         const store = new Store();
         let stagedTransactions = [];
 
+        // --- APP LOGIC (MODULARIZED) ---
         const app = {
-            init: () => {
-                app.renderSettingsInputs();
-                app.render();
+            init: () => { app.renderSettingsInputs(); app.render(); },
+            nav: (id) => {
+                document.querySelectorAll('main section').forEach(el => el.classList.add('hidden'));
+                document.getElementById(`view-${id}`).classList.remove('hidden');
+                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+                event.currentTarget.classList.add('active');
+            },
+            
+            // Render Helpers
+            getVals: () => {
+                const cash = store.data.transactions.reduce((s,t)=>s+t.amount,0);
+                const exp = store.data.expenses.reduce((s,e)=>s+e.amount,0);
+                const net = cash-exp;
+                const pTotal = store.data.pledges.reduce((s,p)=>s+p.amount,0);
+                const pRedeem = store.data.pledges.reduce((s,p)=>s+(p.redeemed||0),0);
+                const rate = pTotal>0 ? ((pRedeem/pTotal)*100).toFixed(1) : 0;
+                return { cash, exp, net, pTotal, pRedeem, rate };
             },
 
             renderSettingsInputs: () => {
-                const container = document.getElementById('s-targets-container');
-                container.innerHTML = '';
-                DEPARTMENTS.forEach(dept => {
+                const con = document.getElementById('s-targets-container');
+                con.innerHTML = '';
+                DEPARTMENTS.forEach(d => {
                     const div = document.createElement('div');
-                    div.innerHTML = `<input type="number" min="0" class="s-target-input" data-dept="${dept}" placeholder="${dept} (0)">`;
-                    container.appendChild(div);
+                    div.innerHTML = `<input type="number" min="0" class="s-target-input" data-dept="${d}" placeholder="${d} (0)">`;
+                    con.appendChild(div);
                 });
-
-                container.addEventListener('input', () => {
+                con.addEventListener('input', () => {
                     const inputs = document.querySelectorAll('.s-target-input');
-                    let total = 0;
-                    inputs.forEach(i => total += Number(i.value) || 0);
+                    let total = 0; inputs.forEach(i => total+=Number(i.value)||0);
                     document.getElementById('s-total-display').innerText = app.formatMoney(total);
                 });
             },
 
-            nav: (viewId) => {
-                document.querySelectorAll('main section').forEach(el => el.classList.add('hidden'));
-                document.getElementById(`view-${viewId}`).classList.remove('hidden');
-                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-                event.currentTarget.classList.add('active');
-            },
-
-            render: () => {
-                // 1. Calculations
-                const totalCash = store.data.transactions.reduce((sum, t) => sum + t.amount, 0);
-                const totalExpenses = store.data.expenses.reduce((sum, e) => sum + e.amount, 0);
-                const netBalance = totalCash - totalExpenses;
-                
-                const totalPledged = store.data.pledges.reduce((sum, p) => sum + p.amount, 0);
-                const totalRedeemed = store.data.pledges.reduce((sum, p) => sum + (p.redeemed || 0), 0);
-                const rate = totalPledged > 0 ? ((totalRedeemed / totalPledged) * 100).toFixed(1) : 0;
-
-                // Update KPI Cards
-                document.getElementById('dash-cash').textContent = app.formatMoney(totalCash);
-                document.getElementById('dash-expenses').textContent = app.formatMoney(totalExpenses);
-                document.getElementById('dash-balance').textContent = app.formatMoney(netBalance);
-                document.getElementById('dash-rate').textContent = `${rate}%`;
-
-                // VIZ 1: DONUT CHART
-                const totalVol = totalCash + totalExpenses;
-                const incomePct = totalVol > 0 ? (totalCash / totalVol) * 100 : 0;
-                const expensePct = totalVol > 0 ? (totalExpenses / totalVol) * 100 : 0;
-                
-                document.getElementById('viz-net-bal').textContent = app.formatMoney(netBalance);
-                document.getElementById('income-donut').style.background = `conic-gradient(var(--primary) 0% ${incomePct}%, var(--danger) ${incomePct}% 100%)`;
-
-                // VIZ 2: DEPT BARS
-                let currentPhase = store.data.phases.find(p => new Date(p.date) >= new Date()) || store.data.phases[store.data.phases.length - 1];
-                const barChartDiv = document.getElementById('viz-bar-chart');
-                barChartDiv.innerHTML = '';
-
-                // Get Top 3 Depts for visual chart
-                const deptStats = DEPARTMENTS.map(dept => {
-                    const deptCash = store.data.transactions
-                        .filter(t => t.pledgeId && store.data.pledges.find(p => p.id === t.pledgeId && p.dept === dept))
-                        .reduce((sum, t) => sum + t.amount, 0);
-                    const phaseTarget = currentPhase ? (currentPhase.targets[dept] || 0) : 0;
-                    const pct = phaseTarget ? (deptCash / phaseTarget) * 100 : 0;
-                    return { dept, deptCash, phaseTarget, pct };
-                }).sort((a,b) => b.pct - a.pct);
-
-                deptStats.slice(0,3).forEach(stat => {
-                    const pctStr = stat.pct.toFixed(1);
-                    barChartDiv.innerHTML += `
-                        <div class="bar-chart-row">
-                            <div class="bar-label">
-                                <strong>${stat.dept}</strong>
-                                <span>${pctStr}%</span>
-                            </div>
-                            <div class="bar-container">
-                                <div class="bar-fill" style="width: ${Math.min(100, stat.pct)}%;"></div>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                // VIZ 3: RECENT ACTIVITY
-                const recentList = document.getElementById('recent-activity-list');
-                recentList.innerHTML = '';
-                if (store.data.transactions.length > 0) {
-                    store.data.transactions.slice(0,5).forEach(t => {
-                        const timeStr = new Date(t.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                        recentList.innerHTML += `
-                            <div style="display:flex; gap:10px; align-items:center; padding:8px; background:white; border:1px solid var(--border); border-radius:6px;">
-                                <div style="width:30px; height:30px; border-radius:50%; background: #D1FAE5; display:flex; align-items:center; justify-content:center;">💵</div>
-                                <div style="flex:1;">
-                                    <div style="font-weight:bold; font-size:0.9rem;">${t.name}</div>
-                                    <div style="font-size:0.75rem; color: var(--text-sub);">${t.method} • ${timeStr}</div>
-                                </div>
-                                <div style="font-weight:bold; color: var(--primary);">${app.formatMoney(t.amount)}</div>
-                            </div>
-                        `;
-                    });
-                }
-
-                // 2. Phase Timeline
-                const timelineDiv = document.getElementById('phase-timeline-container');
-                timelineDiv.innerHTML = '';
-                const today = new Date();
-                let cumulativeTarget = 0;
-
-                store.data.phases.forEach((phase) => {
-                    cumulativeTarget += phase.totalTarget;
-                    const phaseDate = new Date(phase.date);
-                    const isPast = phaseDate < today;
-                    const phasePct = Math.min(100, (totalCash / cumulativeTarget) * 100).toFixed(1);
-                    
-                    let statusClass = 'active';
-                    if(phasePct >= 100) statusClass = 'completed';
-                    else if(isPast && phasePct < 100) statusClass = 'danger'; 
-
-                    timelineDiv.innerHTML += `
-                        <div class="phase-item ${statusClass}">
-                            <div class="flex-between">
-                                <strong>${phase.name}</strong>
-                                <small class="text-sub">${phase.date}</small>
-                            </div>
-                            <div class="flex-between mt-4">
-                                <span class="text-sm">Target: ${app.formatMoney(cumulativeTarget)}</span>
-                                <span class="text-sm font-bold">${phasePct}%</span>
-                            </div>
-                            <div class="progress-track">
-                                <div class="progress-fill ${statusClass === 'danger' ? 'danger' : ''}" style="width: ${phasePct}%;"></div>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                // 3. Leaderboard
-                const lbContainer = document.getElementById('leaderboard-container');
-                lbContainer.innerHTML = '';
-
-                deptStats.forEach((stat, index) => {
-                    const rank = index + 1;
-                    lbContainer.innerHTML += `
-                        <div class="rank-item rank-${rank}">
-                            <div class="rank-badge">${rank}</div>
-                            <div style="flex:1;">
-                                <div style="font-weight:bold;">${stat.dept}</div>
-                                <small class="text-sub">Collected: ${app.formatMoney(stat.deptCash)} / ${app.formatMoney(stat.phaseTarget)}</small>
-                            </div>
-                            <div style="font-weight:bold; color:var(--primary);">${stat.pct.toFixed(1)}%</div>
-                        </div>
-                    `;
-                });
-
-                // 4. Pledge Table
-                const pTable = document.getElementById('pledges-table');
-                pTable.innerHTML = '';
-                store.data.pledges.forEach(p => {
-                    const redeemed = p.redeemed || 0;
-                    const debt = p.amount - redeemed;
-                    const pct = (redeemed / p.amount) * 100;
-                    
-                    let status = '';
-                    if(debt <= 0) status = '<span class="badge badge-success">PAID</span>';
-                    else status = `<span class="badge badge-warn">${pct.toFixed(0)}%</span>`;
-                    
-                    const debtDisplay = debt <= 0 ? 
-                        `<span class="text-sub">0</span>` : 
-                        `<span style="font-weight:bold; color:var(--danger)">${app.formatMoney(debt)}</span>`;
-
-                    const phone = p.phone || '-';
-                    const nameDisplay = p.isAnon ? 'Anonymous' : `<strong>${p.name}</strong>`;
-
-                    pTable.innerHTML += `
-                        <tr>
-                            <td>${nameDisplay}</td>
-                            <td>${phone}</td>
-                            <td>${p.dept}</td>
-                            <td>${app.formatMoney(p.amount)}</td>
-                            <td>${app.formatMoney(redeemed)}</td>
-                            <td>${debtDisplay}</td>
-                            <td>${status}</td>
-                            <td>
-                                ${debt > 0 ? `<button class="btn btn-secondary btn-sm" onclick="app.quickPay(${p.id}, '${p.dept}')">+ Pay</button>` : 
-                                `<button class="btn btn-secondary btn-sm" onclick="app.viewReceipt(${p.id})">📄 Rec</button>`}
-                            </td>
-                        </tr>
-                    `;
-                });
-
-                // 5. Ledger Table
-                const lTable = document.getElementById('ledger-table');
-                lTable.innerHTML = '';
-                
-                const allRows = [
-                    ...store.data.transactions.map(t => ({...t, type: 'Income', desc: t.name, sign: 1})),
-                    ...store.data.expenses.map(e => ({...e, type: 'Expense', desc: e.description, sign: -1}))
-                ].sort((a,b) => new Date(b.date) - new Date(a.date));
-
-                allRows.forEach(t => {
-                    const rowClass = t.type === 'Expense' ? 'expense-row' : 'income-row';
-                    const dateStr = new Date(t.date).toLocaleDateString() + ' ' + new Date(t.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                    
-                    let actionBtn = '';
-                    if(t.type === 'Income' && t.pledgeId) {
-                        actionBtn = `<button class="btn btn-secondary btn-sm" onclick="app.generateReceipt('${t.ref}')">📄 Receipt</button>`;
-                    }
-
-                    lTable.innerHTML += `
-                        <tr class="${rowClass}">
-                            <td style="font-size:0.85rem;">${dateStr}</td>
-                            <td style="font-family:monospace;">${t.ref}</td>
-                            <td>${t.desc}</td>
-                            <td>${app.formatMoney(t.amount)}</td>
-                            <td><span class="badge ${t.type==='Expense'?'badge-danger':'badge-success'}">${t.type}</span></td>
-                            <td>${actionBtn}</td>
-                        </tr>
-                    `;
-                });
-
-                // 6. Tribes Grid
-                const tGrid = document.getElementById('tribes-grid');
-                tGrid.innerHTML = '';
-                DEPARTMENTS.forEach(dept => {
-                    const deptCash = store.data.transactions
-                        .filter(t => t.pledgeId && store.data.pledges.find(p => p.id === t.pledgeId && p.dept === dept))
-                        .reduce((sum, t) => sum + t.amount, 0);
-
-                    const phaseTarget = currentPhase ? (currentPhase.targets[dept] || 0) : 0;
-                    const targetPct = phaseTarget ? Math.min(100, (deptCash / phaseTarget) * 100).toFixed(1) : 0;
-
-                    tGrid.innerHTML += `
-                        <div class="card">
-                            <div class="flex-between">
-                                <h3>${dept}</h3>
-                                <small class="badge badge-warn">${targetPct}%</small>
-                            </div>
-                            <div class="mt-4">
-                                <div class="progress-track"><div class="progress-fill ${targetPct < 100 ? 'amber' : ''}" style="width: ${targetPct}%"></div></div>
-                                <small class="text-sub mt-4">Collected: ${app.formatMoney(deptCash)} / ${app.formatMoney(phaseTarget)}</small>
-                            </div>
-                        </div>
-                    `;
-                });
-
-                // 7. Settings Phase List
-                const sList = document.getElementById('settings-phase-list');
-                sList.innerHTML = '';
-                store.data.phases.forEach(p => {
-                    sList.innerHTML += `
-                        <div style="padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <strong>${p.name}</strong><br>
-                                <small>${p.date} - Total: ${app.formatMoney(p.totalTarget)}</small>
-                            </div>
-                            <button class="btn btn-danger btn-sm" onclick="store.deletePhase(${p.id})">Delete</button>
-                        </div>
-                    `;
-                });
-            },
-
-            openModal: (type) => document.getElementById(`modal-${type}`).style.display = 'flex',
-            closeModal: (type) => document.getElementById(`modal-${type}`).style.display = 'none',
+            // Modals
+            openModal: (t) => document.getElementById(`modal-${t}`).style.display = 'flex',
+            closeModal: (t) => document.getElementById(`modal-${t}`).style.display = 'none',
             
             addPledge: (e) => {
                 e.preventDefault();
-                const name = document.getElementById('p-name').value;
-                const phone = document.getElementById('p-phone').value;
-                const dept = document.getElementById('p-dept').value;
-                const amount = document.getElementById('p-amount').value;
-                const isAnon = document.getElementById('p-anon').checked;
-                
-                store.addPledge(name, phone, dept, amount, isAnon);
-                app.closeModal('pledge');
-                document.getElementById('p-name').value = '';
-                document.getElementById('p-phone').value = '';
-                document.getElementById('p-amount').value = '';
+                const n=document.getElementById('p-name').value, ph=document.getElementById('p-phone').value, d=document.getElementById('p-dept').value, a=document.getElementById('p-amount').value, i=document.getElementById('p-anon').checked;
+                store.addPledge(n, ph, d, a, i);
+                app.closeModal('pledge'); document.getElementById('p-name').value=''; document.getElementById('p-phone').value=''; document.getElementById('p-amount').value='';
             },
-
             addCash: (e) => {
                 e.preventDefault();
-                const name = document.getElementById('c-name').value;
-                const amount = document.getElementById('c-amount').value;
-                const ref = document.getElementById('c-ref').value || 'CASH-' + Date.now();
-                const dept = document.getElementById('c-dept').value;
-
-                const duplicate = store.data.transactions.find(t => t.ref === ref);
-                if(duplicate) { alert('Ref Code already exists'); return; }
-
-                store.addTransaction({
-                    amount: Number(amount), name, ref, method: 'Cash', dept,
-                    date: new Date().toISOString()
-                });
-                app.closeModal('cash');
-                document.getElementById('c-name').value = '';
-                document.getElementById('c-amount').value = '';
-                document.getElementById('c-ref').value = '';
+                const n=document.getElementById('c-name').value, a=document.getElementById('c-amount').value, r=document.getElementById('c-ref').value||'CASH-'+Date.now(), d=document.getElementById('c-dept').value;
+                if(store.data.transactions.find(t=>t.ref===r)) return alert('Ref Code exists');
+                store.addTransaction({ amount:Number(a), name:n, ref:r, method:'Cash', dept:d, date:new Date().toISOString() });
+                app.closeModal('cash'); document.getElementById('c-name').value=''; document.getElementById('c-amount').value=''; document.getElementById('c-ref').value='';
             },
-
             addExpense: (e) => {
                 e.preventDefault();
-                const desc = document.getElementById('e-desc').value;
-                const amount = document.getElementById('e-amount').value;
-                const cat = document.getElementById('e-cat').value;
-                const ref = document.getElementById('e-ref').value || 'EXP-' + Date.now();
-
-                store.addExpense(desc, amount, cat, ref);
-                app.closeModal('expense');
-                document.getElementById('e-desc').value = '';
-                document.getElementById('e-amount').value = '';
-                document.getElementById('e-ref').value = '';
+                const d=document.getElementById('e-desc').value, a=document.getElementById('e-amount').value, c=document.getElementById('e-cat').value, r=document.getElementById('e-ref').value||'EXP-'+Date.now();
+                store.addExpense(d,a,c,r);
+                app.closeModal('expense'); document.getElementById('e-desc').value=''; document.getElementById('e-amount').value=''; document.getElementById('e-ref').value='';
             },
-
             addPhase: (e) => {
                 e.preventDefault();
-                const name = document.getElementById('s-name').value;
-                const date = document.getElementById('s-date').value;
-                const inputs = document.querySelectorAll('.s-target-input');
-                const targets = {};
-                inputs.forEach(i => { targets[i.dataset.dept] = Number(i.value) || 0; });
-                store.addPhase(name, date, targets);
-                document.getElementById('s-name').value = '';
-                inputs.forEach(i => i.value = '');
+                const n=document.getElementById('s-name').value, d=document.getElementById('s-date').value;
+                const i=document.querySelectorAll('.s-target-input');
+                const t={};
+                i.forEach(el=>{ t[el.dataset.dept]=Number(el.value)||0 });
+                store.addPhase(n,d,t);
+                document.getElementById('s-name').value=''; i.forEach(el=>el.value='');
             },
+            formatMoney: (num) => new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(num),
 
-            generateReceipt: (ref) => {
-                const tx = store.data.transactions.find(t => t.ref === ref);
-                if(!tx) return;
-                const msg = `RECEIPT\n---------\nDate: ${new Date(tx.date).toLocaleString()}\nName: ${tx.name}\nDept: ${tx.dept}\nAmount: KES ${tx.amount}\nRef: ${tx.ref}\nMethod: ${tx.method}\n\nThank you for your contribution to DCD Possess The Land!`;
-                navigator.clipboard.writeText(msg).then(() => alert("Receipt copied to clipboard!"));
-            },
-
-            viewReceipt: (pledgeId) => {
-                const p = store.data.pledges.find(pl => pl.id === pledgeId);
-                const msg = `PLEDGE RECEIPT\n---------\nMember: ${p.name}\nDept: ${p.dept}\nAmount Pledged: KES ${p.amount}\nPaid: KES ${p.redeemed}\nBalance: KES ${p.amount - p.redeemed}`;
-                alert(msg);
-            },
-
-            exportToCSV: (type) => {
-                let csvContent = "data:text/csv;charset=utf-8,";
+            // --- RENDER FUNCTIONS ---
+            render: () => {
+                const v = app.getVals();
                 
-                if(type === 'ledger') {
-                    csvContent += "Date,Ref,Description,Type,Amount\n";
-                    [...store.data.transactions.map(t => ({...t, type: 'Income', desc: t.name})),
-                     ...store.data.expenses.map(e => ({...e, type: 'Expense', desc: e.description}))]
-                    .sort((a,b) => new Date(b.date) - new Date(a.date))
-                    .forEach(t => {
-                        csvContent += `${new Date(t.date).toLocaleDateString()},${t.ref},"${t.desc}",${t.type},${t.amount}\n`;
-                    });
-                } else {
-                    csvContent += "Name,Phone,Dept,Pledged,Redeemed,Balance\n";
-                    store.data.pledges.forEach(p => {
-                        csvContent += `"${p.name}","${p.phone}",${p.dept},${p.amount},${p.redeemed},${p.amount-p.redeemed}\n`;
+                // 1. Dashboard
+                document.getElementById('dash-cash').innerText = app.formatMoney(v.cash);
+                document.getElementById('dash-expenses').innerText = app.formatMoney(v.exp);
+                document.getElementById('dash-balance').innerText = app.formatMoney(v.net);
+                document.getElementById('dash-rate').innerText = `${v.rate}%`;
+
+                // Donut Chart
+                const totalVol = v.cash + v.exp;
+                const incomePct = totalVol>0 ? (v.cash/totalVol)*100 : 0;
+                document.getElementById('viz-net-bal').innerText = app.formatMoney(v.net);
+                document.getElementById('income-donut').style.background = `conic-gradient(var(--primary) 0% ${incomePct}%, var(--danger) ${incomePct}% 100%)`;
+
+                // Department Viz
+                let currPhase = store.data.phases.find(p=>new Date(p.date)>=new Date()) || store.data.phases[store.data.phases.length-1];
+                const deptStats = DEPARTMENTS.map(d => {
+                    const dCash = store.data.transactions.filter(t=>t.pledgeId && store.data.pledges.find(p=>p.id===t.pledgeId && p.dept===d)).reduce((s,t)=>s+t.amount,0);
+                    const dTarget = currPhase ? (currPhase.targets[d]||0) : 0;
+                    return { dept:d, dCash, dTarget, pct: dTarget ? (dCash/dTarget)*100 : 0 };
+                }).sort((a,b)=>b.pct-a.pct);
+                
+                const barDiv = document.getElementById('viz-bar-chart');
+                barDiv.innerHTML = '';
+                deptStats.slice(0,3).forEach(s => {
+                    barDiv.innerHTML += `<div class="bar-chart-row"><div class="bar-label"><strong>${s.dept}</strong><span>${s.pct.toFixed(1)}%</span></div><div class="bar-container"><div class="bar-fill" style="width:${Math.min(100,s.pct)}%"></div></div></div>`;
+                });
+
+                // Phase Timeline
+                const timelineDiv = document.getElementById('phase-timeline-container');
+                timelineDiv.innerHTML = '';
+                let cumTarget = 0;
+                store.data.phases.forEach(p => {
+                    cumTarget += p.totalTarget;
+                    const pct = Math.min(100, (v.cash/cumTarget)*100).toFixed(1);
+                    let st = 'active'; if(pct>=100) st='completed'; else if(new Date(p.date)<new Date() && pct<100) st='danger';
+                    timelineDiv.innerHTML += `<div class="phase-item ${st}"><div class="flex-between"><strong>${p.name}</strong><small class="text-sub">${p.date}</small></div><div class="flex-between mt-4"><span class="text-sm">Target: ${app.formatMoney(cumTarget)}</span><span class="text-sm font-bold">${pct}%</span></div><div class="progress-track"><div class="progress-fill ${st==='danger'?'danger':''}" style="width:${pct}%"></div></div></div>`;
+                });
+
+                // Recent Activity
+                const rList = document.getElementById('recent-activity-list');
+                rList.innerHTML = '';
+                if(v.cash>0) {
+                    store.data.transactions.slice(0,5).forEach(t => {
+                        rList.innerHTML += `<div style="display:flex; gap:10px; align-items:center; padding:8px; background:white; border:1px solid var(--border); border-radius:6px;"><div style="width:30px; height:30px; border-radius:50%; background:#D1FAE5; display:flex; align-items:center; justify-content:center;">💵</div><div style="flex:1;"><div style="font-weight:bold; font-size:0.9rem;">${t.name}</div><div style="font-size:0.75rem; color:var(--text-sub);">${t.method} • ${new Date(t.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div><div style="font-weight:bold; color:var(--primary);">${app.formatMoney(t.amount)}</div></div>`;
                     });
                 }
 
-                const encodedUri = encodeURI(csvContent);
-                const link = document.createElement("a");
-                link.setAttribute("href", encodedUri);
-                link.setAttribute("download", `dcd_possess_land_${type}_${Date.now()}.csv`);
-                document.body.appendChild(link);
-                link.click();
-            },
-
-            // --- INTEGRATED PARSER LOGIC (FINAL V10) ---
-            parseSMS: () => {
-                const text = document.getElementById('sms-input').innerText;
-                if(text.includes('Paste')) { alert("Please paste messages first."); return; }
-                
-                // 1. Split on " Confirmed." instead of "." to keep Ksh context intact.
-                // Also handle cases where it might be lower case.
-                const chunks = text.split(/ Confirmed\./i);
-                
-                let newMemberCount = 0;
-                let matchedCount = 0;
-                let parsedList = [];
-
-                chunks.forEach((chunk, index) => {
-                    // We only care about chunks that contain money keywords
-                    if(!chunk.includes('Ksh') && !chunk.includes('KES') && !chunk.includes('received')) return;
-
-                    let amount = null, name = "Unknown", phone = null, ref = "N/A", type = "M-Pesa";
-                    
-                    // 1. Try to match "Received" Message (Personal Account)
-                    // FIX 2: Improved Regex to separate Name from Phone
-                    // Looking for "from NAME PHONE"
-                    const receivedMatch = chunk.match(/You have received Ksh([\d,]+\.?\d*)\s+from\s+([A-Za-z\s]+?)\s+(\d{10})/i);
-                    
-                    if (receivedMatch) {
-                        amount = parseFloat(receivedMatch[1].replace(/,/g, ''));
-                        name = receivedMatch[2].trim(); // Name is Group 2
-                        phone = receivedMatch[3]; // Phone is Group 3
-                        ref = "N/A"; 
-                    } else {
-                        // 2. Try to match "Sent To" Message (Till Number)
-                        const sentMatch = chunk.match(/Ksh([\d,]+\.?\d*)\s+sent to\s+([A-Z\s]+)\s+for account\s+(\w+)/i);
-                        
-                        if(sentMatch) {
-                            amount = parseFloat(sentMatch[1].replace(/,/g, ''));
-                            // Till messages often don't have sender name in SMS body, 
-                            // so we assume 'Unknown' and rely on admin or webhooks for names
-                            name = "Till Transaction"; 
-                            ref = sentMatch[3];
-                            
-                            // Extract Date if available
-                            const dateMatch = chunk.match(/on\s+(\d{1,2}\/\d{1,2}\/\d{2})/i);
-                            if(dateMatch) ref += ` (${dateMatch[1]})`;
-                        }
-                    }
-
-                    if(!amount) return;
-
-                    // AUTO-CREATE LOGIC
-                    // Check if this person exists in our database
-                    // We look by name first. If ambiguous, we handle in commit phase.
-                    const existingPledges = store.data.pledges.filter(p => p.name.toLowerCase() === name.toLowerCase());
-                    let isNewMember = existingPledges.length === 0;
-                    
-                    if(!isNewMember) matchedCount++;
-                    else newMemberCount++;
-
-                    // Handle Ambiguity (Josh in multiple Depts)
-                    let isAmbiguous = false;
-                    let candidates = [];
-                    let selectedDept = "Planning Committee"; // Default for new/till members
-
-                    if (existingPledges.length > 1) {
-                        isAmbiguous = true;
-                        candidates = existingPledges.map(p => p.dept);
-                        selectedDept = candidates[0]; 
-                    } else if (existingPledges.length === 1) {
-                        selectedDept = existingPledges[0].dept;
-                    }
-
-                    parsedList.push({ 
-                        amount, name, ref, phone, isNewMember, isAmbiguous, 
-                        candidates, selectedDept, matchedId: null, id: index 
-                    });
+                // Leaderboard
+                const lb = document.getElementById('leaderboard-container');
+                lb.innerHTML = '';
+                deptStats.forEach((s,i) => {
+                    lb.innerHTML += `<div class="rank-item rank-${i+1}"><div class="rank-badge">${i+1}</div><div style="flex:1;"><div style="font-weight:bold;">${s.dept}</div><small class="text-sub">Collected: ${app.formatMoney(s.dCash)} / ${app.formatMoney(s.dTarget)}</small></div><div style="font-weight:bold; color:var(--primary);">${s.pct.toFixed(1)}%</div></div>`;
                 });
 
-                if(parsedList.length > 0) {
+                // Pledges
+                const pTable = document.getElementById('pledges-table');
+                pTable.innerHTML = '';
+                store.data.pledges.forEach(p => {
+                    const r = p.amount-(p.redeemed||0);
+                    const pct = ((p.redeemed||0)/p.amount)*100;
+                    const st = r<=0 ? '<span class="badge badge-success">PAID</span>' : `<span class="badge badge-warn">${pct.toFixed(0)}%</span>`;
+                    const rd = r<=0 ? '<span class="text-sub">0</span>' : `<span style="font-weight:bold; color:var(--danger);">${app.formatMoney(r)}</span>`;
+                    const nm = p.isAnon ? 'Anonymous' : `<strong>${p.name}</strong>`;
+                    pTable.innerHTML += `<tr><td>${nm}</td><td>${p.phone||'-'}</td><td>${p.dept}</td><td>${app.formatMoney(p.amount)}</td><td>${app.formatMoney(p.redeemed||0)}</td><td>${rd}</td><td>${st}</td><td>${r>0 ? `<button class="btn btn-secondary btn-sm" onclick="app.quickPay(${p.id},'${p.dept}')">+ Pay</button>` : `<button class="btn btn-secondary btn-sm" onclick="app.viewReceipt(${p.id})">📄 Rec</button>`}</td></tr>`;
+                });
+
+                // Ledger
+                const lTable = document.getElementById('ledger-table');
+                lTable.innerHTML = '';
+                [...store.data.transactions.map(t=>({...t,type:'Income',desc:t.name})), ...store.data.expenses.map(e=>({...e,type:'Expense',desc:e.description}))]
+                .sort((a,b)=>new Date(b.date)-new Date(a.date))
+                .forEach(t => {
+                    const cl = t.type==='Expense' ? 'expense-row' : 'income-row';
+                    const dt = new Date(t.date).toLocaleDateString() + ' ' + new Date(t.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+                    const btn = t.type==='Income' && t.pledgeId ? `<button class="btn btn-secondary btn-sm" onclick="app.generateReceipt('${t.ref}')">📄 Receipt</button>` : '';
+                    lTable.innerHTML += `<tr class="${cl}"><td style="font-size:0.85rem;">${dt}</td><td style="font-family:monospace;">${t.ref}</td><td>${t.desc}</td><td>${app.formatMoney(t.amount)}</td><td><span class="badge ${t.type==='Expense'?'badge-danger':'badge-success'}">${t.type}</span></td><td>${btn}</td></tr>`;
+                });
+
+                // Tribes
+                const tGrid = document.getElementById('tribes-grid');
+                tGrid.innerHTML = '';
+                DEPARTMENTS.forEach(d => {
+                    const dCash = store.data.transactions.filter(t=>t.pledgeId && store.data.pledges.find(p=>p.id===t.pledgeId && p.dept===d)).reduce((s,t)=>s+t.amount,0);
+                    const dTarget = currPhase ? (currPhase.targets[d]||0) : 0;
+                    const pct = dTarget ? Math.min(100,(dCash/dTarget)*100).toFixed(1) : 0;
+                    tGrid.innerHTML += `<div class="card"><div class="flex-between"><h3>${d}</h3><small class="badge badge-warn">${pct}%</small></div><div class="mt-4"><div class="progress-track"><div class="progress-fill ${pct<100?'amber':''}" style="width:${pct}%"></div></div><small class="text-sub mt-4">Collected: ${app.formatMoney(dCash)} / ${app.formatMoney(dTarget)}</small></div></div>`;
+                });
+
+                // Settings
+                const sList = document.getElementById('settings-phase-list');
+                sList.innerHTML = '';
+                store.data.phases.forEach(p => {
+                    sList.innerHTML += `<div style="padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;"><div><strong>${p.name}</strong><br><small>${p.date} - Total: ${app.formatMoney(p.totalTarget)}</small></div><button class="btn btn-danger btn-sm" onclick="store.deletePhase(${p.id})">Delete</button></div>`;
+                });
+            },
+
+            // --- PARSER LOGIC ---
+            parseSMS: () => {
+                const txt = document.getElementById('sms-input').innerText;
+                if(txt.includes('Paste')) return alert("Paste messages first.");
+                
+                const chunks = txt.split(/ Confirmed\./i);
+                let nm=0, mc=0, pl=[];
+                chunks.forEach((c, idx) => {
+                    if(!c.includes('Ksh') && !c.includes('KES') && !c.includes('received')) return;
+                    let amt=null, name="Unknown", phone=null, ref="N/A";
+                    
+                    const rec = c.match(/You have received Ksh([\d,]+\.?\d*)\s+from\s+([A-Za-z\s]+?)\s+(\d{10})/i);
+                    if(rec) { amt=parseFloat(rec[1].replace(/,/g,'')); name=rec[2].trim(); phone=rec[3]; }
+                    else {
+                        const sent = c.match(/Ksh([\d,]+\.?\d*)\s+sent to\s+([A-Z\s]+)\s+for account\s+(\w+)/i);
+                        if(sent) { amt=parseFloat(sent[1].replace(/,/g,'')); name="Till Transaction"; ref=sent[3]; }
+                    }
+                    if(!amt) return;
+
+                    const ex = store.data.pledges.filter(p=>p.name.toLowerCase()===name.toLowerCase());
+                    let isNew=ex.length===0;
+                    if(!isNew) mc++; else nm++;
+                    
+                    let isAmb=false, cand=[], selDept="Planning Committee";
+                    if(ex.length>1) { isAmb=true; cand=ex.map(p=>p.dept); selDept=cand[0]; }
+                    else if(ex.length===1) selDept=ex[0].dept;
+
+                    pl.push({ amt, name, ref, phone, isNew, isAmb, candidates:cand, selectedDept:selDept, matchedId:null, id:idx });
+                });
+
+                if(pl.length>0) {
                     document.getElementById('staged-container').classList.remove('hidden');
-                    document.getElementById('staged-count').innerText = parsedList.length;
+                    document.getElementById('staged-count').innerText = pl.length;
                     document.getElementById('parser-stats').classList.remove('hidden');
+                    document.getElementById('st-total').innerText = pl.length;
+                    document.getElementById('st-new').innerText = nm;
+                    document.getElementById('st-matched').innerText = mc;
+                    document.getElementById('st-unmatched').innerText = 0;
                     
-                    // Update Stats
-                    document.getElementById('st-total').innerText = parsedList.length;
-                    document.getElementById('st-new').innerText = newMemberCount;
-                    document.getElementById('st-matched').innerText = matchedCount;
-                    document.getElementById('st-unmatched').innerText = 0; // In this new logic, we rarely have unmatched unless regex fails
-
-                    const list = document.getElementById('staged-list');
-                    list.innerHTML = '';
-                    
-                    parsedList.forEach((t, idx) => {
-                        let optionsHtml = '';
-                        let rowClass = 'matched';
-                        let statusText = 'Matched';
-                        let isNewText = '';
-
-                        if (t.isNewMember) {
-                            rowClass = 'new-member';
-                            statusText = 'New Member Created';
-                            isNewText = `<div style="font-size:11px; color:#1976d2; font-weight:bold; margin-bottom:5px;">✨ Auto-Registered as: Planning Committee</div>`;
-                        }
-
-                        if (t.isAmbiguous) {
-                            rowClass = 'unmatched'; // Visually distinct
-                            optionsHtml = `
-                                <div class="resolution-box">
-                                    <small style="color:var(--accent); font-weight:bold;">⚠️ Name exists in multiple departments. Select Correct Dept:</small>
-                                    <select class="resolve-dept-select" data-idx="${idx}" style="margin-top:5px;">
-                                        ${t.candidates.map(d => `<option value="${d}">${d}</option>`).join('')}
-                                    </select>
-                                </div>
-                            `;
-                        }
-
-                        list.innerHTML += `
-                            <div class="trans-row ${rowClass}">
-                                <div style="width:100%;">
-                                    <div class="flex-between">
-                                        <strong>${t.name}</strong>
-                                        <span style="font-weight:bold;">${app.formatMoney(t.amount)}</span>
-                                    </div>
-                                    <small class="text-sub">Ref: ${t.ref} ${t.phone ? '• ' + t.phone : ''}</small>
-                                    ${isNewText}
-                                    ${optionsHtml}
-                                </div>
-                            </div>`;
+                    const l = document.getElementById('staged-list');
+                    l.innerHTML = '';
+                    pl.forEach((t, idx) => {
+                        let opt='', cl='matched', stat='Matched', txt='';
+                        if(t.isNew) { cl='new-member'; stat='New Member Created'; txt=`<div style="font-size:11px; color:#1976d2; font-weight:bold;">✨ Auto-Registered: ${t.selectedDept}</div>`; }
+                        if(t.isAmb) { cl='unmatched'; opt=`<div class="resolution-box"><small style="color:var(--accent);">⚠️ Name exists in multiple Depts. Select:</small><select class="resolve-dept-select" data-idx="${idx}" style="margin-top:5px;">${t.candidates.map(d=>`<option value="${d}">${d}</option>`).join('')}</select></div>`; }
+                        
+                        l.innerHTML += `<div class="trans-row ${cl}"><div style="width:100%"><div class="flex-between"><strong>${t.name}</strong><span style="font-weight:bold;">${app.formatMoney(t.amt)}</span></div><small class="text-sub">Ref: ${t.ref} ${t.phone?'• '+t.phone:''}</small>${txt}${opt}</div></div>`;
                     });
-                } else { alert("No valid M-Pesa transactions found in text."); }
+                } else { alert("No valid transactions found."); }
             },
 
             commitStaged: () => {
-                // 1. Get button element safely by ID (avoids event.currentTarget error)
                 const btn = document.getElementById('btn-commit');
+                const time = new Date().toISOString();
+                let added=0;
                 
-                // 2. Lock UI
-                const originalText = btn.innerText;
-                btn.innerText = "Processing...";
-                btn.disabled = true;
-
-                const entryTime = new Date().toISOString();
-                let addedCount = 0;
+                btn.innerText = "Processing..."; btn.disabled = true;
                 
-                // 3. Process every staged transaction
                 for(let i=0; i<stagedTransactions.length; i++) {
-                    let t = stagedTransactions[i];
+                    const t = stagedTransactions[i];
+                    if(t.isNew) store.addPledge(t.name, t.phone||'Unknown', t.selectedDept, 0, false);
+                    if(t.isAmbiguous) t.selectedDept = document.querySelectorAll('.resolve-dept-select')[i].value;
                     
-                    // 1. AUTO-CREATE MEMBER IF NEEDED
-                    if(t.isNewMember) {
-                        store.addPledge(t.name, t.phone || 'Unknown', "Planning Committee", 0, false);
-                    }
-
-                    // 2. Resolve Dept if Ambiguous (THE FIX)
-                    if(t.isAmbiguous) {
-                        // Use querySelectorAll with index [i] to get the SPECIFIC dropdown for this row.
-                        // Old code used querySelector(...), which always got the first one.
-                        const select = document.querySelectorAll('.resolve-dept-select')[i];
-                        if(select) t.selectedDept = select.value;
-                    }
-
-                    // 3. Validate Duplicate Ref
-                    const duplicate = store.data.transactions.find(tx => tx.ref === t.ref);
-                    if(duplicate) { 
-                        alert(`Skipping duplicate ref: ${t.ref}`); 
-                        continue; // Skip this one but keep going
-                    }
-                    
-                    // 4. Add Transaction
-                    store.addTransaction({
-                        amount: t.amount, name: t.name, ref: t.ref, method: 'M-Pesa',
-                        dept: t.selectedDept, // Pass resolved dept
-                        matchedId: t.matchedId, date: entryTime
-                    });
-                    addedCount++;
+                    if(store.data.transactions.find(x=>x.ref===t.ref)) { alert(`Skipping duplicate: ${t.ref}`); continue; }
+                    store.addTransaction({ amount:t.amt, name:t.name, ref:t.ref, method:'M-Pesa', dept:t.selectedDept, matchedId:null, date:time });
+                    added++;
                 }
-
-                // 5. Clear Staged Data (Only after processing is done)
-                // This ensures querySelectorAll works next time and prevents duplicates
                 app.clearStaged();
-                
-                // 6. Unlock UI
-                btn.innerText = originalText;
-                btn.disabled = false;
-                
-                // 7. Feedback
-                if(addedCount > 0) {
-                    alert(`✅ Success! Processed ${addedCount} transactions.`);
-                } else if (stagedTransactions.length > 0 && addedCount === 0) {
-                    // If we had items but added 0, it means they were all duplicates
-                    alert("No transactions were processed. They might be duplicates.");
-                }
+                btn.innerText = "✅ Add All"; btn.disabled = false;
+                if(added>0) alert(`Processed ${added} transactions!`);
             },
 
             clearStaged: () => {
@@ -1235,18 +645,39 @@
                 document.getElementById('sms-input').innerText = 'Paste M-Pesa messages here...';
             },
 
-            quickPay: (pledgeId, dept) => {
-                const amount = prompt("Enter payment amount (KES):");
-                if(amount && !isNaN(amount)) {
-                    store.addTransaction({
-                        amount: Number(amount), name: 'Manual Payment', ref: 'MAN-' + Date.now(),
-                        method: 'Manual', matchedId: pledgeId, dept: dept, date: new Date().toISOString()
-                    });
-                }
+            quickPay: (pid, d) => {
+                const a = prompt("Enter payment amount:");
+                if(a && !isNaN(a)) store.addTransaction({ amount:Number(a), name:'Manual Payment', ref:'MAN-'+Date.now(), method:'Manual', matchedId:pid, dept:d, date:new Date().toISOString() });
             },
 
-            formatMoney: (num) => {
-                return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(num);
+            viewReceipt: (pid) => {
+                const p = store.data.pledges.find(pl=>pl.id===pid);
+                alert(`PLEDGE RECEIPT\n---------\nMember: ${p.name}\nDept: ${p.dept}\nAmount Pledged: KES ${p.amount}\nPaid: KES ${p.redeemed}\nBalance: KES ${p.amount-p.redeemed}`);
+            },
+
+            generateReceipt: (r) => {
+                const t = store.data.transactions.find(x=>x.ref===r);
+                if(!t) return;
+                navigator.clipboard.writeText(`RECEIPT\n---------\nDate: ${new Date(t.date).toLocaleString()}\nName: ${t.name}\nDept: ${t.dept}\nAmount: KES ${t.amount}\nRef: ${t.ref}\nMethod: ${t.method}\n\nThank you for your contribution to DCD Possess The Land!`);
+                alert("Receipt copied to clipboard!");
+            },
+
+            exportToCSV: (type) => {
+                let c="data:text/csv;charset=utf-8,";
+                if(type==='ledger') {
+                    c+="Date,Ref,Description,Type,Amount\n";
+                    [...store.data.transactions.map(t=>({...t,type:'Income',desc:t.name})), ...store.data.expenses.map(e=>({...e,type:'Expense',desc:e.description}))]
+                    .sort((a,b)=>new Date(b.date)-new Date(a.date))
+                    .forEach(t=>{ c+=`${new Date(t.date).toLocaleDateString()},${t.ref},"${t.desc}",${t.type},${t.amount}\n`; });
+                } else {
+                    c+="Name,Phone,Dept,Pledged,Redeemed,Balance\n";
+                    store.data.pledges.forEach(p=>{ c+=`"${p.name}","${p.phone}",${p.dept},${p.amount},${p.redeemed},${p.amount-p.redeemed}\n`; });
+                }
+                const lnk = document.createElement("a");
+                lnk.setAttribute("href", encodeURI(c));
+                lnk.setAttribute("download", `dcd_possess_land_${type}_${Date.now()}.csv`);
+                document.body.appendChild(lnk);
+                lnk.click();
             }
         };
 
