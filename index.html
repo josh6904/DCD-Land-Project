@@ -75,18 +75,23 @@
         /* --- Buttons & Inputs --- */
         .btn {
             padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600;
-            transition: 0.2s; display: inline-flex; align-items: center; gap: 8px;
+            transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center;
         }
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: var(--primary-dark); }
         .btn-secondary { background: white; border: 1px solid var(--border); color: var(--text-main); }
         .btn-danger { background: var(--danger); color: white; }
         .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
+        .btn-block { width: 100%; }
 
         input, select, textarea {
             width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px;
         }
         input:focus { outline: 2px solid var(--primary); border-color: transparent; }
+
+        /* --- Phase Target Grid (Settings) --- */
+        .target-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; background: #f9fafb; padding: 10px; border-radius: 8px; }
+        .target-item label { font-size: 0.75rem; font-weight: bold; display: block; margin-bottom: 2px; }
 
         /* --- Progress Bars --- */
         .progress-track { background: #E5E7EB; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 8px; position: relative; }
@@ -152,7 +157,10 @@
                     <h1>Project Overview</h1>
                     <p class="text-sub">Real-time status of collections & pledges</p>
                 </div>
-                <button class="btn btn-primary" onclick="app.openModal('pledge')">+ New Pledge</button>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn btn-secondary" onclick="app.openModal('cash')">💵 Add Cash</button>
+                    <button class="btn btn-primary" onclick="app.openModal('pledge')">+ New Pledge</button>
+                </div>
             </header>
 
             <!-- KPIs -->
@@ -215,12 +223,13 @@
             
             <div class="card mt-4" style="border-left: 5px solid var(--primary);">
                 <h3>🤖 M-Pesa SMS Parser</h3>
-                <p class="text-sub">Paste raw M-Pesa messages. We'll extract Amount, Name, and match to Pledges.</p>
+                <p class="text-sub">Paste raw M-Pesa messages. Click "Extract" to process.</p>
                 
-                <div class="reconciler-area" contenteditable="true" id="sms-input" 
-                     oninput="app.parseSMS(this.innerText)"
-                     onclick="if(this.innerText === 'Paste M-Pesa messages here...') { this.innerText = ''; }">
+                <div class="reconciler-area" contenteditable="true" id="sms-input">
                     Paste M-Pesa messages here...
+                </div>
+                <div style="margin-top: 10px; text-align: right;">
+                    <button class="btn btn-primary" onclick="app.parseSMS()">⚡ Extract Transactions</button>
                 </div>
 
                 <div id="staged-container" class="hidden">
@@ -235,7 +244,9 @@
                 </div>
             </div>
 
-            <h2 class="mt-4">Verified Ledger</h2>
+            <div class="flex-between mt-4">
+                <h2>Verified Ledger</h2>
+            </div>
             <div class="card">
                 <table>
                     <thead>
@@ -244,6 +255,7 @@
                             <th>Ref</th>
                             <th>Member</th>
                             <th>Amount</th>
+                            <th>Method</th>
                             <th>Linked Pledge</th>
                         </tr>
                     </thead>
@@ -255,6 +267,7 @@
         <!-- TRIBES VIEW -->
         <section id="view-tribes" class="hidden">
             <h1>Tribe Performance</h1>
+            <p class="text-sub mb-4">Comparing Cash Collected vs Active Phase Target</p>
             <div class="grid-2 mt-4" id="tribes-grid">
                 <!-- Populated by JS -->
             </div>
@@ -278,7 +291,7 @@
             
             <div class="card">
                 <h3>Manage Collection Phases</h3>
-                <p class="text-sub">Set targets for specific deadlines (e.g., March 8th).</p>
+                <p class="text-sub">Set targets for specific deadlines (e.g., March 8th). Assign targets per department.</p>
                 
                 <form onsubmit="app.addPhase(event)" class="mt-4" style="background: #f9fafb; padding: 15px; border-radius: 8px;">
                     <div class="grid-2">
@@ -291,11 +304,17 @@
                             <input type="date" id="s-date" required>
                         </div>
                     </div>
-                    <div style="margin-top: 10px;">
-                        <label class="text-sm">Target Amount (KES)</label>
-                        <input type="number" id="s-amount" placeholder="0" required>
+                    
+                    <label class="text-sm mt-4">Department Targets</label>
+                    <div id="s-targets-container" class="target-grid">
+                        <!-- JS generates inputs here -->
                     </div>
-                    <button type="submit" class="btn btn-primary mt-4">+ Add Phase</button>
+
+                    <div style="margin-top: 15px; padding: 10px; background: #e5e7eb; border-radius: 6px; text-align: center;">
+                        <strong>Total Phase Target: <span id="s-total-display">0</span></strong>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-4 btn-block">+ Add Phase</button>
                 </form>
 
                 <div id="settings-phase-list" class="mt-4">
@@ -306,7 +325,7 @@
             <div class="card" style="border-color: var(--danger);">
                 <h3 style="color: var(--danger);">Danger Zone</h3>
                 <p class="text-sub">Reset the entire project. This cannot be undone.</p>
-                <button class="btn btn-danger btn-sm mt-4" onclick="if(confirm('Are you sure? This deletes all data.')) { localStorage.removeItem('landquest_db'); location.reload(); }">Reset All Data</button>
+                <button class="btn btn-danger btn-sm mt-4" onclick="if(confirm('Are you sure? This deletes all data.')) { localStorage.removeItem('landquest_db_v3'); location.reload(); }">Reset All Data</button>
             </div>
         </section>
 
@@ -340,11 +359,41 @@
         </div>
     </div>
 
+    <!-- MODAL: ADD CASH -->
+    <div class="modal-overlay" id="modal-cash">
+        <div class="modal">
+            <h2>Record Cash Payment</h2>
+            <form onsubmit="app.addCash(event)">
+                <label class="text-sub">Member Name</label>
+                <input type="text" id="c-name" required>
+                
+                <label class="text-sub">Amount (KES)</label>
+                <input type="number" id="c-amount" required>
+
+                <label class="text-sub">Receipt/Reference (Optional)</label>
+                <input type="text" id="c-ref" placeholder="e.g. RCPT-001">
+
+                <label class="text-sub">Tribe (Department)</label>
+                <select id="c-dept" required>
+                    <option>Eagles</option>
+                    <option>Daughters of Faith</option>
+                    <option>Youth</option>
+                    <option>Kingdom Generation</option>
+                    <option>Planning Committee</option>
+                </select>
+
+                <div class="flex-between mt-4">
+                    <button type="button" class="btn btn-secondary" onclick="app.closeModal('cash')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Cash Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         // --- DATA STORE ---
-        const DB_KEY = 'landquest_db_v2';
+        const DB_KEY = 'landquest_db_v3';
         
-        // Specific Tribes
         const DEPARTMENTS = [
             "Eagles", 
             "Daughters of Faith", 
@@ -353,16 +402,21 @@
             "Planning Committee"
         ];
 
-        // Default Phases (Admin can change these)
-        const defaultPhases = [
-            { id: 1, name: "March 8th Collection", date: "2024-03-08", target: 2000000 }, // Example initial phase
-            { id: 2, name: "Phase 2 Target", date: "2024-06-01", target: 4000000 } // Cumulative or separate? Let's do cumulative targets for simplicity in visualization
-        ];
-
         const initialData = {
             pledges: [],
             transactions: [],
-            phases: defaultPhases 
+            phases: [
+                { 
+                    id: 1, name: "March 8th Collection", date: "2024-03-08", totalTarget: 1000000,
+                    targets: {
+                        "Eagles": 200000,
+                        "Daughters of Faith": 200000,
+                        "Youth": 200000,
+                        "Kingdom Generation": 200000,
+                        "Planning Committee": 200000
+                    }
+                }
+            ]
         };
 
         class Store {
@@ -391,6 +445,7 @@
                     amount: tx.amount,
                     name: tx.name,
                     ref: tx.ref,
+                    method: tx.method || 'M-Pesa',
                     pledgeId: tx.matchedId
                 });
 
@@ -403,12 +458,13 @@
                 this.save();
             }
 
-            addPhase(name, date, target) {
+            addPhase(name, date, deptTargets) {
+                const total = Object.values(deptTargets).reduce((a,b) => a+b, 0);
                 this.data.phases.push({
                     id: Date.now(),
-                    name, date, target: Number(target)
+                    name, date, totalTarget: total,
+                    targets: deptTargets
                 });
-                // Sort phases by date
                 this.data.phases.sort((a,b) => new Date(a.date) - new Date(b.date));
                 this.save();
             }
@@ -424,7 +480,27 @@
 
         const app = {
             init: () => {
+                app.renderSettingsInputs();
                 app.render();
+            },
+
+            renderSettingsInputs: () => {
+                const container = document.getElementById('s-targets-container');
+                container.innerHTML = '';
+                DEPARTMENTS.forEach(dept => {
+                    const div = document.createElement('div');
+                    div.className = 'target-item';
+                    div.innerHTML = `<label>${dept}</label><input type="number" class="s-target-input" data-dept="${dept}" placeholder="0">`;
+                    container.appendChild(div);
+                });
+
+                // Listen to changes to update total
+                container.addEventListener('input', () => {
+                    const inputs = document.querySelectorAll('.s-target-input');
+                    let total = 0;
+                    inputs.forEach(i => total += Number(i.value) || 0);
+                    document.getElementById('s-total-display').innerText = app.formatMoney(total);
+                });
             },
 
             nav: (viewId) => {
@@ -454,7 +530,7 @@
                 let cumulativeTarget = 0;
 
                 store.data.phases.forEach((phase, index) => {
-                    cumulativeTarget += phase.target;
+                    cumulativeTarget += phase.totalTarget;
                     const phaseDate = new Date(phase.date);
                     const isPast = phaseDate < today;
                     
@@ -463,7 +539,7 @@
                     
                     let statusClass = 'active';
                     if(phasePct >= 100) statusClass = 'completed';
-                    else if(isPast && phasePct < 100) statusClass = 'danger'; // Missed deadline
+                    else if(isPast && phasePct < 100) statusClass = 'danger'; 
 
                     timelineDiv.innerHTML += `
                         <div class="phase-item ${statusClass}">
@@ -515,32 +591,48 @@
                             <td style="font-family:monospace;">${t.ref}</td>
                             <td>${t.name}</td>
                             <td>${app.formatMoney(t.amount)}</td>
+                            <td>${t.method}</td>
                             <td>${linked}</td>
                         </tr>
                     `;
                 });
 
-                // 5. Tribes Grid
+                // 5. Tribes Grid (vs Phase Target)
+                // Determine current phase (upcoming) or latest past
+                let currentPhase = store.data.phases.find(p => new Date(p.date) >= today) || store.data.phases[store.data.phases.length - 1];
+
                 const tGrid = document.getElementById('tribes-grid');
                 tGrid.innerHTML = '';
                 DEPARTMENTS.forEach(dept => {
+                    // Cash collected by this dept
+                    const deptCash = store.data.transactions
+                        .filter(t => t.name && store.data.pledges.find(p => p.id === t.pledgeId && p.dept === dept))
+                        .reduce((sum, t) => sum + t.amount, 0);
+
+                    // Pledges stats
                     const deptPledges = store.data.pledges.filter(p => p.dept === dept);
                     const deptPledgedTotal = deptPledges.reduce((sum, p) => sum + p.amount, 0);
-                    const deptCash = deptPledges.reduce((sum, p) => sum + (p.redeemed || 0), 0);
-                    const activeMembers = deptPledges.length;
+                    const deptRedeemed = deptPledges.reduce((sum, p) => sum + (p.redeemed || 0), 0);
+
+                    // Phase Target
+                    const phaseTarget = currentPhase ? (currentPhase.targets[dept] || 0) : 0;
+                    const targetPct = phaseTarget ? Math.min(100, (deptCash / phaseTarget) * 100).toFixed(1) : 0;
 
                     tGrid.innerHTML += `
                         <div class="card">
                             <div class="flex-between">
                                 <h3>${dept}</h3>
-                                <small class="badge badge-warn">${activeMembers} Members</small>
+                                <small class="badge badge-warn">${deptPledges.length} Pledgers</small>
                             </div>
+                            
                             <div class="mt-4">
-                                <small class="text-sub">Pledged: ${app.formatMoney(deptPledgedTotal)}</small>
-                                <div class="progress-track"><div class="progress-fill amber" style="width: ${deptPledgedTotal ? (deptCash/deptPledgedTotal)*100 : 0}%"></div></div>
+                                <small class="text-sub">Phase Target (${currentPhase ? currentPhase.name : 'None'}): ${app.formatMoney(phaseTarget)}</small>
+                                <div class="progress-track"><div class="progress-fill ${targetPct < 100 ? 'amber' : ''}" style="width: ${targetPct}%"></div></div>
+                                <small class="text-sm text-sub" style="float:right">${targetPct}%</small>
                             </div>
-                            <div class="mt-4">
-                                <small class="text-sub">Collected: ${app.formatMoney(deptCash)}</small>
+
+                            <div class="mt-4" style="border-top: 1px solid #eee; padding-top: 10px;">
+                                <small class="text-sub">Redeemed Pledges: ${app.formatMoney(deptRedeemed)}</small>
                             </div>
                         </div>
                     `;
@@ -554,7 +646,7 @@
                         <div style="padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;">
                             <div>
                                 <strong>${p.name}</strong><br>
-                                <small>${p.date} - Target: ${app.formatMoney(p.target)}</small>
+                                <small>${p.date} - Total: ${app.formatMoney(p.totalTarget)}</small>
                             </div>
                             <button class="btn btn-danger btn-sm" onclick="store.deletePhase(${p.id})">Delete</button>
                         </div>
@@ -565,28 +657,32 @@
                 const stratDiv = document.getElementById('strategy-content');
                 let advice = [];
                 
-                // Find upcoming deadline
-                const upcomingPhase = store.data.phases.find(p => new Date(p.date) >= today);
-                
-                if(upcomingPhase) {
-                    // Cumulative target logic for strategy
-                    const cumulativeUpToPhase = store.data.phases
-                        .filter(p => new Date(p.date) <= new Date(upcomingPhase.date))
-                        .reduce((sum, p) => sum + p.target, 0);
-                        
-                    const gap = cumulativeUpToPhase - totalCash;
-                    
-                    if(gap > 0) {
-                        advice.push(`🚨 <strong>Deadline Alert:</strong> You need ${app.formatMoney(gap)} more by <strong>${upcomingPhase.date}</strong> to meet the ${upcomingPhase.name} target.`);
+                if(currentPhase) {
+                    const daysLeft = Math.ceil((new Date(currentPhase.date) - today) / (1000 * 60 * 60 * 24));
+                    if(daysLeft > 0) {
+                        advice.push(`⏳ <strong>${daysLeft} days</strong> remaining until <strong>${currentPhase.name}</strong>.`);
                     } else {
-                        advice.push(`✅ <strong>Great News:</strong> You have met the target for ${upcomingPhase.name}!`);
+                        advice.push(`🚨 <strong>Deadline Passed:</strong> ${currentPhase.name} date was ${new Date(currentPhase.date).toLocaleDateString()}.`);
+                    }
+                    
+                    // Find lagging departments
+                    const lagging = [];
+                    DEPARTMENTS.forEach(d => {
+                        const dTarget = currentPhase.targets[d] || 0;
+                        const dCash = store.data.transactions
+                            .filter(t => t.name && store.data.pledges.find(p => p.id === t.pledgeId && p.dept === d))
+                            .reduce((sum, t) => sum + t.amount, 0);
+                        
+                        if(dTarget > 0 && (dCash / dTarget) < 0.5) {
+                            lagging.push(d);
+                        }
+                    });
+
+                    if(lagging.length > 0) {
+                        advice.push(`⚠️ <strong>Tribes needing push:</strong> ${lagging.join(', ')} are below 50% of their target for this phase.`);
                     }
                 } else {
-                    advice.push("🎉 <strong>Victory Lap:</strong> All immediate collection phases are complete or passed.");
-                }
-
-                if(totalRedeemed < totalPledged * 0.4) {
-                    advice.push("📞 <strong>Follow-up:</strong> Many pledges are pending. Initiate a calling campaign to fulfill commitments.");
+                    advice.push("🎉 All phases are complete or none are defined.");
                 }
 
                 stratDiv.innerHTML = advice.map(a => `<p style="margin-bottom:10px; padding:10px; background:white; border-radius:6px;">${a}</p>`).join('');
@@ -606,14 +702,44 @@
                 document.getElementById('p-amount').value = '';
             },
 
+            addCash: (e) => {
+                e.preventDefault();
+                const name = document.getElementById('c-name').value;
+                const amount = document.getElementById('c-amount').value;
+                const ref = document.getElementById('c-ref').value || 'CASH-' + Date.now();
+                const dept = document.getElementById('c-dept').value;
+
+                // Match to pledge if possible
+                const match = store.data.pledges.find(p => p.name.toLowerCase() === name.toLowerCase() && p.dept === dept);
+                
+                store.addTransaction({
+                    amount: Number(amount),
+                    name: name,
+                    ref: ref,
+                    method: 'Cash',
+                    matchedId: match ? match.id : null
+                });
+                app.closeModal('cash');
+                document.getElementById('c-name').value = '';
+                document.getElementById('c-amount').value = '';
+                document.getElementById('c-ref').value = '';
+            },
+
             addPhase: (e) => {
                 e.preventDefault();
                 const name = document.getElementById('s-name').value;
                 const date = document.getElementById('s-date').value;
-                const amount = document.getElementById('s-amount').value;
-                store.addPhase(name, date, amount);
+                
+                const inputs = document.querySelectorAll('.s-target-input');
+                const targets = {};
+                inputs.forEach(i => {
+                    targets[i.dataset.dept] = Number(i.value) || 0;
+                });
+
+                store.addPhase(name, date, targets);
                 document.getElementById('s-name').value = '';
-                document.getElementById('s-amount').value = '';
+                document.querySelectorAll('.s-target-input').forEach(i => i.value = '');
+                document.getElementById('s-total-display').innerText = '0';
             },
 
             quickPay: (pledgeId) => {
@@ -623,13 +749,20 @@
                         amount: Number(amount),
                         name: 'Manual Entry',
                         ref: 'MAN-' + Date.now(),
+                        method: 'Manual',
                         matchedId: pledgeId
                     });
                 }
             },
 
-            // --- RECONCILER LOGIC ---
-            parseSMS: (text) => {
+            // --- RECONCILER LOGIC (Button Triggered) ---
+            parseSMS: () => {
+                const text = document.getElementById('sms-input').innerText;
+                if(text.includes('Paste')) {
+                    alert("Please paste messages first.");
+                    return;
+                }
+
                 const sentences = text.split(/[\.!?]+/).filter(s => s.includes('Ksh') || s.includes('KES') || s.includes('received'));
                 stagedTransactions = [];
                 
@@ -683,7 +816,7 @@
                         `;
                     });
                 } else {
-                    document.getElementById('staged-container').classList.add('hidden');
+                    alert("No valid M-Pesa transactions found in text.");
                 }
             },
 
