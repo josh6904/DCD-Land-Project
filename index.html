@@ -116,6 +116,7 @@
         .badge { padding: 4px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; }
         .badge-success { background: #D1FAE5; color: #065F46; }
         .badge-warn { background: #FEF3C7; color: #92400E; }
+        .badge-danger { background: #FEE2E2; color: #991B1B; }
 
         /* --- Reconciler Box --- */
         .reconciler-area { background: #ECFDF5; border: 2px dashed var(--primary); padding: 20px; border-radius: 12px; text-align: center; cursor: text; }
@@ -207,7 +208,8 @@
                             <th>Member</th>
                             <th>Tribe (Dept)</th>
                             <th>Committed</th>
-                            <th>Redeemed</th>
+                            <th>Paid</th>
+                            <th>Debt</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
@@ -251,7 +253,7 @@
                 <table>
                     <thead>
                         <tr>
-                            <th>Date</th>
+                            <th>Date & Time</th>
                             <th>Ref</th>
                             <th>Member</th>
                             <th>Amount</th>
@@ -325,7 +327,7 @@
             <div class="card" style="border-color: var(--danger);">
                 <h3 style="color: var(--danger);">Danger Zone</h3>
                 <p class="text-sub">Reset the entire project. This cannot be undone.</p>
-                <button class="btn btn-danger btn-sm mt-4" onclick="if(confirm('Are you sure? This deletes all data.')) { localStorage.removeItem('landquest_db_v3'); location.reload(); }">Reset All Data</button>
+                <button class="btn btn-danger btn-sm mt-4" onclick="if(confirm('Are you sure? This deletes all data.')) { localStorage.removeItem('landquest_db_v5'); location.reload(); }">Reset All Data</button>
             </div>
         </section>
 
@@ -392,7 +394,7 @@
 
     <script>
         // --- DATA STORE ---
-        const DB_KEY = 'landquest_db_v3';
+        const DB_KEY = 'landquest_db_v5';
         
         const DEPARTMENTS = [
             "Eagles", 
@@ -438,23 +440,55 @@
                 this.save();
             }
 
-            addTransaction(tx) {
-                this.data.transactions.unshift({
-                    id: Date.now(),
-                    date: new Date().toISOString(),
-                    amount: tx.amount,
-                    name: tx.name,
-                    ref: tx.ref,
-                    method: tx.method || 'M-Pesa',
-                    pledgeId: tx.matchedId
-                });
+            // Check for Duplicates before adding
+            validateTransaction(name, amount, method, ref) {
+                const now = Date.now();
+                const thirtyMins = 30 * 60 * 1000;
 
-                if(tx.matchedId) {
-                    const pledge = this.data.pledges.find(p => p.id === tx.matchedId);
-                    if(pledge) {
-                        pledge.redeemed = (pledge.redeemed || 0) + tx.amount;
+                // 1. Ref Code Unique Check (Essential for M-Pesa and Cash receipts)
+                const duplicateRef = this.data.transactions.find(t => t.ref === ref);
+                if (duplicateRef) {
+                    return `Reference Code "${ref}" already exists. Duplicate detected.`;
+                }
+
+                // 2. Cash Rule: Same person, same amount, within 30 mins
+                if (method === 'Cash') {
+                    const recentCash = this.data.transactions.find(t => 
+                        t.name.toLowerCase() === name.toLowerCase() &&
+                        t.amount === amount &&
+                        t.method === 'Cash' &&
+                        (now - new Date(t.date).getTime()) < thirtyMins
+                    );
+                    if (recentCash) {
+                        return `Duplicate Warning: ${name} just paid ${amount} Cash less than 30 mins ago.`;
                     }
                 }
+
+                return null; // Safe
+            }
+
+            addTransaction(tx) {
+                // 1. Auto-Link to Pledge
+                // Find exact name match first, then partial
+                let matchedPledge = this.data.pledges.find(p => p.name.toLowerCase() === tx.name.toLowerCase() && p.dept === tx.dept);
+                
+                if (!matchedPledge) {
+                    matchedPledge = this.data.pledges.find(p => tx.name.toLowerCase().includes(p.name.toLowerCase()));
+                }
+
+                // 2. Update Pledge if matched
+                if (matchedPledge) {
+                    // If user is 'Unknown' or parser name is messy, normalize to Pledge Name
+                    tx.name = matchedPledge.name; 
+                    tx.pledgeId = matchedPledge.id;
+                    
+                    // Fulfill Pledge Logic
+                    matchedPledge.redeemed = (matchedPledge.redeemed || 0) + tx.amount;
+                } else {
+                    tx.pledgeId = null;
+                }
+
+                this.data.transactions.unshift(tx);
                 this.save();
             }
 
@@ -559,35 +593,50 @@
                     `;
                 });
 
-                // 3. Pledge Table
+                // 3. Pledge Table (Debt Calculation)
                 const pTable = document.getElementById('pledges-table');
                 pTable.innerHTML = '';
                 store.data.pledges.forEach(p => {
-                    const pct = ((p.redeemed || 0) / p.amount) * 100;
-                    const status = pct >= 100 ? '<span class="badge badge-success">Paid</span>' : `<span class="badge badge-warn">${pct.toFixed(0)}%</span>`;
+                    const redeemed = p.redeemed || 0;
+                    const debt = p.amount - redeemed;
+                    const pct = (redeemed / p.amount) * 100;
                     
+                    let status = '';
+                    if(debt <= 0) status = '<span class="badge badge-success">PAID</span>';
+                    else status = `<span class="badge badge-warn">${pct.toFixed(0)}%</span>`;
+                    
+                    // If debt exists, make it red
+                    const debtDisplay = debt <= 0 ? 
+                        `<span class="text-sub">0 (Clear)</span>` : 
+                        `<span style="font-weight:bold; color:var(--danger)">${app.formatMoney(debt)}</span>`;
+
                     pTable.innerHTML += `
                         <tr>
                             <td><strong>${p.name}</strong></td>
                             <td>${p.dept}</td>
                             <td>${app.formatMoney(p.amount)}</td>
-                            <td>${app.formatMoney(p.redeemed || 0)}</td>
+                            <td>${app.formatMoney(redeemed)}</td>
+                            <td>${debtDisplay}</td>
                             <td>${status}</td>
                             <td>
-                                <button class="btn btn-secondary btn-sm" onclick="app.quickPay(${p.id})">+ Pay</button>
+                                ${debt > 0 ? `<button class="btn btn-secondary btn-sm" onclick="app.quickPay(${p.id})">+ Pay</button>` : '-'}
                             </td>
                         </tr>
                     `;
                 });
 
-                // 4. Ledger Table
+                // 4. Ledger Table (Timestamps)
                 const lTable = document.getElementById('ledger-table');
                 lTable.innerHTML = '';
                 store.data.transactions.forEach(t => {
                     const linked = t.pledgeId ? '✅ Yes' : '-';
+                    // Format Date and Time
+                    const dateObj = new Date(t.date);
+                    const formattedTime = dateObj.toLocaleDateString() + ', ' + dateObj.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+
                     lTable.innerHTML += `
                         <tr>
-                            <td>${new Date(t.date).toLocaleDateString()}</td>
+                            <td style="font-size:0.85rem;">${formattedTime}</td>
                             <td style="font-family:monospace;">${t.ref}</td>
                             <td>${t.name}</td>
                             <td>${app.formatMoney(t.amount)}</td>
@@ -597,24 +646,19 @@
                     `;
                 });
 
-                // 5. Tribes Grid (vs Phase Target)
-                // Determine current phase (upcoming) or latest past
+                // 5. Tribes Grid
                 let currentPhase = store.data.phases.find(p => new Date(p.date) >= today) || store.data.phases[store.data.phases.length - 1];
 
                 const tGrid = document.getElementById('tribes-grid');
                 tGrid.innerHTML = '';
                 DEPARTMENTS.forEach(dept => {
-                    // Cash collected by this dept
                     const deptCash = store.data.transactions
-                        .filter(t => t.name && store.data.pledges.find(p => p.id === t.pledgeId && p.dept === dept))
+                        .filter(t => t.pledgeId && store.data.pledges.find(p => p.id === t.pledgeId && p.dept === dept))
                         .reduce((sum, t) => sum + t.amount, 0);
 
-                    // Pledges stats
                     const deptPledges = store.data.pledges.filter(p => p.dept === dept);
-                    const deptPledgedTotal = deptPledges.reduce((sum, p) => sum + p.amount, 0);
                     const deptRedeemed = deptPledges.reduce((sum, p) => sum + (p.redeemed || 0), 0);
 
-                    // Phase Target
                     const phaseTarget = currentPhase ? (currentPhase.targets[dept] || 0) : 0;
                     const targetPct = phaseTarget ? Math.min(100, (deptCash / phaseTarget) * 100).toFixed(1) : 0;
 
@@ -665,12 +709,11 @@
                         advice.push(`🚨 <strong>Deadline Passed:</strong> ${currentPhase.name} date was ${new Date(currentPhase.date).toLocaleDateString()}.`);
                     }
                     
-                    // Find lagging departments
                     const lagging = [];
                     DEPARTMENTS.forEach(d => {
                         const dTarget = currentPhase.targets[d] || 0;
                         const dCash = store.data.transactions
-                            .filter(t => t.name && store.data.pledges.find(p => p.id === t.pledgeId && p.dept === d))
+                            .filter(t => t.pledgeId && store.data.pledges.find(p => p.id === t.pledgeId && p.dept === d))
                             .reduce((sum, t) => sum + t.amount, 0);
                         
                         if(dTarget > 0 && (dCash / dTarget) < 0.5) {
@@ -679,7 +722,7 @@
                     });
 
                     if(lagging.length > 0) {
-                        advice.push(`⚠️ <strong>Tribes needing push:</strong> ${lagging.join(', ')} are below 50% of their target for this phase.`);
+                        advice.push(`⚠️ <strong>Tribes needing push:</strong> ${lagging.join(', ')} are below 50% of their target.`);
                     }
                 } else {
                     advice.push("🎉 All phases are complete or none are defined.");
@@ -709,15 +752,23 @@
                 const ref = document.getElementById('c-ref').value || 'CASH-' + Date.now();
                 const dept = document.getElementById('c-dept').value;
 
-                // Match to pledge if possible
-                const match = store.data.pledges.find(p => p.name.toLowerCase() === name.toLowerCase() && p.dept === dept);
-                
+                // Validation
+                const error = store.validateTransaction(name, Number(amount), 'Cash', ref);
+                if(error) {
+                    alert(error);
+                    return;
+                }
+
+                // Explicit Timestamp for Accountability (Time of Entry)
+                const entryTime = new Date().toISOString();
+
                 store.addTransaction({
                     amount: Number(amount),
                     name: name,
                     ref: ref,
                     method: 'Cash',
-                    matchedId: match ? match.id : null
+                    dept: dept,
+                    date: entryTime 
                 });
                 app.closeModal('cash');
                 document.getElementById('c-name').value = '';
@@ -745,13 +796,28 @@
             quickPay: (pledgeId) => {
                 const amount = prompt("Enter payment amount (KES):");
                 if(amount && !isNaN(amount)) {
-                    store.addTransaction({
-                        amount: Number(amount),
-                        name: 'Manual Entry',
-                        ref: 'MAN-' + Date.now(),
-                        method: 'Manual',
-                        matchedId: pledgeId
-                    });
+                    // Determine Dept from Pledge
+                    const pledge = store.data.pledges.find(p => p.id === pledgeId);
+                    
+                    // Ref Code Generation
+                    const ref = 'MAN-' + Date.now();
+                    
+                    // Validation (Manual Pay bypasses cash rules usually, but let's check ref)
+                    if(store.validateTransaction(pledge.name, Number(amount), 'Manual', ref)) {
+                        // Explicit Timestamp for Accountability (Time of Entry)
+                        const entryTime = new Date().toISOString();
+
+                        store.addTransaction({
+                            amount: Number(amount),
+                            name: pledge.name,
+                            ref: ref,
+                            method: 'Manual',
+                            matchedId: pledgeId,
+                            date: entryTime
+                        });
+                    } else {
+                        alert("Duplicate transaction detected.");
+                    }
                 }
             },
 
@@ -779,22 +845,7 @@
                     const refMatch = s.match(/(?:Account\s+Number|Confirmation\s+Code)\s+([A-Za-z0-9]+)/i);
                     if(refMatch) ref = refMatch[1];
 
-                    // Matching Logic
-                    let matchedId = null;
-                    const match = store.data.pledges.find(p => 
-                        name.toLowerCase().includes(p.name.toLowerCase()) || 
-                        p.name.toLowerCase().includes(name.toLowerCase())
-                    );
-
-                    if(match) {
-                        const remaining = match.amount - (match.redeemed || 0);
-                        if(remaining >= amount) {
-                            matchedId = match.id;
-                            name = match.name;
-                        }
-                    }
-
-                    stagedTransactions.push({ amount, name, ref, matchedId, id: Math.random() });
+                    stagedTransactions.push({ amount, name, ref, matchedId: null, id: Math.random() });
                 });
 
                 if(stagedTransactions.length > 0) {
@@ -804,7 +855,7 @@
                     list.innerHTML = '';
                     
                     stagedTransactions.forEach((t) => {
-                        const badge = t.matchedId ? '<span class="badge badge-success">Pledge Matched ✅</span>' : '<span class="badge badge-warn">New Donor ⚠️</span>';
+                        const badge = '<span class="badge badge-warn">New Donor ⚠️</span>';
                         list.innerHTML += `
                             <div style="padding: 10px; border-bottom: 1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
                                 <div>
@@ -821,9 +872,30 @@
             },
 
             commitStaged: () => {
-                stagedTransactions.forEach(t => store.addTransaction(t));
+                let addedCount = 0;
+                // Capture the current time as the entry time for the whole batch
+                const entryTime = new Date().toISOString();
+
+                for(let t of stagedTransactions) {
+                    // Validate before commit
+                    const error = store.validateTransaction(t.name, t.amount, 'M-Pesa', t.ref);
+                    if(error) {
+                        alert(`Skipping: ${error}`);
+                        continue;
+                    }
+
+                    store.addTransaction({
+                        amount: t.amount,
+                        name: t.name,
+                        ref: t.ref,
+                        method: 'M-Pesa',
+                        matchedId: t.matchedId,
+                        date: entryTime // Use Time of Entry for M-Pesa too, for accountability
+                    });
+                    addedCount++;
+                }
                 app.clearStaged();
-                alert(`Processed ${stagedTransactions.length} transactions!`);
+                if(addedCount > 0) alert(`Processed ${addedCount} transactions successfully!`);
             },
 
             clearStaged: () => {
