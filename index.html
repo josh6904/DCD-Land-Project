@@ -5,135 +5,275 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DCD Possess The Land | Fundraising</title>
     <style>
-        /* --- VARIABLES --- */
+        /* --- 1. CSS VARIABLES --- */
         :root {
-            --primary: #059669; --primary-dark: #064E3B; --secondary: #3B82F6;
-            --accent: #F59E0B; --danger: #EF4444; --bg: #F3F4F6;
-            --surface: #FFFFFF; --text-main: #1F2937; --text-sub: #6B7280;
-            --border: #E5E7EB; --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            /* Palette */
+            --primary: #059669; /* Emerald Green */
+            --primary-dark: #064E3B;
+            --primary-light: #D1FAE5;
+            --secondary: #3B82F6; /* Blue */
+            --accent: #F59E0B; /* Amber */
+            --danger: #EF4444;
+            --bg: #F3F4F6;
+            --surface: #FFFFFF;
+            --text-main: #1F2937;
+            --text-sub: #6B7280;
+            --border: #E5E7EB;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+
+        /* --- 2. GLOBAL RESET --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         
-        body { background-color: var(--bg); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+        body { 
+            background-color: var(--bg); 
+            color: var(--text-main); 
+            display: flex; 
+            height: 100vh; 
+            overflow: hidden; 
+        }
 
-        /* --- LAYOUT --- */
-        aside { width: 260px; background: #111827; color: white; display: flex; flex-direction: column; padding: 20px; z-index: 50; }
-        main { flex: 1; overflow-y: auto; padding: 24px; position: relative; }
+        /* --- 3. LAYOUT --- */
+        aside {
+            width: 280px;
+            background: #111827;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            z-index: 50;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
 
-        /* --- NAV --- */
-        .brand { font-size: 1.1rem; font-weight: 800; margin-bottom: 40px; color: var(--primary); line-height: 1.2; display: flex; align-items: center; gap: 10px;}
-        .nav-item { padding: 12px; margin-bottom: 5px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: #9CA3AF; transition: 0.2s; font-size: 0.95rem; }
-        .nav-item:hover { background: #374151; color: white; }
-        .nav-item.active { background: var(--primary); color: white; font-weight: 600; }
+        main { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 32px; 
+            position: relative;
+        }
 
+        /* --- 4. NAVIGATION --- */
+        .brand { 
+            font-size: 1.2rem; 
+            font-weight: 800; 
+            margin-bottom: 48px; 
+            color: var(--primary); 
+            letter-spacing: 1px; 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            line-height: 1;
+        }
+
+        .nav-group { display: flex; flex-direction: column; gap: 8px; }
+
+        .nav-item { 
+            padding: 14px; 
+            margin-bottom: 4px; 
+            border-radius: 8px; 
+            cursor: pointer;
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            color: #9CA3AF; 
+            transition: all 0.2s ease; 
+            font-size: 0.95rem;
+            border: 1px solid transparent;
+        }
+
+        .nav-item:hover { 
+            background: #374151; 
+            color: white; 
+            border-color: #374151;
+        }
+
+        .nav-item.active { 
+            background: var(--primary); 
+            color: white; 
+            font-weight: 600;
+        }
+
+        /* --- 5. MOBILE RESPONSIVENESS --- */
         @media (max-width: 768px) {
             body { flex-direction: column; }
-            aside { width: 100%; height: auto; position: fixed; bottom: 0; left: 0; flex-direction: row; padding: 10px; justify-content: space-around; border-top: 1px solid var(--border); background: white; color: #333; }
+            aside { 
+                width: 100%; 
+                height: auto; 
+                position: fixed; 
+                bottom: 0; 
+                left: 0; 
+                flex-direction: row; 
+                padding: 12px; 
+                justify-content: space-around; 
+                border-top: 1px solid var(--border); 
+                background: white; 
+                color: #333;
+                box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            }
             .brand { display: none; }
-            .nav-item { flex-direction: column; gap: 4px; font-size: 0.7rem; text-align: center; padding: 5px; }
-            main { padding-bottom: 80px; }
+            .nav-item { 
+                flex-direction: column; 
+                gap: 4px; 
+                font-size: 0.75rem; 
+                text-align: center; 
+                padding: 8px;
+                background: transparent;
+            }
+            .nav-item:hover { background: rgba(0,0,0,0.05); }
+            main { padding-bottom: 70px; } /* Space for bottom nav */
         }
 
-        /* --- COMPONENTS --- */
-        .card { background: var(--surface); padding: 20px; border-radius: 12px; border: 1px solid var(--border); box-shadow: var(--shadow); margin-bottom: 24px; }
-        
-        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-        
-        @media (max-width: 768px) { .grid-2, .grid-4 { grid-template-columns: 1fr; } }
-        @media (max-width: 1200px) { .grid-4 { grid-template-columns: 1fr 1fr; } }
+        /* --- 6. COMPONENTS --- */
+        .card { 
+            background: var(--surface); 
+            padding: 24px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border); 
+            box-shadow: var(--shadow); 
+            margin-bottom: 24px;
+        }
 
-        /* Text Styles */
-        h1, h2, h3 { margin-bottom: 12px; color: var(--text-main); }
-        .text-sub { color: var(--text-sub); font-size: 0.9rem; }
-        .text-lg { font-size: 1.5rem; font-weight: 700; }
-        .text-xl { font-size: 2rem; font-weight: 800; color: var(--primary-dark); }
-        .mb-4 { margin-bottom: 16px; }
-        .flex-between { display: flex; justify-content: space-between; align-items: center; }
-
-        /* Inputs & Buttons */
-        .btn { padding: 10px 20px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; justify-content: center; }
+        .btn { 
+            padding: 12px 24px; 
+            border-radius: 8px; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: 600;
+            transition: all 0.2s ease; 
+            display: inline-flex; 
+            align-items: center; 
+            gap: 8px; 
+            justify-content: center;
+            font-size: 0.95rem;
+        }
+        
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: var(--primary-dark); }
-        .btn-primary:disabled { background: #9CA3AF; cursor: not-allowed; }
+        .btn-primary:disabled { background: #9CA3AF; cursor: not-allowed; opacity: 0.7; }
         .btn-secondary { background: white; border: 1px solid var(--border); color: var(--text-main); }
+        .btn-secondary:hover { background: #f9fafb; }
         .btn-danger { background: var(--danger); color: white; }
-        .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
+        .btn-sm { padding: 8px 16px; font-size: 0.85rem; }
         .btn-block { width: 100%; }
 
-        input, select, textarea { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; }
-        input:focus { outline: 2px solid var(--primary); border-color: transparent; }
+        input, select, textarea { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid var(--border); 
+            border-radius: 8px; 
+            margin-bottom: 16px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        input:focus, select:focus, textarea:focus { 
+            outline: 2px solid var(--primary); 
+            border-color: var(--primary); 
+            box-shadow: 0 0 0 3px rgba(5, 150, 245, 0.1);
+        }
         
-        .checkbox-wrapper { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
-        .checkbox-wrapper input { width: auto; margin: 0; }
+        .checkbox-wrapper { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; cursor: pointer; }
+        .checkbox-wrapper input { width: auto; margin: 0; cursor: pointer; }
 
-        /* Visuals */
+        /* --- 7. VISUALS --- */
+        .text-lg { font-size: 1.5rem; font-weight: 700; }
+        .text-xl { font-size: 2.25rem; font-weight: 800; color: var(--primary-dark); }
+        .text-sub { color: var(--text-sub); font-size: 0.9rem; }
+        .badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+        .badge-success { background: var(--primary-light); color: var(--primary-dark); }
+        .badge-warn { background: var(--accent); color: #92400E; }
+        .badge-danger { background: #FEE2E2; color: var(--danger); }
+
         .progress-track { background: #E5E7EB; height: 12px; border-radius: 6px; overflow: hidden; margin-top: 8px; position: relative; }
-        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.5s ease; }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: width 0.6s ease-out; }
         .progress-fill.amber { background: var(--accent); }
         .progress-fill.danger { background: var(--danger); }
 
-        /* Phase Timeline */
-        .phase-timeline { border-left: 3px solid var(--border); padding-left: 20px; margin-left: 10px; }
-        .phase-item { position: relative; margin-bottom: 30px; padding-left: 20px; }
-        .phase-item::before { content: ''; position: absolute; left: -26px; top: 5px; width: 16px; height: 16px; border-radius: 50%; background: var(--bg); border: 3px solid var(--border); }
-        .phase-item.active::before { border-color: var(--primary); background: var(--primary); }
-        .phase-item.completed::before { border-color: var(--primary-dark); background: var(--primary-dark); }
-
-        /* Tables */
+        /* --- 8. TABLES --- */
         table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        th, td { padding: 14px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
         th { background: #F9FAFB; color: var(--text-sub); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
-        .badge { padding: 4px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; }
-        .badge-success { background: #D1FAE5; color: #065F46; }
-        .badge-warn { background: #FEF3C7; color: #92400E; }
-        .badge-danger { background: #FEE2E2; color: #991B1B; }
-
-        /* Reconciler */
-        .reconciler-area { background: #ECFDF5; border: 2px dashed var(--primary); padding: 20px; border-radius: 12px; text-align: center; cursor: text; }
-        .reconciler-area:focus { background: white; border-style: solid; outline: none; }
-
-        /* Modal */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 100; }
-        .modal { background: white; width: 90%; max-width: 500px; padding: 24px; border-radius: 12px; max-height: 90vh; overflow-y: auto; }
+        tr:hover td { background: #fafafa; }
         
-        /* Resolution Box */
-        .resolution-box { border: 1px solid var(--accent); padding: 10px; background: #FFFBEB; border-radius: 8px; margin-top: 5px; }
+        .money { font-family: 'Courier New', monospace; font-weight: 600; color: var(--text-main); }
 
-        /* Stats */
-        .trans-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
-        .trans-stat-card { background: white; padding: 20px; border-radius: 12px; border: 1px solid var(--border); }
-        .trans-stat-label { font-size: 13px; color: #666; margin-bottom: 8px; }
-        .trans-stat-value { font-size: 24px; font-weight: 700; }
-        .trans-row { padding: 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .trans-row.new-member { background: #E3F2FD; border-left: 4px solid #2196F3; }
-        .trans-row.matched { background: #E8F5E9; border-left: 4px solid #4CAF50; }
-        .trans-row.unmatched { background: #FFF3E0; border-left: 4px solid #FF9800; }
+        /* --- 9. VIZUALIZATION COMPONENTS --- */
+        .viz-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; }
+        .viz-card { 
+            background: white; 
+            padding: 24px; 
+            border-radius: 12px; 
+            border: 1px solid var(--border); 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center;
+        }
+        
+        .donut-chart {
+            width: 160px; height: 160px; 
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0% 100%); 
+            position: relative; 
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+        }
+        .donut-hole {
+            width: 100px; height: 100px; 
+            background: white; 
+            border-radius: 50%;
+            position: absolute; top: 30px; left: 30px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
 
-        /* Visualization */
-        .viz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .viz-card { background: white; padding: 24px; border-radius: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .donut-chart { width: 140px; height: 140px; border-radius: 50%; background: conic-gradient(var(--primary) 0% 100%); position: relative; margin-bottom: 15px; }
-        .donut-hole { width: 90px; height: 90px; background: white; border-radius: 50%; position: absolute; top: 25px; left: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .bar-chart-row { width: 100%; margin-bottom: 10px; }
-        .bar-label { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px; }
-        .bar-container { background: #eee; height: 10px; border-radius: 5px; overflow: hidden; }
-        .bar-fill { height: 100%; background: var(--primary); transition: width 0.5s; }
+        /* --- 10. MODAL --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 100;
+            backdrop-filter: blur(2px);
+        }
+        .modal { 
+            background: white; 
+            width: 90%; 
+            max-width: 500px; 
+            padding: 32px; 
+            border-radius: 16px; 
+            box-shadow: 0 20px 25px rgba(0,0,0,0.15);
+            animation: modalSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
 
+        @keyframes modalSlide {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-main); }
+        
+        /* --- 11. HELPER CLASSES --- */
         .hidden { display: none !important; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .text-right { text-align: right; }
+        .mt-2 { margin-top: 16px; }
+
     </style>
 </head>
 <body>
 
     <!-- SIDEBAR -->
     <aside>
-        <div class="brand">🏝<br>DCD Possess<br>The Land</div>
-        <div class="nav-item active" onclick="app.nav('dashboard')">📊 Dashboard</div>
-        <div class="nav-item" onclick="app.nav('leaderboard')">🏆 Leaderboard</div>
-        <div class="nav-item" onclick="app.nav('pledges')">🤝 Pledges</div>
-        <div class="nav-item" onclick="app.nav('ledger')">💰 Ledger</div>
-        <div class="nav-item" onclick="app.nav('tribes')">🏢 Tribes</div>
-        <div style="margin-top: auto;" class="nav-item" onclick="app.nav('settings')">⚙️ Settings</div>
+        <div class="brand">
+            <div style="width: 32px; height: 32px; background: var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem;">🌍</div>
+            DCD Possess The Land
+        </div>
+        <div class="nav-group">
+            <div class="nav-item active" onclick="app.navigate('dashboard')">📊 Dashboard</div>
+            <div class="nav-item" onclick="app.navigate('leaderboard')">🏆 Leaderboard</div>
+            <div class="nav-item" onclick="app.navigate('pledges')">🤝 Pledges</div>
+            <div class="nav-item" onclick="app.navigate('ledger')">💰 Ledger</div>
+            <div class="nav-item" onclick="app.navigate('tribes')">🏢 Tribes</div>
+            <div class="nav-item" onclick="app.navigate('settings')">⚙️ Settings</div>
+        </div>
     </aside>
 
     <!-- MAIN CONTENT -->
@@ -141,546 +281,1082 @@
         
         <!-- DASHBOARD VIEW -->
         <section id="view-dashboard">
-            <header class="flex-between mb-4">
+            <header class="flex-between">
                 <div>
                     <h1>Project Overview</h1>
                     <p class="text-sub">Real-time status for DCD Possess The Land</p>
                 </div>
-                <div style="display:flex; gap:10px;">
+                <div style="display: flex; gap: 12px;">
                     <button class="btn btn-danger" onclick="app.openModal('expense')">➖ Expense</button>
                     <button class="btn btn-secondary" onclick="app.openModal('cash')">💵 Add Cash</button>
                     <button class="btn btn-primary" onclick="app.openModal('pledge')">+ New Pledge</button>
                 </div>
             </header>
 
-            <!-- VIZ -->
-            <div class="viz-grid mb-4">
+            <!-- KPI CARDS -->
+            <div class="viz-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
                 <div class="viz-card">
-                    <h4 class="text-sub" style="margin-bottom: 10px;">Income vs Expense</h4>
-                    <div class="donut-chart" id="income-donut">
-                        <div class="donut-hole">
-                            <span class="text-lg" style="color: var(--primary);" id="viz-net-bal">0</span>
-                            <span class="text-sub">Net Balance</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="viz-card" style="align-items: stretch; justify-content: flex-start;">
-                    <h4 class="text-sub" style="margin-bottom: 10px;">Top Department Performance</h4>
-                    <div id="viz-bar-chart" style="width: 100%; display: flex; flex-direction: column; justify-content: center;"></div>
-                </div>
-            </div>
-
-            <!-- KPIs -->
-            <div class="grid-4">
-                <div class="card">
-                    <h3 class="text-sub">Gross Cash</h3>
+                    <div class="text-sub">Gross Cash Collected</div>
                     <div class="text-xl" id="dash-cash">0</div>
                 </div>
-                <div class="card">
-                    <h3 class="text-sub">Expenses</h3>
-                    <div class="text-xl" style="color: var(--danger);" id="dash-expenses">0</div>
+                <div class="viz-card">
+                    <div class="text-sub">Net Balance</div>
+                    <div class="text-xl" id="dash-balance" style="color: var(--primary-dark);">0</div>
                 </div>
-                <div class="card">
-                    <h3 class="text-sub">Net Balance</h3>
-                    <div class="text-xl" style="color: var(--primary-dark);" id="dash-balance">0</div>
-                </div>
-                <div class="card">
-                    <h3 class="text-sub">Redemption Rate</h3>
-                    <div class="text-xl" id="dash-rate">0%</div>
+                <div class="viz-card">
+                    <div class="text-sub">Total Pledges</div>
+                    <div class="text-xl" id="dash-pledges">0</div>
                 </div>
             </div>
 
             <!-- PHASES -->
-            <div class="card">
-                <div class="flex-between">
-                    <h3>📅 Collection Phases</h3>
-                    <button class="btn btn-secondary btn-sm" onclick="app.nav('settings')">Edit Phases</button>
+            <div class="card mt-2">
+                <div class="flex-between" style="margin-bottom: 12px;">
+                    <h3 style="color: var(--text-main);">Collection Phases</h3>
+                    <button class="btn btn-secondary btn-sm" onclick="app.navigate('settings')">Edit Phases</button>
                 </div>
-                <div id="phase-timeline-container" class="phase-timeline mt-4"></div>
+                
+                <div id="phase-timeline-container">
+                    <!-- Populated by JS -->
+                </div>
             </div>
 
             <!-- RECENT ACTIVITY -->
             <div class="card">
-                <h3>🔴 Recent Activity</h3>
-                <div id="recent-activity-list" style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">
-                    <p class="text-sub" style="text-align:center;">No recent activity</p>
+                <div class="flex-between" style="margin-bottom: 12px;">
+                    <h3 style="color: var(--text-main);">Recent Activity</h3>
+                </div>
+                <div id="recent-activity-list" style="display: flex; flex-direction: column; gap: 12px;">
+                    <p class="text-sub" style="text-align: center; padding: 20px;">No recent activity yet.</p>
                 </div>
             </div>
         </section>
 
-        <!-- LEADERBOARD -->
+        <!-- LEADERBOARD VIEW -->
         <section id="view-leaderboard" class="hidden">
-            <h1>Department Leaderboard</h1>
-            <p class="text-sub mb-4">Current ranking based on Phase Target completion</p>
-            <div class="card" id="leaderboard-container"></div>
+            <div class="flex-between">
+                <h1>Department Leaderboard</h1>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-secondary btn-sm" onclick="app.exportCSV('pledges')">📥 Export</button>
+                </div>
+            </div>
+            <p class="text-sub" style="margin-bottom: 24px;">Performance ranked by current phase completion.</p>
+            
+            <div class="card">
+                <table style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;">Rank</th>
+                            <th>Department</th>
+                            <th style="text-align: right;">Target</th>
+                            <th style="text-align: right;">Collected</th>
+                            <th style="text-align: center;">Progress</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-body">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
         </section>
 
-        <!-- PLEDGES -->
+        <!-- PLEDGES VIEW -->
         <section id="view-pledges" class="hidden">
             <div class="flex-between">
-                <h1>Member & Pledge Ledger</h1>
-                <div style="display:flex; gap:10px;">
-                    <button class="btn btn-secondary btn-sm" onclick="app.exportToCSV('pledges')">📥 Export CSV</button>
-                    <button class="btn btn-primary" onclick="app.openModal('pledge')">+ Add Pledge</button>
+                <h1>Pledges & Members</h1>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn btn-secondary btn-sm" onclick="app.exportCSV('pledges')">📥 Export CSV</button>
+                    <button class="btn btn-primary" onclick="app.openModal('pledge')">+ New Pledge</button>
                 </div>
             </div>
-            <div class="card mt-4">
-                <table>
-                    <thead><tr><th>Member</th><th>Contact</th><th>Tribe</th><th>Committed</th><th>Paid</th><th>Debt</th><th>Status</th><th>Action</th></tr></thead>
-                    <tbody id="pledges-table"></tbody>
+            <div class="card mt-2">
+                <table style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Member</th>
+                            <th>Tribe</th>
+                            <th style="text-align: right;">Pledged</th>
+                            <th style="text-align: right;">Redeemed</th>
+                            <th style="text-align: right;">Remaining</th>
+                            <th style="text-align: center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pledges-body">
+                        <!-- Populated by JS -->
+                    </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- LEDGER -->
+        <!-- LEDGER VIEW -->
         <section id="view-ledger" class="hidden">
-            <h1>Transaction Reconciliation</h1>
-            <div class="card mt-4" style="border-left: 5px solid var(--primary);">
-                <h3>🤖 M-Pesa SMS Parser (Integrated)</h3>
-                <p class="text-sub">Paste M-Pesa messages. Auto-creates new members if not found.</p>
-                <div class="reconciler-area" contenteditable="true" id="sms-input">Paste M-Pesa messages here...</div>
-                <div style="margin-top: 10px; text-align: right;"><button class="btn btn-primary" onclick="app.parseSMS()">⚡ Extract Transactions</button></div>
+            <div class="flex-between">
+                <h1>Transaction Ledger</h1>
+                <button class="btn btn-secondary btn-sm" onclick="app.exportCSV('ledger')">📥 Export</button>
+            </div>
 
-                <div id="parser-stats" class="trans-stats mt-4 hidden">
-                    <div class="trans-stat-card"><div class="trans-stat-label">Total Parsed</div><div class="trans-stat-value" id="st-total">0</div></div>
-                    <div class="trans-stat-card"><div class="trans-stat-label">New Members</div><div class="trans-stat-value" style="color:var(--secondary);" id="st-new">0</div></div>
-                    <div class="trans-stat-card"><div class="trans-stat-label">Matched</div><div class="trans-stat-value" style="color:var(--primary);" id="st-matched">0</div></div>
-                    <div class="trans-stat-card"><div class="trans-stat-label">Unmatched</div><div class="trans-stat-value" style="color:var(--accent);" id="st-unmatched">0</div></div>
+            <!-- PARSER -->
+            <div class="card" style="border-left: 4px solid var(--primary); background: #F0FDF4;">
+                <div class="flex-between">
+                    <h3>🤖 M-Pesa SMS Parser</h3>
+                    <span class="badge badge-success" style="margin-left: 8px;">Integrated</span>
+                </div>
+            </div>
+
+            <div class="card mt-2" style="background: white;">
+                <div class="form-group">
+                    <label style="font-weight: 600; color: var(--text-sub); display: block; margin-bottom: 8px;">Paste M-Pesa Messages</label>
+                    <textarea id="sms-input" style="min-height: 150px; font-family: 'Courier New', monospace; font-size: 0.9rem;" placeholder="Paste SMS messages here (e.g., 'Ksh10,000 received from John Doe...')..."></textarea>
+                </div>
+                <div class="flex-between">
+                    <button class="btn btn-secondary" onclick="app.clearParser()">Clear</button>
+                    <button class="btn btn-primary" onclick="app.parseSMS()">⚡ Extract Transactions</button>
                 </div>
 
-                <div id="staged-container" class="hidden">
-                    <div class="flex-between mt-4">
-                        <h4>Staged Transactions (<span id="staged-count">0</span>)</h4>
-                        <div><button class="btn btn-secondary btn-sm" onclick="app.clearStaged()">Clear</button><button id="btn-commit" class="btn btn-primary btn-sm" onclick="app.commitStaged()">✅ Add All</button></div>
+                <!-- Stats Area -->
+                <div id="parser-stats" style="display: none; margin-top: 24px; padding: 16px; background: var(--bg); border-radius: 8px;">
+                    <div class="viz-grid" style="grid-template-columns: repeat(4, 1fr);">
+                        <div class="viz-card" style="padding: 16px;">
+                            <div class="text-sub">Total Parsed</div>
+                            <div class="text-lg" id="st-total">0</div>
+                        </div>
+                        <div class="viz-card" style="padding: 16px;">
+                            <div class="text-sub">New Members</div>
+                            <div class="text-lg" id="st-new" style="color: var(--secondary);">0</div>
+                        </div>
+                        <div class="viz-card" style="padding: 16px;">
+                            <div class="text-sub">Matched</div>
+                            <div class="text-lg" id="st-matched" style="color: var(--primary);">0</div>
+                        </div>
+                        <div class="viz-card" style="padding: 16px;">
+                            <div class="text-sub">Unmatched</div>
+                            <div class="text-lg" id="st-unmatched" style="color: var(--accent);">0</div>
+                        </div>
                     </div>
-                    <div id="staged-list" style="margin-top:15px;"></div>
+                </div>
+
+                <div id="staged-container" style="display: none; margin-top: 24px;">
+                    <div class="flex-between" style="margin-bottom: 16px;">
+                        <h4 style="color: var(--text-main);">Staged Transactions (<span id="staged-count">0</span>)</h4>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn btn-secondary" onclick="app.clearParser()">Clear All</button>
+                            <button id="btn-commit-all" class="btn btn-primary" onclick="app.commitAll()">✅ Commit All</button>
+                        </div>
+                    </div>
+                    <div id="staged-list" style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
+                        <!-- Populated by JS -->
+                    </div>
                 </div>
             </div>
 
-            <div class="flex-between mt-4">
-                <h2>Audit Trail (Income & Expenses)</h2>
-                <button class="btn btn-secondary btn-sm" onclick="app.exportToCSV('ledger')">📥 Export CSV</button>
-            </div>
-            <div class="card">
-                <table>
-                    <thead><tr><th>Date</th><th>Ref</th><th>Description/Member</th><th>Amount</th><th>Type</th><th>Action</th></tr></thead>
-                    <tbody id="ledger-table"></tbody>
+            <!-- ACTUAL LEDGER -->
+            <div class="card mt-4">
+                <table style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Reference</th>
+                            <th>Member</th>
+                            <th style="text-align: right;">Amount</th>
+                            <th>Type</th>
+                            <th>Linked Pledge</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ledger-body">
+                        <!-- Populated by JS -->
+                    </tbody>
                 </table>
             </div>
         </section>
 
-        <!-- TRIBES -->
+        <!-- TRIBES VIEW -->
         <section id="view-tribes" class="hidden">
             <h1>Tribe Performance</h1>
-            <p class="text-sub mb-4">Comparing Cash Collected vs Active Phase Target</p>
-            <div class="grid-2 mt-4" id="tribes-grid"></div>
+            <p class="text-sub">Comparison of Cash Collected vs Active Phase Targets.</p>
+            <div id="tribes-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-top: 24px;">
+                <!-- Populated by JS -->
+            </div>
         </section>
 
-        <!-- SETTINGS -->
+        <!-- SETTINGS VIEW -->
         <section id="view-settings" class="hidden">
-            <h1>⚙️ Admin Configuration</h1>
+            <h1>⚙️ Settings</h1>
             <div class="card">
-                <h3>Manage Collection Phases</h3>
-                <p class="text-sub">Set targets for specific deadlines. Assign targets per department.</p>
-                <form onsubmit="app.addPhase(event)" class="mt-4" style="background: #f9fafb; padding: 15px; border-radius: 8px;">
-                    <div class="grid-2">
-                        <div><label class="text-sm">Phase Name</label><input type="text" id="s-name" placeholder="e.g. March 8th Collection" required></div>
-                        <div><label class="text-sm">Target Date</label><input type="date" id="s-date" required></div>
-                    </div>
-                    <label class="text-sm mt-4">Department Targets</label>
-                    <div id="s-targets-container" class="target-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;"></div>
-                    <div style="margin-top: 15px; padding: 10px; background: #e5e7eb; border-radius: 6px; text-align: center;"><strong>Total Phase Target: <span id="s-total-display">0</span></strong></div>
-                    <button type="submit" class="btn btn-primary mt-4 btn-block">+ Add Phase</button>
-                </form>
-                <div id="settings-phase-list" class="mt-4"></div>
-            </div>
-            <div class="card" style="border-color: var(--danger);">
-                <h3 style="color: var(--danger);">Danger Zone</h3>
-                <p class="text-sub">Reset entire project. This cannot be undone.</p>
-                <button class="btn btn-danger btn-sm mt-4" onclick="if(confirm('Are you sure?')) { localStorage.removeItem('dcd_possess_land'); location.reload(); }">Reset All Data</button>
+                <div class="flex-between" style="margin-bottom: 16px;">
+                    <h3>Collection Phases</h3>
+                    <button class="btn btn-danger btn-sm" onclick="app.resetData()">Reset All Data</button>
+                </div>
+                
+                <div id="phases-list" style="display: flex; flex-direction: column; gap: 12px;">
+                    <!-- Populated by JS -->
+                </div>
+
+                <button class="btn btn-primary mt-2" style="width: 100%;">+ Add New Phase</button>
             </div>
         </section>
 
     </main>
 
     <!-- MODALS -->
-    <div class="modal-overlay" id="modal-pledge">
-        <div class="modal">
-            <h2>Add New Pledge / Member</h2>
-            <form onsubmit="app.addPledge(event)">
-                <label class="text-sub">Member Name</label><input type="text" id="p-name" required>
-                <label class="text-sub">Phone Contact</label><input type="text" id="p-phone" placeholder="07...">
-                <div class="checkbox-wrapper"><input type="checkbox" id="p-anon"><label for="p-anon">Keep Anonymous (Hide in public lists)</label></div>
-                <label class="text-sub">Tribe (Department)</label>
+    <!-- Add Pledge Modal -->
+    <dialog class="modal" id="modal-pledge">
+        <form method="dialog">
+            <h2 style="margin-bottom: 24px;">Add New Pledge</h2>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Member Name</label>
+                    <input type="text" id="p-name" placeholder="John Doe" required autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="p-phone" placeholder="07..." autocomplete="tel">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Trial/Department</label>
                 <select id="p-dept" required>
-                    <option>Eagles</option><option>Daughters of Faith</option><option>Youth</option><option>Kingdom Generation</option><option>Planning Committee</option>
+                    <option>Eagles</option>
+                    <option>Daughters of Faith</option>
+                    <option>Youth</option>
+                    <option>Kingdom Generation</option>
+                    <option>Planning Committee</option>
                 </select>
-                <label class="text-sub">Pledged Amount (KES)</label><input type="number" id="p-amount" min="0" required>
-                <div class="flex-between mt-4">
-                    <button type="button" class="btn btn-secondary" onclick="app.closeModal('pledge')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Pledge</button>
-                </div>
-            </form>
-        </div>
-    </div>
+            </div>
 
-    <div class="modal-overlay" id="modal-cash">
-        <div class="modal">
-            <h2>Record Cash Payment</h2>
-            <form onsubmit="app.addCash(event)">
-                <label class="text-sub">Member Name</label><input type="text" id="c-name" required>
-                <label class="text-sub">Amount (KES)</label><input type="number" id="c-amount" min="0" required>
-                <label class="text-sub">Receipt/Reference</label><input type="text" id="c-ref" placeholder="e.g. RCPT-001">
-                <label class="text-sub">Tribe (Department)</label>
+            <div class="form-group">
+                <label>Pledged Amount (KES)</label>
+                <input type="number" id="p-amount" min="0" placeholder="0.00" required>
+            </div>
+
+            <div class="flex-between mt-2">
+                <button type="button" class="btn btn-secondary" onclick="app.closeModal('pledge')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save Pledge</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Add Cash Modal -->
+    <dialog class="modal" id="modal-cash">
+        <form method="dialog">
+            <h2 style="margin-bottom: 24px;">Record Cash Payment</h2>
+            
+            <div class="form-group">
+                <label>Member Name</label>
+                <input type="text" id="c-name" placeholder="John Doe" required>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Amount (KES)</label>
+                    <input type="number" id="c-amount" min="0" placeholder="0.00" required>
+                </div>
+                <div class="form-group">
+                    <label>Reference # (Optional)</label>
+                    <input type="text" id="c-ref" placeholder="RCPT-001">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Trial/Department</label>
                 <select id="c-dept" required>
-                    <option>Eagles</option><option>Daughters of Faith</option><option>Youth</option><option>Kingdom Generation</option><option>Planning Committee</option>
+                    <option>Eagles</option>
+                    <option>Daughters of Faith</option>
+                    <option>Youth</option>
+                    <option>Kingdom Generation</option>
+                    <option>Planning Committee</option>
                 </select>
-                <div class="flex-between mt-4">
-                    <button type="button" class="btn btn-secondary" onclick="app.closeModal('cash')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Cash Record</button>
-                </div>
-            </form>
-        </div>
-    </div>
+            </div>
 
-    <div class="modal-overlay" id="modal-expense">
-        <div class="modal">
-            <h2>Record Expense</h2>
-            <form onsubmit="app.addExpense(event)">
-                <label class="text-sub">Description (e.g. Land Survey, Transport)</label><input type="text" id="e-desc" required>
-                <label class="text-sub">Amount (KES)</label><input type="number" id="e-amount" min="0" required>
-                <label class="text-sub">Category</label><select id="e-cat"><option>Operations</option><option>Logistics</option><option>Administrative</option><option>Land Costs</option></select>
-                <label class="text-sub">Receipt/Ref</label><input type="text" id="e-ref" placeholder="EXP-001">
-                <div class="flex-between mt-4">
-                    <button type="button" class="btn btn-secondary" onclick="app.closeModal('expense')">Cancel</button>
-                    <button type="submit" class="btn btn-danger">Record Expense</button>
+            <div class="flex-between mt-2">
+                <button type="button" class="btn btn-secondary" onclick="app.closeModal('cash')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Record Payment</button>
+            </div>
+        </form>
+    </dialog>
+
+    <!-- Add Expense Modal -->
+    <dialog class="modal" id="modal-expense">
+        <form method="dialog">
+            <h2 style="margin-bottom: 24px;">Record Expense</h2>
+            
+            <div class="form-group">
+                <label>Description</label>
+                <input type="text" id="e-desc" placeholder="e.g. Transport, Printing" required>
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Amount (KES)</label>
+                    <input type="number" id="e-amount" min="0" placeholder="0.00" required>
                 </div>
-            </form>
-        </div>
-    </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="e-cat">
+                        <option>Operations</option>
+                        <option>Logistics</option>
+                        <option>Administrative</option>
+                        <option>Land Costs</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex-between mt-2">
+                <button type="button" class="btn btn-secondary" onclick="app.closeModal('expense')">Cancel</button>
+                <button type="submit" class="btn btn-danger">Save Expense</button>
+            </div>
+        </form>
+    </dialog>
 
     <script>
-        // --- DATA STORE ---
-        const DB_KEY = 'dcd_possess_land';
-        const DEPARTMENTS = ["Eagles", "Daughters of Faith", "Youth", "Kingdom Generation", "Planning Committee"];
-        const initialData = {
-            pledges: [], transactions: [], expenses: [],
-            phases: [{ id: 1, name: "March 8th Collection", date: "2024-03-08", totalTarget: 1000000, targets: { "Eagles":200000, "Daughters of Faith":200000, "Youth":200000, "Kingdom Generation":200000, "Planning Committee":200000 } }]
+        /**
+         * DCD Possess The Land - Core Application Logic
+         * Lightweight, Dependency-Free, Vanilla JS
+         */
+
+        // --- CONFIGURATION ---
+        const DB_KEY = 'dcd_land_final';
+        
+        const DEPARTMENTS = [
+            "Eagles", 
+            "Daughters of Faith", 
+            "Youth", 
+            "Kingdom Generation", 
+            "Planning Committee"
+        ];
+
+        const INITIAL_DATA = {
+            pledges: [],
+            transactions: [],
+            expenses: [],
+            phases: [
+                {
+                    id: 1,
+                    name: "March 8th Collection",
+                    date: "2024-03-08",
+                    targets: {
+                        "Eagles": 200000,
+                        "Daughters of Faith": 200000,
+                        "Youth": 200000,
+                        "Kingdom Generation": 200000,
+                        "Planning Committee": 200000
+                    }
+                }
+            ]
         };
 
+        // --- STORE CLASS ---
         class Store {
             constructor() {
                 const saved = localStorage.getItem(DB_KEY);
-                this.data = saved ? JSON.parse(saved) : initialData;
+                this.data = saved ? JSON.parse(saved) : INITIAL_DATA;
             }
-            save() { localStorage.setItem(DB_KEY, JSON.stringify(this.data)); app.render(); }
-            addPledge(n, p, d, a, i) { this.data.pledges.push({ id: Date.now(), name:n, phone:p, dept:d, amount:Number(a), redeemed:0, isAnon:i }); this.save(); }
-            addTransaction(tx) {
-                let m = null;
-                if(tx.dept) { m = this.data.pledges.find(p => p.name.toLowerCase() === tx.name.toLowerCase() && p.dept === tx.dept); }
-                if(!m) { const all = this.data.pledges.filter(p => p.name.toLowerCase() === tx.name.toLowerCase()); if(all.length===1) m=all[0]; }
-                if(m) { tx.name=m.name; tx.dept=m.dept; tx.pledgeId=m.id; m.redeemed=(m.redeemed||0)+tx.amount; }
-                else { tx.pledgeId=null; }
-                this.data.transactions.unshift(tx); this.save();
+
+            save() {
+                localStorage.setItem(DB_KEY, JSON.stringify(this.data));
+                app.render();
             }
-            addExpense(d,a,c,r) { this.data.expenses.unshift({ id:Date.now(), date:new Date().toISOString(), description:d, category:c, amount:Number(a), ref:r }); this.save(); }
-            addPhase(n,d,t) {
-                for(let v of Object.values(t)) if(v<0) { alert("Targets cannot be negative."); return; }
-                const tot = Object.values(t).reduce((a,b)=>a+b,0);
-                this.data.phases.push({ id:Date.now(), name:n, date:d, totalTarget:tot, targets:t });
-                this.data.phases.sort((a,b) => new Date(a.date)-new Date(b.date));
+
+            addPledge(pledge) {
+                this.data.pledges.push({
+                    id: Date.now(),
+                    name: pledge.name,
+                    phone: pledge.phone,
+                    department: pledge.department,
+                    amount: parseFloat(pledge.amount),
+                    redeemed: 0
+                });
                 this.save();
             }
-            deletePhase(id) { this.data.phases = this.data.phases.filter(p => p.id !== id); this.save(); }
+
+            addTransaction(tx) {
+                // 1. Find matching pledge
+                let matchedPledge = null;
+                
+                if (tx.department) {
+                    // Priority 1: Exact Name + Department match
+                    matchedPledge = this.data.pledges.find(p => 
+                        p.name.toLowerCase().trim() === tx.name.toLowerCase().trim() && 
+                        p.department === tx.department
+                    );
+                }
+
+                if (!matchedPledge) {
+                    // Priority 2: Name match only (Ambiguity handling)
+                    const matches = this.data.pledges.filter(p => 
+                        p.name.toLowerCase().trim() === tx.name.toLowerCase().trim()
+                    );
+                    if (matches.length === 1) {
+                        matchedPledge = matches[0];
+                    }
+                }
+
+                if (matchedPledge) {
+                    // Update pledge redemption
+                    tx.name = matchedPledge.name; // Normalize name
+                    tx.department = matchedPledge.department; // Normalize dept
+                    tx.pledgeId = matchedPledge.id;
+                    
+                    matchedPledge.redeemed = (matchedPledge.redeemed || 0) + tx.amount;
+                } else {
+                    tx.pledgeId = null;
+                }
+
+                this.data.transactions.unshift(tx);
+                this.save();
+            }
+
+            addExpense(expense) {
+                this.data.expenses.unshift({
+                    id: Date.now(),
+                    date: new Date().toISOString(),
+                    description: expense.description,
+                    amount: parseFloat(expense.amount),
+                    category: expense.category
+                });
+                this.save();
+            }
+
+            addPhase(phase) {
+                const total = Object.values(phase.targets).reduce((a, b) => a + b, 0);
+                this.data.phases.push({
+                    id: Date.now(),
+                    ...phase,
+                    totalTarget: total
+                });
+                // Sort phases by date
+                this.data.phases.sort((a, b) => new Date(a.date) - new Date(b.date));
+                this.save();
+            }
+
+            deletePhase(id) {
+                this.data.phases = this.data.phases.filter(p => p.id !== id);
+                this.save();
+            }
+
+            reset() {
+                if(confirm("Are you sure you want to delete ALL data? This cannot be undone.")) {
+                    localStorage.removeItem(DB_KEY);
+                    location.reload();
+                }
+            }
         }
 
         const store = new Store();
-        let stagedTransactions = [];
+        let stagedTransactions = []; // Temporary holding area for parsed SMS
 
-        // --- APP LOGIC (MODULARIZED) ---
+        // --- APP LOGIC ---
         const app = {
-            init: () => { app.renderSettingsInputs(); app.render(); },
-            nav: (id) => {
-                document.querySelectorAll('main section').forEach(el => el.classList.add('hidden'));
-                document.getElementById(`view-${id}`).classList.remove('hidden');
+            init: () => {
+                app.render();
+            },
+
+            navigate: (viewId) => {
+                // Hide all sections
+                document.querySelectorAll('section').forEach(el => el.classList.add('hidden'));
+                
+                // Show target section
+                document.getElementById(`view-${viewId}`).classList.remove('hidden');
+                
+                // Update Nav
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-                event.currentTarget.classList.add('active');
-            },
-            
-            // Render Helpers
-            getVals: () => {
-                const cash = store.data.transactions.reduce((s,t)=>s+t.amount,0);
-                const exp = store.data.expenses.reduce((s,e)=>s+e.amount,0);
-                const net = cash-exp;
-                const pTotal = store.data.pledges.reduce((s,p)=>s+p.amount,0);
-                const pRedeem = store.data.pledges.reduce((s,p)=>s+(p.redeemed||0),0);
-                const rate = pTotal>0 ? ((pRedeem/pTotal)*100).toFixed(1) : 0;
-                return { cash, exp, net, pTotal, pRedeem, rate };
-            },
-
-            renderSettingsInputs: () => {
-                const con = document.getElementById('s-targets-container');
-                con.innerHTML = '';
-                DEPARTMENTS.forEach(d => {
-                    const div = document.createElement('div');
-                    div.innerHTML = `<input type="number" min="0" class="s-target-input" data-dept="${d}" placeholder="${d} (0)">`;
-                    con.appendChild(div);
-                });
-                con.addEventListener('input', () => {
-                    const inputs = document.querySelectorAll('.s-target-input');
-                    let total = 0; inputs.forEach(i => total+=Number(i.value)||0);
-                    document.getElementById('s-total-display').innerText = app.formatMoney(total);
-                });
-            },
-
-            // Modals
-            openModal: (t) => document.getElementById(`modal-${t}`).style.display = 'flex',
-            closeModal: (t) => document.getElementById(`modal-${t}`).style.display = 'none',
-            
-            addPledge: (e) => {
-                e.preventDefault();
-                const n=document.getElementById('p-name').value, ph=document.getElementById('p-phone').value, d=document.getElementById('p-dept').value, a=document.getElementById('p-amount').value, i=document.getElementById('p-anon').checked;
-                store.addPledge(n, ph, d, a, i);
-                app.closeModal('pledge'); document.getElementById('p-name').value=''; document.getElementById('p-phone').value=''; document.getElementById('p-amount').value='';
-            },
-            addCash: (e) => {
-                e.preventDefault();
-                const n=document.getElementById('c-name').value, a=document.getElementById('c-amount').value, r=document.getElementById('c-ref').value||'CASH-'+Date.now(), d=document.getElementById('c-dept').value;
-                if(store.data.transactions.find(t=>t.ref===r)) return alert('Ref Code exists');
-                store.addTransaction({ amount:Number(a), name:n, ref:r, method:'Cash', dept:d, date:new Date().toISOString() });
-                app.closeModal('cash'); document.getElementById('c-name').value=''; document.getElementById('c-amount').value=''; document.getElementById('c-ref').value='';
-            },
-            addExpense: (e) => {
-                e.preventDefault();
-                const d=document.getElementById('e-desc').value, a=document.getElementById('e-amount').value, c=document.getElementById('e-cat').value, r=document.getElementById('e-ref').value||'EXP-'+Date.now();
-                store.addExpense(d,a,c,r);
-                app.closeModal('expense'); document.getElementById('e-desc').value=''; document.getElementById('e-amount').value=''; document.getElementById('e-ref').value='';
-            },
-            addPhase: (e) => {
-                e.preventDefault();
-                const n=document.getElementById('s-name').value, d=document.getElementById('s-date').value;
-                const i=document.querySelectorAll('.s-target-input');
-                const t={};
-                i.forEach(el=>{ t[el.dataset.dept]=Number(el.value)||0 });
-                store.addPhase(n,d,t);
-                document.getElementById('s-name').value=''; i.forEach(el=>el.value='');
-            },
-            formatMoney: (num) => new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(num),
-
-            // --- RENDER FUNCTIONS ---
-            render: () => {
-                const v = app.getVals();
                 
-                // 1. Dashboard
-                document.getElementById('dash-cash').innerText = app.formatMoney(v.cash);
-                document.getElementById('dash-expenses').innerText = app.formatMoney(v.exp);
-                document.getElementById('dash-balance').innerText = app.formatMoney(v.net);
-                document.getElementById('dash-rate').innerText = `${v.rate}%`;
+                // Find the nav item that calls this function (approximate matching)
+                const target = event.target.closest('.nav-item');
+                if (target) target.classList.add('active');
+            },
 
-                // Donut Chart
-                const totalVol = v.cash + v.exp;
-                const incomePct = totalVol>0 ? (v.cash/totalVol)*100 : 0;
-                document.getElementById('viz-net-bal').innerText = app.formatMoney(v.net);
-                document.getElementById('income-donut').style.background = `conic-gradient(var(--primary) 0% ${incomePct}%, var(--danger) ${incomePct}% 100%)`;
+            // --- FORM HANDLING ---
+            openModal: (id) => {
+                const modal = document.getElementById(`modal-${id}`);
+                if (modal) {
+                    modal.showModal(); // Native HTML5 API
+                }
+            },
 
-                // Department Viz
-                let currPhase = store.data.phases.find(p=>new Date(p.date)>=new Date()) || store.data.phases[store.data.phases.length-1];
-                const deptStats = DEPARTMENTS.map(d => {
-                    const dCash = store.data.transactions.filter(t=>t.pledgeId && store.data.pledges.find(p=>p.id===t.pledgeId && p.dept===d)).reduce((s,t)=>s+t.amount,0);
-                    const dTarget = currPhase ? (currPhase.targets[d]||0) : 0;
-                    return { dept:d, dCash, dTarget, pct: dTarget ? (dCash/dTarget)*100 : 0 };
-                }).sort((a,b)=>b.pct-a.pct);
-                
-                const barDiv = document.getElementById('viz-bar-chart');
-                barDiv.innerHTML = '';
-                deptStats.slice(0,3).forEach(s => {
-                    barDiv.innerHTML += `<div class="bar-chart-row"><div class="bar-label"><strong>${s.dept}</strong><span>${s.pct.toFixed(1)}%</span></div><div class="bar-container"><div class="bar-fill" style="width:${Math.min(100,s.pct)}%"></div></div></div>`;
-                });
+            closeModal: (id) => {
+                const modal = document.getElementById(`modal-${id}`);
+                if (modal) {
+                    modal.close();
+                    // Reset form
+                    const form = modal.querySelector('form');
+                    if(form) form.reset();
+                }
+            },
 
-                // Phase Timeline
-                const timelineDiv = document.getElementById('phase-timeline-container');
-                timelineDiv.innerHTML = '';
-                let cumTarget = 0;
-                store.data.phases.forEach(p => {
-                    cumTarget += p.totalTarget;
-                    const pct = Math.min(100, (v.cash/cumTarget)*100).toFixed(1);
-                    let st = 'active'; if(pct>=100) st='completed'; else if(new Date(p.date)<new Date() && pct<100) st='danger';
-                    timelineDiv.innerHTML += `<div class="phase-item ${st}"><div class="flex-between"><strong>${p.name}</strong><small class="text-sub">${p.date}</small></div><div class="flex-between mt-4"><span class="text-sm">Target: ${app.formatMoney(cumTarget)}</span><span class="text-sm font-bold">${pct}%</span></div><div class="progress-track"><div class="progress-fill ${st==='danger'?'danger':''}" style="width:${pct}%"></div></div></div>`;
-                });
+            // PLEDGE ACTIONS
+            handlePledgeSubmit: (e) => {
+                e.preventDefault();
+                const form = e.target;
+                const pledge = {
+                    name: form.getElementById('p-name').value,
+                    phone: form.getElementById('p-phone').value,
+                    department: form.getElementById('p-dept').value,
+                    amount: form.getElementById('p-amount').value
+                };
 
-                // Recent Activity
-                const rList = document.getElementById('recent-activity-list');
-                rList.innerHTML = '';
-                if(v.cash>0) {
-                    store.data.transactions.slice(0,5).forEach(t => {
-                        rList.innerHTML += `<div style="display:flex; gap:10px; align-items:center; padding:8px; background:white; border:1px solid var(--border); border-radius:6px;"><div style="width:30px; height:30px; border-radius:50%; background:#D1FAE5; display:flex; align-items:center; justify-content:center;">💵</div><div style="flex:1;"><div style="font-weight:bold; font-size:0.9rem;">${t.name}</div><div style="font-size:0.75rem; color:var(--text-sub);">${t.method} • ${new Date(t.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</div><div style="font-weight:bold; color:var(--primary);">${app.formatMoney(t.amount)}</div></div>`;
-                    });
+                if (!pledge.name || !pledge.amount) {
+                    alert("Please fill in Name and Amount.");
+                    return;
                 }
 
-                // Leaderboard
-                const lb = document.getElementById('leaderboard-container');
-                lb.innerHTML = '';
-                deptStats.forEach((s,i) => {
-                    lb.innerHTML += `<div class="rank-item rank-${i+1}"><div class="rank-badge">${i+1}</div><div style="flex:1;"><div style="font-weight:bold;">${s.dept}</div><small class="text-sub">Collected: ${app.formatMoney(s.dCash)} / ${app.formatMoney(s.dTarget)}</small></div><div style="font-weight:bold; color:var(--primary);">${s.pct.toFixed(1)}%</div></div>`;
-                });
-
-                // Pledges
-                const pTable = document.getElementById('pledges-table');
-                pTable.innerHTML = '';
-                store.data.pledges.forEach(p => {
-                    const r = p.amount-(p.redeemed||0);
-                    const pct = ((p.redeemed||0)/p.amount)*100;
-                    const st = r<=0 ? '<span class="badge badge-success">PAID</span>' : `<span class="badge badge-warn">${pct.toFixed(0)}%</span>`;
-                    const rd = r<=0 ? '<span class="text-sub">0</span>' : `<span style="font-weight:bold; color:var(--danger);">${app.formatMoney(r)}</span>`;
-                    const nm = p.isAnon ? 'Anonymous' : `<strong>${p.name}</strong>`;
-                    pTable.innerHTML += `<tr><td>${nm}</td><td>${p.phone||'-'}</td><td>${p.dept}</td><td>${app.formatMoney(p.amount)}</td><td>${app.formatMoney(p.redeemed||0)}</td><td>${rd}</td><td>${st}</td><td>${r>0 ? `<button class="btn btn-secondary btn-sm" onclick="app.quickPay(${p.id},'${p.dept}')">+ Pay</button>` : `<button class="btn btn-secondary btn-sm" onclick="app.viewReceipt(${p.id})">📄 Rec</button>`}</td></tr>`;
-                });
-
-                // Ledger
-                const lTable = document.getElementById('ledger-table');
-                lTable.innerHTML = '';
-                [...store.data.transactions.map(t=>({...t,type:'Income',desc:t.name})), ...store.data.expenses.map(e=>({...e,type:'Expense',desc:e.description}))]
-                .sort((a,b)=>new Date(b.date)-new Date(a.date))
-                .forEach(t => {
-                    const cl = t.type==='Expense' ? 'expense-row' : 'income-row';
-                    const dt = new Date(t.date).toLocaleDateString() + ' ' + new Date(t.date).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-                    const btn = t.type==='Income' && t.pledgeId ? `<button class="btn btn-secondary btn-sm" onclick="app.generateReceipt('${t.ref}')">📄 Receipt</button>` : '';
-                    lTable.innerHTML += `<tr class="${cl}"><td style="font-size:0.85rem;">${dt}</td><td style="font-family:monospace;">${t.ref}</td><td>${t.desc}</td><td>${app.formatMoney(t.amount)}</td><td><span class="badge ${t.type==='Expense'?'badge-danger':'badge-success'}">${t.type}</span></td><td>${btn}</td></tr>`;
-                });
-
-                // Tribes
-                const tGrid = document.getElementById('tribes-grid');
-                tGrid.innerHTML = '';
-                DEPARTMENTS.forEach(d => {
-                    const dCash = store.data.transactions.filter(t=>t.pledgeId && store.data.pledges.find(p=>p.id===t.pledgeId && p.dept===d)).reduce((s,t)=>s+t.amount,0);
-                    const dTarget = currPhase ? (currPhase.targets[d]||0) : 0;
-                    const pct = dTarget ? Math.min(100,(dCash/dTarget)*100).toFixed(1) : 0;
-                    tGrid.innerHTML += `<div class="card"><div class="flex-between"><h3>${d}</h3><small class="badge badge-warn">${pct}%</small></div><div class="mt-4"><div class="progress-track"><div class="progress-fill ${pct<100?'amber':''}" style="width:${pct}%"></div></div><small class="text-sub mt-4">Collected: ${app.formatMoney(dCash)} / ${app.formatMoney(dTarget)}</small></div></div>`;
-                });
-
-                // Settings
-                const sList = document.getElementById('settings-phase-list');
-                sList.innerHTML = '';
-                store.data.phases.forEach(p => {
-                    sList.innerHTML += `<div style="padding: 10px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center;"><div><strong>${p.name}</strong><br><small>${p.date} - Total: ${app.formatMoney(p.totalTarget)}</small></div><button class="btn btn-danger btn-sm" onclick="store.deletePhase(${p.id})">Delete</button></div>`;
-                });
+                store.addPledge(pledge);
+                app.closeModal('pledge');
             },
 
-            // --- PARSER LOGIC ---
+            // CASH ACTIONS
+            handleCashSubmit: (e) => {
+                e.preventDefault();
+                const form = e.target;
+                
+                const name = form.getElementById('c-name').value;
+                const amount = parseFloat(form.getElementById('c-amount').value);
+                const ref = form.getElementById('c-ref').value || 'CASH-' + Date.now();
+                const dept = form.getElementById('c-dept').value;
+
+                if (!name || !amount) {
+                    alert("Please fill in Name and Amount.");
+                    return;
+                }
+
+                const duplicate = store.data.transactions.find(t => t.ref === ref);
+                if (duplicate) {
+                    alert("Duplicate Reference Number detected.");
+                    return;
+                }
+
+                store.addTransaction({
+                    type: 'Cash',
+                    amount: amount,
+                    name: name,
+                    ref: ref,
+                    department: dept,
+                    date: new Date().toISOString()
+                });
+
+                app.closeModal('cash');
+            },
+
+            // EXPENSE ACTIONS
+            handleExpenseSubmit: (e) => {
+                e.preventDefault();
+                const form = e.target;
+                
+                const expense = {
+                    description: form.getElementById('e-desc').value,
+                    amount: parseFloat(form.getElementById('e-amount').value),
+                    category: form.getElementById('e-cat').value
+                };
+
+                if (!expense.description || !expense.amount) {
+                    alert("Please fill in Description and Amount.");
+                    return;
+                }
+
+                store.addExpense(expense);
+                app.closeModal('expense');
+            },
+
+            // PHASE ACTIONS
+            handleAddPhase: () => {
+                const name = prompt("Phase Name (e.g., March Collection):");
+                const date = prompt("Target Date (YYYY-MM-DD):", new Date().toISOString().split('T')[0]);
+                
+                if (!name || !date) return;
+
+                // Generate default targets (evenly distributed)
+                const targets = {};
+                DEPARTMENTS.forEach(d => targets[d] = 200000);
+
+                const phase = {
+                    name: name,
+                    date: date,
+                    targets: targets
+                };
+
+                store.addPhase(phase);
+            },
+
+            // --- PARSER LOGIC (ROBUST) ---
             parseSMS: () => {
-                const txt = document.getElementById('sms-input').innerText;
-                if(txt.includes('Paste')) return alert("Paste messages first.");
+                const input = document.getElementById('sms-input').value.trim();
+                if (!input) {
+                    alert("Please paste M-Pesa messages into the text area.");
+                    return;
+                }
+
+                // 1. Robust Splitting: Split on "Confirmed." to avoid breaking decimals
+                const messages = input.split(/ Confirmed\./i);
                 
-                const chunks = txt.split(/ Confirmed\./i);
-                let nm=0, mc=0, pl=[];
-                chunks.forEach((c, idx) => {
-                    if(!c.includes('Ksh') && !c.includes('KES') && !c.includes('received')) return;
-                    let amt=null, name="Unknown", phone=null, ref="N/A";
+                stagedTransactions = []; // Clear staging area
+
+                let matchCount = 0;
+                let newMemberCount = 0;
+
+                // 2. Process each chunk
+                messages.forEach((chunk, index) => {
+                    const text = chunk.trim();
                     
-                    const rec = c.match(/You have received Ksh([\d,]+\.?\d*)\s+from\s+([A-Za-z\s]+?)\s+(\d{10})/i);
-                    if(rec) { amt=parseFloat(rec[1].replace(/,/g,'')); name=rec[2].trim(); phone=rec[3]; }
-                    else {
-                        const sent = c.match(/Ksh([\d,]+\.?\d*)\s+sent to\s+([A-Z\s]+)\s+for account\s+(\w+)/i);
-                        if(sent) { amt=parseFloat(sent[1].replace(/,/g,'')); name="Till Transaction"; ref=sent[3]; }
+                    // Quick keyword check
+                    if (!text.includes('Ksh') && !text.includes('KES') && !text.includes('received')) {
+                        return; // Skip garbage
                     }
-                    if(!amt) return;
 
-                    const ex = store.data.pledges.filter(p=>p.name.toLowerCase()===name.toLowerCase());
-                    let isNew=ex.length===0;
-                    if(!isNew) mc++; else nm++;
-                    
-                    let isAmb=false, cand=[], selDept="Planning Committee";
-                    if(ex.length>1) { isAmb=true; cand=ex.map(p=>p.dept); selDept=cand[0]; }
-                    else if(ex.length===1) selDept=ex[0].dept;
+                    let amount = null;
+                    let name = "Unknown";
+                    let ref = "N/A";
+                    let phone = null;
 
-                    pl.push({ amt, name, ref, phone, isNew, isAmb, candidates:cand, selectedDept:selDept, matchedId:null, id:idx });
+                    // Regex for "Received From"
+                    const receivedRegex = /You have received Ksh([\d,]+\.?\d*)\s+from\s+([A-Za-z\s]+?)\s+(\d{10})/i;
+                    const receivedMatch = text.match(receivedRegex);
+
+                    // Regex for "Sent To"
+                    const sentRegex = /Ksh([\d,]+\.?\d*)\s+sent to\s+([A-Z\s]+)\s+for account\s+(\w+)/i;
+                    const sentMatch = text.match(sentRegex);
+
+                    if (receivedMatch) {
+                        amount = parseFloat(receivedMatch[1].replace(/,/g, ''));
+                        name = receivedMatch[2] ? receivedMatch[2].trim() : "Unknown";
+                        phone = receivedMatch[3] ? receivedMatch[3] : null;
+                        ref = "N/A";
+                    } else if (sentMatch) {
+                        amount = parseFloat(sentMatch[1].replace(/,/g, ''));
+                        name = "Till Payment"; // Till payments often don't have names
+                        ref = sentMatch[3];
+                    }
+
+                    if (!amount) return;
+
+                    // 3. Auto-Creation Logic
+                    const existing = store.data.pledges.filter(p => p.name.toLowerCase() === name.toLowerCase());
+                    const isNew = existing.length === 0;
+                    if (isNew) newMemberCount++;
+                    if (!isNew) matchCount++;
+
+                    // 4. Handle Ambiguity (Josh in multiple departments)
+                    let isAmbiguous = false;
+                    let candidates = [];
+                    let selectedDept = "Planning Committee";
+
+                    if (existing.length > 1) {
+                        isAmbiguous = true;
+                        candidates = existing.map(p => p.department);
+                        selectedDept = candidates[0];
+                    } else if (existing.length === 1) {
+                        selectedDept = existing[0].department;
+                    }
+
+                    stagedTransactions.push({
+                        id: index, // Unique ID for list rendering
+                        amount,
+                        name,
+                        ref,
+                        phone,
+                        isNew,
+                        isAmbiguous,
+                        candidates,
+                        selectedDept,
+                        matchedId: isNew ? null : existing[0].id
+                    });
                 });
 
-                if(pl.length>0) {
-                    document.getElementById('staged-container').classList.remove('hidden');
-                    document.getElementById('staged-count').innerText = pl.length;
-                    document.getElementById('parser-stats').classList.remove('hidden');
-                    document.getElementById('st-total').innerText = pl.length;
-                    document.getElementById('st-new').innerText = nm;
-                    document.getElementById('st-matched').innerText = mc;
-                    document.getElementById('st-unmatched').innerText = 0;
-                    
-                    const l = document.getElementById('staged-list');
-                    l.innerHTML = '';
-                    pl.forEach((t, idx) => {
-                        let opt='', cl='matched', stat='Matched', txt='';
-                        if(t.isNew) { cl='new-member'; stat='New Member Created'; txt=`<div style="font-size:11px; color:#1976d2; font-weight:bold;">✨ Auto-Registered: ${t.selectedDept}</div>`; }
-                        if(t.isAmb) { cl='unmatched'; opt=`<div class="resolution-box"><small style="color:var(--accent);">⚠️ Name exists in multiple Depts. Select:</small><select class="resolve-dept-select" data-idx="${idx}" style="margin-top:5px;">${t.candidates.map(d=>`<option value="${d}">${d}</option>`).join('')}</select></div>`; }
-                        
-                        l.innerHTML += `<div class="trans-row ${cl}"><div style="width:100%"><div class="flex-between"><strong>${t.name}</strong><span style="font-weight:bold;">${app.formatMoney(t.amt)}</span></div><small class="text-sub">Ref: ${t.ref} ${t.phone?'• '+t.phone:''}</small>${txt}${opt}</div></div>`;
-                    });
-                } else { alert("No valid transactions found."); }
-            },
-
-            commitStaged: () => {
-                const btn = document.getElementById('btn-commit');
-                const time = new Date().toISOString();
-                let added=0;
-                
-                btn.innerText = "Processing..."; btn.disabled = true;
-                
-                for(let i=0; i<stagedTransactions.length; i++) {
-                    const t = stagedTransactions[i];
-                    if(t.isNew) store.addPledge(t.name, t.phone||'Unknown', t.selectedDept, 0, false);
-                    if(t.isAmbiguous) t.selectedDept = document.querySelectorAll('.resolve-dept-select')[i].value;
-                    
-                    if(store.data.transactions.find(x=>x.ref===t.ref)) { alert(`Skipping duplicate: ${t.ref}`); continue; }
-                    store.addTransaction({ amount:t.amt, name:t.name, ref:t.ref, method:'M-Pesa', dept:t.selectedDept, matchedId:null, date:time });
-                    added++;
+                if (stagedTransactions.length === 0) {
+                    alert("No valid M-Pesa messages found in the text.");
+                    return;
                 }
-                app.clearStaged();
-                btn.innerText = "✅ Add All"; btn.disabled = false;
-                if(added>0) alert(`Processed ${added} transactions!`);
+
+                // 5. Update UI
+                const statsDiv = document.getElementById('parser-stats');
+                statsDiv.style.display = 'block';
+                
+                document.getElementById('st-total').innerText = stagedTransactions.length;
+                document.getElementById('st-new').innerText = newMemberCount;
+                document.getElementById('st-matched').innerText = matchCount;
+                document.getElementById('st-unmatched').innerText = 0; // In this logic, everything is either New or Matched
+
+                const stagedList = document.getElementById('staged-list');
+                stagedList.innerHTML = '';
+
+                stagedTransactions.forEach((t) => {
+                    let resolutionHTML = '';
+                    let rowClass = 'matched';
+                    let statusBadge = '<span class="badge badge-success">Matched</span>';
+
+                    if (t.isNew) {
+                        rowClass = 'new-member';
+                        statusBadge = '<span class="badge badge-warn">New Member</span>';
+                    }
+
+                    if (t.isAmbiguous) {
+                        rowClass = 'unmatched';
+                        statusBadge = '<span class="badge badge-danger">Ambiguous</span>';
+                        resolutionHTML = `
+                            <div style="margin-top: 8px; padding: 12px; background: #FFF3E0; border-radius: 6px; font-size: 0.85rem;">
+                                <strong>⚠️ Name exists in multiple departments.</strong><br>
+                                <div style="margin-top: 8px;">
+                                    <label style="display:block; margin-bottom: 4px;">Select Correct Department:</label>
+                                    <select class="resolve-dept-select" data-id="${t.id}" style="width: 100%; padding: 8px;">
+                                        <option value="" disabled selected>-- Select --</option>
+                                        ${t.candidates.map(d => `<option value="${d}">${d}</option>`).join('')}
+                                    </select>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    stagedList.innerHTML += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; border: 1px solid var(--border); border-radius: 8px; background: ${t.isNew ? '#F0FDF4' : 'white'}; border-left: 4px solid ${t.isNew ? 'var(--primary)' : 'var(--border)'};">
+                            <div>
+                                <strong>${t.name}</strong>
+                                <div style="font-size: 0.8rem; color: var(--text-sub);">
+                                    ${t.phone ? '📱 ' + t.phone : ''}
+                                </div>
+                                <div class="text-sub" style="font-family: monospace; font-size: 0.85rem;">Ref: ${t.ref}</div>
+                            </div>
+                            <div style="font-weight: 700; font-size: 1.1rem; color: var(--primary);">
+                                ${app.formatMoney(t.amount)}
+                            </div>
+                            <div>${statusBadge}</div>
+                        </div>
+                        ${resolutionHTML}
+                    </div>
+                    `;
+                });
+
+                // Show Staged Container
+                document.getElementById('staged-container').style.display = (stagedTransactions.length > 0) ? 'block' : 'none';
             },
 
-            clearStaged: () => {
+            clearParser: () => {
+                document.getElementById('sms-input').value = '';
+                document.getElementById('staged-container').style.display = 'none';
+                document.getElementById('parser-stats').style.display = 'none';
                 stagedTransactions = [];
-                document.getElementById('staged-container').classList.add('hidden');
-                document.getElementById('parser-stats').classList.add('hidden');
-                document.getElementById('sms-input').innerText = 'Paste M-Pesa messages here...';
             },
 
-            quickPay: (pid, d) => {
-                const a = prompt("Enter payment amount:");
-                if(a && !isNaN(a)) store.addTransaction({ amount:Number(a), name:'Manual Payment', ref:'MAN-'+Date.now(), method:'Manual', matchedId:pid, dept:d, date:new Date().toISOString() });
-            },
+            commitAll: async () => {
+                if (stagedTransactions.length === 0) return;
 
-            viewReceipt: (pid) => {
-                const p = store.data.pledges.find(pl=>pl.id===pid);
-                alert(`PLEDGE RECEIPT\n---------\nMember: ${p.name}\nDept: ${p.dept}\nAmount Pledged: KES ${p.amount}\nPaid: KES ${p.redeemed}\nBalance: KES ${p.amount-p.redeemed}`);
-            },
+                const btn = document.getElementById('btn-commit-all');
+                const originalText = btn.innerText;
+                
+                // Lock UI
+                btn.innerText = "Processing...";
+                btn.disabled = true;
 
-            generateReceipt: (r) => {
-                const t = store.data.transactions.find(x=>x.ref===r);
-                if(!t) return;
-                navigator.clipboard.writeText(`RECEIPT\n---------\nDate: ${new Date(t.date).toLocaleString()}\nName: ${t.name}\nDept: ${t.dept}\nAmount: KES ${t.amount}\nRef: ${t.ref}\nMethod: ${t.method}\n\nThank you for your contribution to DCD Possess The Land!`);
-                alert("Receipt copied to clipboard!");
-            },
+                // Artificial delay to allow UI to update
+                await new Promise(r => setTimeout(r, 100));
 
-            exportToCSV: (type) => {
-                let c="data:text/csv;charset=utf-8,";
-                if(type==='ledger') {
-                    c+="Date,Ref,Description,Type,Amount\n";
-                    [...store.data.transactions.map(t=>({...t,type:'Income',desc:t.name})), ...store.data.expenses.map(e=>({...e,type:'Expense',desc:e.description}))]
-                    .sort((a,b)=>new Date(b.date)-new Date(a.date))
-                    .forEach(t=>{ c+=`${new Date(t.date).toLocaleDateString()},${t.ref},"${t.desc}",${t.type},${t.amount}\n`; });
-                } else {
-                    c+="Name,Phone,Dept,Pledged,Redeemed,Balance\n";
-                    store.data.pledges.forEach(p=>{ c+=`"${p.name}","${p.phone}",${p.dept},${p.amount},${p.redeemed},${p.amount-p.redeemed}\n`; });
+                let addedCount = 0;
+
+                // Sequential Loop to ensure every transaction is fully saved
+                for (const t of stagedTransactions) {
+                    // Resolve department if ambiguous
+                    if (t.isAmbiguous) {
+                        const select = document.querySelector(`.resolve-dept-select[data-id="${t.id}"]`);
+                        if (select) t.selectedDept = select.value;
+                    }
+
+                    // Create Member if new
+                    if (t.isNew) {
+                        store.addPledge(t);
+                    }
+
+                    // Add Transaction
+                    store.addTransaction({
+                        type: 'M-Pesa',
+                        amount: t.amount,
+                        name: t.name,
+                        ref: t.ref,
+                        phone: t.phone,
+                        department: t.selectedDept,
+                        date: new Date().toISOString(),
+                        pledgeId: t.matchedId
+                    });
+                    
+                    addedCount++;
                 }
-                const lnk = document.createElement("a");
-                lnk.setAttribute("href", encodeURI(c));
-                lnk.setAttribute("download", `dcd_possess_land_${type}_${Date.now()}.csv`);
-                document.body.appendChild(lnk);
-                lnk.click();
+
+                // Cleanup
+                app.clearParser();
+                
+                // Restore UI
+                btn.innerText = originalText;
+                btn.disabled = false;
+
+                if (addedCount > 0) {
+                    alert(`✅ Success! Added ${addedCount} transactions to ledger.`);
+                }
+            },
+
+            // --- RENDER LOGIC ---
+            render: () => {
+                // 1. Calculations
+                const totalCash = store.data.transactions.reduce((sum, t) => sum + t.amount, 0);
+                const totalExpenses = store.data.expenses.reduce((sum, e) => sum + e.amount, 0);
+                const netBalance = totalCash - totalExpenses;
+
+                // 2. Dashboard Cards
+                document.getElementById('dash-cash').innerText = app.formatMoney(totalCash);
+                document.getElementById('dash-balance').innerText = app.formatMoney(netBalance);
+                
+                const totalPledged = store.data.pledges.reduce((sum, p) => sum + p.amount, 0);
+                document.getElementById('dash-pledges').innerText = app.formatMoney(totalPledged);
+
+                // 3. Leaderboard
+                const lbBody = document.getElementById('leaderboard-body');
+                lbBody.innerHTML = '';
+
+                // Find current phase
+                const today = new Date();
+                let currentPhase = store.data.phases.find(p => new Date(p.date) >= today) || store.data.phases[store.data.phases.length - 1];
+
+                if (!currentPhase) {
+                    lbBody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">No active phase set.</td></tr>';
+                } else {
+                    const deptStats = DEPARTMENTS.map(dept => {
+                        const deptCash = store.data.transactions
+                            .filter(t => t.department === dept)
+                            .reduce((sum, t) => sum + t.amount, 0);
+                        const target = currentPhase.targets[dept] || 0;
+                        const pct = target ? Math.min(100, (deptCash / target) * 100) : 0;
+                        return { dept, deptCash, target, pct };
+                    }).sort((a, b) => b.pct - a.pct);
+
+                    deptStats.forEach((stat, index) => {
+                        const rank = index + 1;
+                        const rankColor = rank === 1 ? '#FFD700' : rank === 2 ? '#C0C0C0' : '#CD7F32';
+                        
+                        lbBody.innerHTML += `
+                            <tr>
+                                <td><div style="width: 24px; height: 24px; border-radius: 50%; background: ${rankColor}; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">${rank}</td>
+                                <td style="font-weight: 500;">${stat.dept}</td>
+                                <td class="text-right">${app.formatMoney(stat.target)}</td>
+                                <td class="text-right">${app.formatMoney(stat.deptCash)}</td>
+                                <td>
+                                    <div class="progress-track" style="height: 8px; width: 100px;">
+                                        <div class="progress-fill" style="width: ${stat.pct}%;"></div>
+                                    </div>
+                                    <div style="text-align: center; width: 100px; font-size: 0.75rem; margin-left: 10px;">${stat.pct.toFixed(1)}%</div>
+                                </td>
+                                <td style="text-align: center;">${stat.pct > 90 ? '🚀' : (stat.pct > 50 ? '💨' : '')}</td>
+                            </tr>
+                        `;
+                    });
+                }
+                
+                // 4. Phases Timeline
+                const timelineContainer = document.getElementById('phase-timeline-container');
+                timelineContainer.innerHTML = '';
+
+                store.data.phases.forEach((phase, index) => {
+                    const pct = Math.min(100, (totalCash / phase.totalTarget) * 100).toFixed(1);
+                    const isPast = new Date(phase.date) < new Date();
+
+                    let statusColor = '#E5E7EB'; // Default gray
+                    if (parseFloat(pct) >= 100) statusColor = 'var(--primary-light)';
+                    else if (isPast) statusColor = '#EF4444';
+
+                    timelineContainer.innerHTML += `
+                        <div style="margin-bottom: 24px; padding-left: 24px; border-left: 4px solid ${statusColor}; position: relative;">
+                            <div style="position: absolute; left: -30px; top: 6px; width: 12px; height: 12px; background: white; border-radius: 50%; border: 2px solid ${statusColor};"></div>
+                            <div>
+                                <div style="font-weight: 600; color: var(--text-main);">${phase.name}</div>
+                                <div style="font-size: 0.85rem; color: var(--text-sub); margin-top: 4px;">${new Date(phase.date).toLocaleDateString()}</div>
+                            </div>
+                            <div class="text-right" style="margin-top: 8px;">
+                                <span style="font-weight: bold; font-size: 1.2rem;">${pct}%</span>
+                            </div>
+                        </div>
+                        <div class="progress-track" style="height: 8px; margin-top: 8px;">
+                            <div class="progress-fill" style="width: ${pct}%; background-color: ${statusColor};"></div>
+                        </div>
+                    </div>
+                    `;
+                });
+
+                // 5. Recent Activity
+                const recentList = document.getElementById('recent-activity-list');
+                if (store.data.transactions.length === 0) {
+                    recentList.innerHTML = '<p class="text-sub" style="text-align: center; padding: 20px;">No recent activity yet.</p>';
+                } else {
+                    recentList.innerHTML = '';
+                    store.data.transactions.slice(0, 5).forEach(t => {
+                        const icon = t.type === 'Cash' ? '💵' : '📱';
+                        const time = new Date(t.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                        
+                        recentList.innerHTML += `
+                            <div style="display: flex; gap: 12px; align-items: center; padding: 12px; background: white; border: 1px solid var(--border); border-radius: 8px;">
+                                <div style="width: 24px; height: 24px; background: #E0F2FE; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1rem;">${icon}</div>
+                                <div>
+                                    <div style="font-weight: 600; color: var(--text-main);">${t.name}</div>
+                                    <div class="text-sub" style="font-size: 0.85rem;">${t.type} • ${time}</div>
+                                </div>
+                                <div class="text-right money">${app.formatMoney(t.amount)}</div>
+                            </div>
+                        </div>
+                        `;
+                    });
+                }
+
+                // 6. Pledges Table
+                const pledgesBody = document.getElementById('pledges-body');
+                pledgesBody.innerHTML = '';
+                
+                store.data.pledges.forEach(p => {
+                    const redeemed = p.redeemed || 0;
+                    const remaining = p.amount - redeemed;
+                    const pct = p.amount > 0 ? (redeemed / p.amount) * 100 : 0;
+                    const status = pct >= 100 ? 
+                        '<span class="badge badge-success">Paid</span>' : 
+                        `<span class="badge badge-warn">${pct.toFixed(0)}%</span>`;
+
+                    pledgesBody.innerHTML += `
+                        <tr>
+                            <td style="font-weight: 500;">${p.name}</td>
+                            <td>${p.department}</td>
+                            <td class="text-right">${app.formatMoney(p.amount)}</td>
+                            <td class="text-right">${app.formatMoney(redeemed)}</td>
+                            <td class="text-right" style="color: ${remaining > 0 ? 'var(--danger)' : 'var(--text-sub)'};">${app.formatMoney(remaining)}</td>
+                            <td>
+                                ${remaining > 0 ? 
+                                    `<button class="btn btn-secondary btn-sm" onclick="app.quickPay(${p.id})">Pay</button>` : 
+                                    '<span style="opacity: 0.5;">-</span>'}
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                // 7. Ledger Table
+                const ledgerBody = document.getElementById('ledger-body');
+                ledgerBody.innerHTML = '';
+
+                // Merge expenses and transactions for ledger view
+                const ledgerRows = [
+                    ...store.data.transactions.map(t => ({ ...t, badgeClass: 'badge-success', category: 'Income' })),
+                    ...store.data.expenses.map(e => ({ ...e, badgeClass: 'badge-danger', category: 'Expense' }))
+                ].sort((a, b) => new Date(b.date || a.date) - new Date(a.date));
+
+                ledgerRows.forEach(row => {
+                    ledgerBody.innerHTML += `
+                        <tr>
+                            <td style="color: var(--text-sub); font-size: 0.85rem;">${new Date(row.date).toLocaleDateString()}</td>
+                            <td style="font-family: monospace;">${row.ref || '-'}</td>
+                            <td>${row.name}</td>
+                            <td class="text-right">${app.formatMoney(row.amount)}</td>
+                            <td><span class="badge ${row.badgeClass}">${row.category}</span></td>
+                            <td>${row.pledgeId ? '✅ Yes' : '-'}</td>
+                        </tr>
+                    `;
+                });
+
+                // 8. Tribes Grid
+                const tribesGrid = document.getElementById('tribes-grid');
+                tribesGrid.innerHTML = '';
+
+                DEPARTMENTS.forEach(dept => {
+                    // Calculate cash collected for this dept
+                    const deptCash = store.data.transactions
+                        .filter(t => t.department === dept)
+                        .reduce((sum, t) => sum + t.amount, 0);
+
+                    // Calculate progress
+                    const target = currentPhase.targets[dept] || 0;
+                    const pct = target > 0 ? Math.min(100, (deptCash / target) * 100) : 0;
+
+                    tribesGrid.innerHTML += `
+                        <div class="card" style="border-top: 4px solid ${deptCash >= target ? 'var(--primary)' : 'var(--border)'}">
+                            <div class="flex-between" style="margin-bottom: 12px;">
+                                <div>
+                                    <div style="font-weight: 600; color: var(--text-main); font-size: 1.1rem;">${dept}</div>
+                                    <div class="text-sub">Target: ${app.formatMoney(target)}</div>
+                                </div>
+                                <div style="text-right">
+                                    <div style="font-weight: 700; font-size: 1.2rem; color: var(--primary-dark);">${app.formatMoney(deptCash)}</div>
+                                    <div style="font-size: 0.9rem; color: var(--text-sub);">(${pct.toFixed(1)}%)</div>
+                                </div>
+                            </div>
+                            <div class="progress-track" style="height: 10px; margin-top: 12px;">
+                                <div class="progress-fill" style="width: ${pct}%;"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // 9. Settings
+                const phasesList = document.getElementById('phases-list');
+                phasesList.innerHTML = '';
+
+                store.data.phases.forEach(phase => {
+                    phasesList.innerHTML += `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px; background: var(--bg); border-radius: 8px; border: 1px solid var(--border);">
+                            <div>
+                                <div style="font-weight: 600;">${phase.name}</div>
+                                <div class="text-sub">${new Date(phase.date).toLocaleDateString()}</div>
+                            </div>
+                            <button class="btn btn-secondary btn-sm" onclick="store.deletePhase(${phase.id})">Delete</button>
+                        </div>
+                    `;
+                });
+            },
+
+            // --- UTILS ---
+            formatMoney: (num) => {
+                return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(num);
+            },
+            
+            exportCSV: (type) => {
+                let csv = "data:text/csv;charset=utf-8,";
+                
+                if (type === 'pledges') {
+                    csv += "Name,Phone,Department,Amount,Redeemed,Remaining\n";
+                    store.data.pledges.forEach(p => {
+                        csv += `"${p.name}","${p.phone || ''}","${p.department}",${p.amount},${p.redeemed || 0},${p.amount - (p.redeemed || 0)}\n`;
+                    });
+                } else {
+                    csv += "Date,Type,Description,Reference,Amount\n";
+                    // Combine and sort
+                    const rows = [
+                        ...store.data.transactions.map(t => ({...t, Type: 'Income', Category: 'M-Pesa', Ref: t.ref || '' })),
+                        ...store.data.expenses.map(e => ({...e, Type: 'Expense', Category: e.category, Ref: 'EXP-' + Date.now(), Amount: e.amount }))
+                    ].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+                    rows.forEach(r => {
+                        csv += `${new Date(r.date).toLocaleDateString()},${r.Type},${r.Description},${r.Ref},${r.amount}\n`;
+                    });
+                }
+
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `dcd_land_${type}_${Date.now()}.csv`;
+                document.body.appendChild(a);
+                a.click();
+            },
+
+            // --- QUICK PAY (LINKED TO PLEDGE) ---
+            quickPay: (pledgeId) => {
+                // Re-open modal with pre-filled data?
+                const pledge = store.data.pledges.find(p => p.id === pledgeId);
+                if(!pledge) return;
+
+                // Populate cash modal
+                const modal = document.getElementById('modal-cash');
+                modal.querySelector('#c-name').value = pledge.name;
+                modal.querySelector('#c-dept').value = pledge.department;
+                modal.showModal();
             }
         };
 
+        // --- EVENT LISTENERS ---
+        document.getElementById('modal-pledge').addEventListener('submit', app.handlePledgeSubmit);
+        document.getElementById('modal-cash').addEventListener('submit', app.handleCashSubmit);
+        document.getElementById('modal-expense').addEventListener('submit', app.handleExpenseSubmit);
+        
+        // Init
         app.init();
     </script>
 </body>
