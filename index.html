@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LandQuest Mobilizer | Auto-Integration</title>
+    <title>DCD Possess The Land | Fundraising</title>
     <style>
         :root {
             --primary: #059669; /* Emerald Green */
@@ -107,7 +107,27 @@
         .progress-fill.amber { background: var(--accent); }
         .progress-fill.danger { background: var(--danger); }
 
-        /* --- Phase Timeline --- */
+        /* --- Visualizations (New) --- */
+        
+        /* Donut Chart */
+        .viz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .viz-card { background: white; padding: 24px; border-radius: 12px; border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .donut-chart {
+            width: 140px; height: 140px; border-radius: 50%;
+            background: conic-gradient(var(--primary) 0% 100%); 
+            position: relative; margin-bottom: 15px;
+        }
+        .donut-hole {
+            width: 90px; height: 90px; background: white; border-radius: 50%;
+            position: absolute; top: 25px; left: 25px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .bar-chart-row { width: 100%; margin-bottom: 10px; }
+        .bar-label { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 4px; }
+        .bar-container { background: #eee; height: 10px; border-radius: 5px; overflow: hidden; }
+        .bar-fill { height: 100%; background: var(--primary); transition: width 0.5s; }
+
+        /* Phase Timeline */
         .phase-timeline { border-left: 3px solid var(--border); padding-left: 20px; margin-left: 10px; }
         .phase-item { position: relative; margin-bottom: 30px; padding-left: 20px; }
         .phase-item::before {
@@ -117,7 +137,7 @@
         .phase-item.active::before { border-color: var(--primary); background: var(--primary); }
         .phase-item.completed::before { border-color: var(--primary-dark); background: var(--primary-dark); }
 
-        /* --- Tables --- */
+        /* Tables */
         table { width: 100%; border-collapse: collapse; }
         th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
         th { background: #F9FAFB; color: var(--text-sub); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
@@ -128,7 +148,7 @@
         .badge-warn { background: #FEF3C7; color: #92400E; }
         .badge-danger { background: #FEE2E2; color: #991B1B; }
 
-        /* --- Reconciler Box --- */
+        /* Reconciler Box */
         .reconciler-area { background: #ECFDF5; border: 2px dashed var(--primary); padding: 20px; border-radius: 12px; text-align: center; cursor: text; }
         .reconciler-area:focus { background: white; border-style: solid; outline: none; }
 
@@ -165,7 +185,7 @@
             background: white;
             padding: 20px;
             border-radius: 12px;
-            border: 1px solid var(--border);
+            border:1px solid var(--border);
         }
 
         .trans-stat-label { font-size: 13px; color: #666; margin-bottom: 8px; }
@@ -184,7 +204,7 @@
 
     <!-- SIDEBAR -->
     <aside>
-        <div class="brand">🌍<br>LandQuest<br>Mobilizer</div>
+        <div class="brand">🏝<br>DCD Possess<br>The Land</div>
         <div class="nav-item active" onclick="app.nav('dashboard')">📊 Dashboard</div>
         <div class="nav-item" onclick="app.nav('leaderboard')">🏆 Leaderboard</div>
         <div class="nav-item" onclick="app.nav('pledges')">🤝 Pledges</div>
@@ -201,7 +221,7 @@
             <header class="flex-between" style="margin-bottom: 20px;">
                 <div>
                     <h1>Project Overview</h1>
-                    <p class="text-sub">Real-time status of collections & expenses</p>
+                    <p class="text-sub">Real-time status of collections & expenses for DCD Possess The Land</p>
                 </div>
                 <div style="display:flex; gap:10px;">
                     <button class="btn btn-danger" onclick="app.openModal('expense')">➖ Expense</button>
@@ -209,6 +229,28 @@
                     <button class="btn btn-primary" onclick="app.openModal('pledge')">+ New Pledge</button>
                 </div>
             </header>
+
+            <!-- VISUAL DATA PRESENTATION (New) -->
+            <div class="viz-grid mb-4" style="margin-bottom: 24px;">
+                <!-- Donut Chart: Income vs Expense -->
+                <div class="viz-card">
+                    <h4 style="margin-bottom: 10px; color: var(--text-sub);">Income vs Expense</h4>
+                    <div class="donut-chart" id="income-donut">
+                        <div class="donut-hole">
+                            <span class="text-lg" style="color: var(--primary);" id="viz-net-bal">0</span>
+                            <span class="text-sub">Net Balance</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Department Bar Chart -->
+                <div class="viz-card" style="align-items: stretch; justify-content: flex-start;">
+                    <h4 style="margin-bottom: 10px; color: var(--text-sub);">Top Department Performance</h4>
+                    <div id="viz-bar-chart" style="width: 100%; display: flex; flex-direction: column; justify-content: center;">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
 
             <!-- KPIs -->
             <div class="grid-4">
@@ -241,6 +283,14 @@
                 
                 <div id="phase-timeline-container" class="phase-timeline mt-4">
                     <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- RECENT ACTIVITY STREAM -->
+            <div class="card">
+                <h3>🔴 Recent Activity</h3>
+                <div id="recent-activity-list" style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">
+                    <p class="text-sub" style="text-align:center;">No recent activity</p>
                 </div>
             </div>
         </section>
@@ -283,11 +333,10 @@
             </div>
         </section>
 
-        <!-- LEDGER & RECONCILE VIEW (INTEGRATED) -->
+        <!-- LEDGER & RECONCILE VIEW -->
         <section id="view-ledger" class="hidden">
             <h1>Transaction Reconciliation</h1>
             
-            <!-- Enhanced Parser UI -->
             <div class="card mt-4" style="border-left: 5px solid var(--primary);">
                 <h3>🤖 M-Pesa SMS Parser (Integrated)</h3>
                 <p class="text-sub">Pastes M-Pesa messages. Auto-creates new members if not found.</p>
@@ -401,7 +450,7 @@
             <div class="card" style="border-color: var(--danger);">
                 <h3 style="color: var(--danger);">Danger Zone</h3>
                 <p class="text-sub">Reset entire project. This cannot be undone.</p>
-                <button class="btn btn-danger btn-sm mt-4" onclick="if(confirm('Are you sure? This deletes all data.')) { localStorage.removeItem('landquest_db_v8'); location.reload(); }">Reset All Data</button>
+                <button class="btn btn-danger btn-sm mt-4" onclick="if(confirm('Are you sure? This deletes all data.')) { localStorage.removeItem('dcd_possess_land'); location.reload(); }">Reset All Data</button>
             </div>
         </section>
 
@@ -506,7 +555,7 @@
 
     <script>
         // --- DATA STORE ---
-        const DB_KEY = 'landquest_db_v8';
+        const DB_KEY = 'dcd_possess_land';
         
         const DEPARTMENTS = [
             "Eagles", 
@@ -666,6 +715,64 @@
                 document.getElementById('dash-balance').textContent = app.formatMoney(netBalance);
                 document.getElementById('dash-rate').textContent = `${rate}%`;
 
+                // VIZ 1: DONUT CHART
+                const totalVol = totalCash + totalExpenses;
+                const incomePct = totalVol > 0 ? (totalCash / totalVol) * 100 : 0;
+                const expensePct = totalVol > 0 ? (totalExpenses / totalVol) * 100 : 0;
+                
+                document.getElementById('viz-net-bal').textContent = app.formatMoney(netBalance);
+                document.getElementById('income-donut').style.background = `conic-gradient(var(--primary) 0% ${incomePct}%, var(--danger) ${incomePct}% 100%)`;
+
+                // VIZ 2: DEPT BARS
+                let currentPhase = store.data.phases.find(p => new Date(p.date) >= new Date()) || store.data.phases[store.data.phases.length - 1];
+                const barChartDiv = document.getElementById('viz-bar-chart');
+                barChartDiv.innerHTML = '';
+
+                // Get Top 3 Depts for visual chart
+                const deptStats = DEPARTMENTS.map(dept => {
+                    const deptCash = store.data.transactions
+                        .filter(t => t.pledgeId && store.data.pledges.find(p => p.id === t.pledgeId && p.dept === dept))
+                        .reduce((sum, t) => sum + t.amount, 0);
+                    const phaseTarget = currentPhase ? (currentPhase.targets[dept] || 0) : 0;
+                    const pct = phaseTarget ? (deptCash / phaseTarget) * 100 : 0;
+                    return { dept, deptCash, phaseTarget, pct };
+                }).sort((a,b) => b.pct - a.pct);
+
+                deptStats.slice(0,3).forEach(stat => {
+                    const pctStr = stat.pct.toFixed(1);
+                    barChartDiv.innerHTML += `
+                        <div class="bar-chart-row">
+                            <div class="bar-label">
+                                <strong>${stat.dept}</strong>
+                                <span>${pctStr}%</span>
+                            </div>
+                            <div class="bar-container">
+                                <div class="bar-fill" style="width: ${Math.min(100, stat.pct)}%;"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // VIZ 3: RECENT ACTIVITY
+                const recentList = document.getElementById('recent-activity-list');
+                recentList.innerHTML = '';
+                if (store.data.transactions.length > 0) {
+                    store.data.transactions.slice(0, 5).forEach(t => {
+                        const timeStr = new Date(t.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        recentList.innerHTML += `
+                            <div style="display:flex; gap:10px; align-items:center; padding: 8px; background:white; border:1px solid var(--border); border-radius:6px;">
+                                <div style="width:30px; height:30px; border-radius:50%; background: #D1FAE5; display:flex; align-items:center; justify-content:center;">💵</div>
+                                <div style="flex:1;">
+                                    <div style="font-weight:bold; font-size:0.9rem;">${t.name}</div>
+                                    <div style="font-size:0.75rem; color: var(--text-sub);">${t.method} • ${timeStr}</div>
+                                </div>
+                                <div style="font-weight:bold; color: var(--primary);">${app.formatMoney(t.amount)}</div>
+                            </div>
+                        `;
+                    });
+                }
+
+
                 // 2. Phase Timeline
                 const timelineDiv = document.getElementById('phase-timeline-container');
                 timelineDiv.innerHTML = '';
@@ -702,17 +809,6 @@
                 // 3. Leaderboard
                 const lbContainer = document.getElementById('leaderboard-container');
                 lbContainer.innerHTML = '';
-                let currentPhase = store.data.phases.find(p => new Date(p.date) >= today) || store.data.phases[store.data.phases.length - 1];
-
-                const deptStats = DEPARTMENTS.map(dept => {
-                    const deptCash = store.data.transactions
-                        .filter(t => t.pledgeId && store.data.pledges.find(p => p.id === t.pledgeId && p.dept === dept))
-                        .reduce((sum, t) => sum + t.amount, 0);
-                    
-                    const phaseTarget = currentPhase ? (currentPhase.targets[dept] || 0) : 0;
-                    const pct = phaseTarget ? (deptCash / phaseTarget) * 100 : 0;
-                    return { dept, deptCash, phaseTarget, pct };
-                }).sort((a,b) => b.pct - a.pct); 
 
                 deptStats.forEach((stat, index) => {
                     const rank = index + 1;
@@ -769,7 +865,7 @@
                 lTable.innerHTML = '';
                 
                 const allRows = [
-                    ...store.data.transactions.map(t => ({...t, type: 'Income', desc: t.name, sign: 1})),
+                    ...store.data.transactions.map(t => ({...t, type: 'Income', desc: t.name, sign:1})),
                     ...store.data.expenses.map(e => ({...e, type: 'Expense', desc: e.description, sign: -1}))
                 ].sort((a,b) => new Date(b.date) - new Date(a.date));
 
@@ -902,7 +998,7 @@
             generateReceipt: (ref) => {
                 const tx = store.data.transactions.find(t => t.ref === ref);
                 if(!tx) return;
-                const msg = `RECEIPT\n---------\nDate: ${new Date(tx.date).toLocaleString()}\nName: ${tx.name}\nDept: ${tx.dept}\nAmount: KES ${tx.amount}\nRef: ${tx.ref}\nMethod: ${tx.method}\n\nThank you for your contribution to LandQuest!`;
+                const msg = `RECEIPT\n---------\nDate: ${new Date(tx.date).toLocaleString()}\nName: ${tx.name}\nDept: ${tx.dept}\nAmount: KES ${tx.amount}\nRef: ${tx.ref}\nMethod: ${tx.method}\n\nThank you for your contribution to DCD Possess The Land!`;
                 navigator.clipboard.writeText(msg).then(() => alert("Receipt copied to clipboard!"));
             },
 
@@ -933,44 +1029,53 @@
                 const encodedUri = encodeURI(csvContent);
                 const link = document.createElement("a");
                 link.setAttribute("href", encodedUri);
-                link.setAttribute("download", `landquest_${type}_${Date.now()}.csv`);
+                link.setAttribute("download", `dcd_possess_land_${type}_${Date.now()}.csv`);
                 document.body.appendChild(link);
                 link.click();
             },
 
-            // --- INTEGRATED PARSER LOGIC (V8) ---
+            // --- INTEGRATED PARSER LOGIC (FIXED V9) ---
             parseSMS: () => {
                 const text = document.getElementById('sms-input').innerText;
                 if(text.includes('Paste')) { alert("Please paste messages first."); return; }
                 
-                const sentences = text.split(/[\.!?]+/).filter(s => s.includes('Ksh') || s.includes('KES') || s.includes('received'));
-                stagedTransactions = [];
+                // FIX 1: Split on " Confirmed." instead of "." to keep Ksh context intact.
+                // Also handle cases where it might be lower case.
+                const chunks = text.split(/ Confirmed\./i);
                 
                 let newMemberCount = 0;
                 let matchedCount = 0;
+                let parsedList = [];
 
-                sentences.forEach(s => {
-                    // Robust Regex (From User's Parser)
-                    // Handle "Received From" (Personal)
+                chunks.forEach((chunk, index) => {
+                    // We only care about chunks that contain money keywords
+                    if(!chunk.includes('Ksh') && !chunk.includes('KES') && !chunk.includes('received')) return;
+
                     let amount = null, name = "Unknown", phone = null, ref = "N/A", type = "M-Pesa";
                     
-                    const receivedMatch = s.match(/You have received Ksh([\d,]+\.?\d*)\s+from\s+([A-Za-z\s]+)\s+(\d+)/i);
-                    if(receivedMatch) {
+                    // 1. Try to match "Received" Message (Personal Account)
+                    // FIX 2: Improved Regex to separate Name from Phone
+                    // Looking for "from NAME PHONE"
+                    const receivedMatch = chunk.match(/You have received Ksh([\d,]+\.?\d*)\s+from\s+([A-Za-z\s]+?)\s+(\d{10})/i);
+                    
+                    if (receivedMatch) {
                         amount = parseFloat(receivedMatch[1].replace(/,/g, ''));
-                        name = receivedMatch[2].trim();
-                        phone = receivedMatch[3];
-                        ref = "N/A"; // Received messages usually lack account ref in the simple format
+                        name = receivedMatch[2].trim(); // Name is Group 2
+                        phone = receivedMatch[3]; // Phone is Group 3
+                        ref = "N/A"; 
                     } else {
-                        // Handle "Sent To" (Till)
-                        const sentMatch = s.match(/Ksh([\d,]+\.?\d*)\s+sent to\s+([A-Z\s]+)\s+for account\s+(\w+)/i);
+                        // 2. Try to match "Sent To" Message (Till Number)
+                        const sentMatch = chunk.match(/Ksh([\d,]+\.?\d*)\s+sent to\s+([A-Z\s]+)\s+for account\s+(\w+)/i);
+                        
                         if(sentMatch) {
                             amount = parseFloat(sentMatch[1].replace(/,/g, ''));
-                            // Till messages often don't have sender name in the SMS body, 
+                            // Till messages often don't have sender name in SMS body, 
                             // so we assume 'Unknown' and rely on admin or webhooks for names
                             name = "Till Transaction"; 
                             ref = sentMatch[3];
+                            
                             // Extract Date if available
-                            const dateMatch = s.match(/on\s+(\d{1,2}\/\d{1,2}\/\d{2})/i);
+                            const dateMatch = chunk.match(/on\s+(\d{1,2}\/\d{1,2}\/\d{2})/i);
                             if(dateMatch) ref += ` (${dateMatch[1]})`;
                         }
                     }
@@ -983,13 +1088,13 @@
                     const existingPledges = store.data.pledges.filter(p => p.name.toLowerCase() === name.toLowerCase());
                     let isNewMember = existingPledges.length === 0;
                     
-                    if(isNewMember) newMemberCount++;
-                    else matchedCount++;
+                    if(!isNewMember) matchedCount++;
+                    else newMemberCount++;
 
                     // Handle Ambiguity (Josh in multiple Depts)
                     let isAmbiguous = false;
                     let candidates = [];
-                    let selectedDept = "Planning Committee"; // Default for new members
+                    let selectedDept = "Planning Committee"; // Default for new/till members
 
                     if (existingPledges.length > 1) {
                         isAmbiguous = true;
@@ -999,19 +1104,19 @@
                         selectedDept = existingPledges[0].dept;
                     }
 
-                    stagedTransactions.push({ 
+                    parsedList.push({ 
                         amount, name, ref, phone, isNewMember, isAmbiguous, 
-                        candidates, selectedDept, matchedId: null, id: Math.random() 
+                        candidates, selectedDept, matchedId: null, id: index 
                     });
                 });
 
-                if(stagedTransactions.length > 0) {
+                if(parsedList.length > 0) {
                     document.getElementById('staged-container').classList.remove('hidden');
-                    document.getElementById('staged-count').innerText = stagedTransactions.length;
+                    document.getElementById('staged-count').innerText = parsedList.length;
                     document.getElementById('parser-stats').classList.remove('hidden');
                     
                     // Update Stats
-                    document.getElementById('st-total').innerText = stagedTransactions.length;
+                    document.getElementById('st-total').innerText = parsedList.length;
                     document.getElementById('st-new').innerText = newMemberCount;
                     document.getElementById('st-matched').innerText = matchedCount;
                     document.getElementById('st-unmatched').innerText = 0; // In this new logic, we rarely have unmatched unless regex fails
@@ -1019,7 +1124,7 @@
                     const list = document.getElementById('staged-list');
                     list.innerHTML = '';
                     
-                    stagedTransactions.forEach((t, idx) => {
+                    parsedList.forEach((t, idx) => {
                         let optionsHtml = '';
                         let rowClass = 'matched';
                         let statusText = 'Matched';
@@ -1032,6 +1137,7 @@
                         }
 
                         if (t.isAmbiguous) {
+                            rowClass = 'unmatched'; // Visually distinct
                             optionsHtml = `
                                 <div class="resolution-box">
                                     <small style="color:var(--accent); font-weight:bold;">⚠️ Name exists in multiple departments. Select Correct Dept:</small>
@@ -1040,7 +1146,6 @@
                                     </select>
                                 </div>
                             `;
-                            rowClass = 'unmatched'; // Visually distinct
                         }
 
                         list.innerHTML += `
@@ -1063,8 +1168,8 @@
                 const entryTime = new Date().toISOString();
                 let addedCount = 0;
                 
-                for(let i=0; i<stagedTransactions.length; i++) {
-                    let t = stagedTransactions[i];
+                for(let i=0; i<parsedList.length; i++) {
+                    let t = parsedList[i];
                     
                     // 1. AUTO-CREATE MEMBER IF NEEDED
                     if(t.isNewMember) {
@@ -1090,11 +1195,11 @@
                     addedCount++;
                 }
                 app.clearStaged();
-                if(addedCount > 0) alert(`Processed ${addedCount} transactions!`);
+                if(addedCount > 0) alert(`Processed ${addedCount} transactions successfully!`);
             },
 
             clearStaged: () => {
-                stagedTransactions = [];
+                parsedList = [];
                 document.getElementById('staged-container').classList.add('hidden');
                 document.getElementById('parser-stats').classList.add('hidden');
                 document.getElementById('sms-input').innerText = 'Paste M-Pesa messages here...';
