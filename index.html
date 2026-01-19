@@ -451,6 +451,10 @@
                     
                     <label>Pledge Amount (KES)</label>
                     <input type="number" name="amount" required min="1" placeholder="0.00">
+                    
+                    <small style="color: var(--accent); display:block; margin-top:10px;">
+                        ℹ️ <strong>Note:</strong> If this member already exists, this amount will be ADDED to their total pledge.
+                    </small>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="app.closeModal('pledge')">Cancel</button>
@@ -469,14 +473,14 @@
             </div>
             <div class="modal-body">
                 <p class="text-light">Paste SMS confirmation messages below. The system will extract amounts and names.</p>
-                <textarea id="sms-input" style="width: 100%; height: 120px; font-family: monospace; font-size: 0.85rem;" placeholder="Paste here... e.g. 'You have received Ksh 5,000 from John Doe...'"></textarea>
+                <textarea id="sms-input" style="width: 100%; height: 150px; font-family: monospace; font-size: 0.85rem;" placeholder="Paste here... e.g. 'Confirmed. You have received Ksh 5,000 from JOHN DOE...'"></textarea>
                 
                 <div id="staged-area" class="hidden" style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 16px;">
                     <div class="flex-between" style="margin-bottom: 12px;">
                         <strong>Found Transactions (<span id="staged-count">0</span>)</strong>
                         <small class="text-light">Review before committing</small>
                     </div>
-                    <div id="staged-list" style="max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
+                    <div id="staged-list" style="max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
                         <!-- Staged Items go here -->
                     </div>
                 </div>
@@ -531,7 +535,7 @@
             "Eagles", "Daughters of Faith", "Youth", 
             "Kingdom Generation", "Planning Committee", "Guests"
         ];
-        const DB_KEY = 'dcd_possess_land_v3';
+        const DB_KEY = 'dcd_possess_land_v4'; // Version bump to clear any old messy data
 
         // --- STORE ---
         const store = {
@@ -563,16 +567,30 @@
             },
 
             addPledge(name, dept, amount) {
-                const id = Date.now().toString();
-                this.data.pledges.push({
-                    id,
-                    name,
-                    department: dept,
-                    amount: parseFloat(amount),
-                    date: new Date().toISOString()
-                });
-                this.save();
-                return id;
+                // FIX: Check if member exists to compound pledge
+                const existing = this.data.pledges.find(p => p.name.toLowerCase() === name.toLowerCase());
+                
+                if (existing) {
+                    // Update existing pledge
+                    existing.amount += parseFloat(amount);
+                    // Optional: Update department if changed
+                    existing.department = dept; 
+                    this.save();
+                    app.showToast(`Updated pledge for ${name} (New Total: ${app.formatMoney(existing.amount)})`, 'success');
+                    return existing.id;
+                } else {
+                    // Create new pledge
+                    const id = Date.now().toString();
+                    this.data.pledges.push({
+                        id,
+                        name,
+                        department: dept,
+                        amount: parseFloat(amount),
+                        date: new Date().toISOString()
+                    });
+                    this.save();
+                    return id;
+                }
             },
 
             addTransaction(tx) {
@@ -616,14 +634,10 @@
 
             // Navigation
             router(viewId) {
-                // Hide all views
                 document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden'));
-                // Show target view
                 document.getElementById(`view-${viewId}`).classList.remove('hidden');
                 
-                // Update Sidebar
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-                // Find index based on viewId (simple mapping)
                 const map = { 'dashboard':0, 'pledges':1, 'ledger':2, 'tribes':3, 'settings':4 };
                 document.querySelectorAll('.nav-item')[map[viewId]].classList.add('active');
             },
@@ -649,7 +663,6 @@
                 document.getElementById('modal-dept-select').innerHTML = opts;
                 document.getElementById('cash-dept').innerHTML = opts;
                 
-                // Populate Datalist for autocomplete
                 const names = [...new Set(store.data.pledges.map(p => p.name))];
                 document.getElementById('member-list').innerHTML = names.map(n => `<option value="${n}">`).join('');
             },
@@ -659,7 +672,6 @@
                 const form = e.target;
                 store.addPledge(form.name.value, form.department.value, form.amount.value);
                 this.closeModal('pledge');
-                this.showToast('Pledge added successfully!', 'success');
                 form.reset();
             },
 
@@ -670,10 +682,8 @@
                 const amount = document.getElementById('cash-amount').value;
                 const ref = document.getElementById('cash-ref').value || 'Manual Cash';
 
-                // Check if pledge exists
                 let pledge = store.data.pledges.find(p => p.name.toLowerCase() === name.toLowerCase());
                 if (!pledge) {
-                    // Auto-create pledge
                     const pid = store.addPledge(name, dept, amount);
                     pledge = store.data.pledges.find(p => p.id === pid);
                 }
@@ -710,20 +720,19 @@
                 }
             },
 
-            // --- SMS PARSER LOGIC ---
+            // --- SMS PARSER LOGIC (UPDATED) ---
             processSMS() {
                 const text = document.getElementById('sms-input').value;
                 if(!text.trim()) return;
 
-                // Regex for standard M-Pesa: "Received Ksh 10,000 from John Doe 07..."
-                // Regex for Buy Goods/Till: "Confirmed. You sent Ksh 500 to ACC NAME..."
                 const lines = text.split('\n');
                 const results = [];
 
                 lines.forEach(line => {
-                    // Pattern 1: Received from Person
-                    // FIXED: Added parenthesis before regex
-                    const matchPerson = line.match(/Received\s+Ksh\s+([\d,]+\.?\d*)\s+from\s+([A-Za-z\s]+?)\s+(?:on|dated)?\s?\d?/i);
+                    // Pattern 1: Personal (Incoming)
+                    // Matches: "Confirmed. You have received Ksh5,000.00 from JOHN DOE..." OR "Received Ksh5,000 from..."
+                    const matchPerson = line.match(/(?:You have received|Received)\s+Ksh\s+([\d,]+\.?\d*)\s+from\s+([A-Za-z\s]+?)(?:\s+\d{10,}|\.)/i);
+                    
                     if (matchPerson) {
                         results.push({
                             amount: parseFloat(matchPerson[1].replace(/,/g, '')),
@@ -734,13 +743,14 @@
                         return;
                     }
 
-                    // Pattern 2: Till Number (Buy Goods)
-                    // FIXED: Added parenthesis before regex
-                    const matchTill = line.match(/(?:Confirmed|You).*?(?:paid|sent)\s+Ksh\s+([\d,]+\.?\d*)\s+to\s+([A-Z0-9\s]+?)\s+on/i);
-                    if(matchTill) {
+                    // Pattern 2: Till/Paybill (Outgoing to Business)
+                    // Matches: "Confirmed. Ksh2,500.00 sent to LAND FUNDRAISER for account 567892..."
+                    const matchTill = line.match(/Confirmed\.\s+Ksh\s+([\d,]+\.?\d*)\s+sent to\s+([A-Z0-9\s]+?)\s+for\s+account/i);
+                    
+                    if (matchTill) {
                         results.push({
                             amount: parseFloat(matchTill[1].replace(/,/g, '')),
-                            name: matchTill[2].trim(), // This is the Till Name, usually not a person
+                            name: matchTill[2].trim(), 
                             method: 'Till/Paybill',
                             ref: 'TILL-' + Math.floor(Math.random()*10000)
                         });
@@ -755,7 +765,6 @@
                 this.stagedTx = results;
                 this.renderStaged();
                 
-                // Toggle UI
                 document.getElementById('staged-area').classList.remove('hidden');
                 document.getElementById('btn-parse-trigger').classList.add('hidden');
                 document.getElementById('btn-commit-trigger').classList.remove('hidden');
@@ -767,15 +776,13 @@
                 list.innerHTML = '';
 
                 this.stagedTx.forEach((tx, idx) => {
-                    // Try to find existing member
                     const existing = store.data.pledges.find(p => p.name.toLowerCase() === tx.name.toLowerCase());
                     
                     let deptSelect = '';
                     if (existing) {
                         deptSelect = `<span class="badge badge-success">${existing.department}</span>`;
-                        tx.assignedDept = existing.department; // pre-assign
+                        tx.assignedDept = existing.department;
                     } else {
-                        // Show dropdown to select dept for new member
                         const options = DEPARTMENTS.map(d => `<option value="${d}">${d}</option>`).join('');
                         deptSelect = `
                             <select onchange="app.stagedTx[${idx}].assignedDept = this.value" style="padding:4px; margin:0; font-size:0.8rem;">
@@ -803,20 +810,19 @@
             commitStaged() {
                 let count = 0;
                 this.stagedTx.forEach(tx => {
-                    // Validation
                     if(!tx.assignedDept) {
                         this.showToast(`Skipped ${tx.name}: No Department selected`, 'error');
                         return;
                     }
 
-                    // Find or Create Pledge
                     let pledge = store.data.pledges.find(p => p.name.toLowerCase() === tx.name.toLowerCase());
                     if(!pledge) {
-                        const pid = store.addPledge(tx.name, tx.assignedDept, tx.amount); // pledge amount defaults to first payment if unknown
+                        // If new member, we treat the amount as a pledge
+                        const pid = store.addPledge(tx.name, tx.assignedDept, tx.amount);
                         pledge = store.data.pledges.find(p => p.id === pid);
                     }
 
-                    // Add Transaction
+                    // Record Transaction
                     store.addTransaction({
                         pledgeId: pledge.id,
                         name: pledge.name,
@@ -843,7 +849,7 @@
                 this.renderLedger();
                 this.renderTribes();
                 this.renderSettings();
-                this.populateDeptSelects(); // Refresh dropdowns in case names changed
+                this.populateDeptSelects();
             },
 
             renderDashboard() {
@@ -857,7 +863,6 @@
                 document.getElementById('dash-rate').innerText = rate + '%';
                 document.getElementById('dash-donors').innerText = uniqueDonors;
 
-                // Render Phases
                 const phaseContainer = document.getElementById('phase-list');
                 phaseContainer.innerHTML = '';
                 
@@ -876,7 +881,6 @@
                     `;
                 });
 
-                // Render Recent
                 const recent = document.getElementById('recent-activity');
                 const txs = store.data.transactions.slice(0, 5);
                 if(txs.length === 0) {
@@ -901,7 +905,6 @@
                 let html = '';
                 store.data.pledges.forEach(p => {
                     if(p.name.toLowerCase().includes(search)) {
-                        // Calculate Paid
                         const paid = store.data.transactions
                             .filter(t => t.pledgeId === p.id)
                             .reduce((sum, t) => sum + t.amount, 0);
@@ -951,7 +954,6 @@
                     const deptPledges = store.data.pledges.filter(p => p.department === dept);
                     const target = deptPledges.reduce((sum, p) => sum + p.amount, 0);
                     
-                    // Get all pledge IDs for this dept
                     const pIds = deptPledges.map(p => p.id);
                     const collected = store.data.transactions
                         .filter(t => pIds.includes(t.pledgeId))
@@ -1012,7 +1014,6 @@
                 toast.innerHTML = type === 'success' ? '✅ ' + msg : '⚠️ ' + msg;
                 container.appendChild(toast);
 
-                // Trigger reflow
                 void toast.offsetWidth;
                 toast.classList.add('show');
 
@@ -1047,7 +1048,6 @@
             }
         };
 
-        // Start App
         document.addEventListener('DOMContentLoaded', () => app.init());
 
     </script>
