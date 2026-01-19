@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LandQuest Mobilizer | Identity & Compliance</title>
+    <title>LandQuest Mobilizer | Auto-Integration</title>
     <style>
         :root {
             --primary: #059669; /* Emerald Green */
@@ -80,7 +80,7 @@
         }
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: var(--primary-dark); }
-        .btn-secondary { background: white; border: 1px solid var(--border); color: var(--text-main); }
+        .btn-secondary { background: white; border:1px solid var(--border); color: var(--text-main); }
         .btn-danger { background: var(--danger); color: white; }
         .btn-sm { padding: 6px 12px; font-size: 0.85rem; }
         .btn-block { width: 100%; }
@@ -146,12 +146,38 @@
         
         /* Resolution Box (Staging) */
         .resolution-box {
-            border: 1px solid var(--accent);
+            border:1px solid var(--accent);
             padding: 10px;
             background: #FFFBEB;
             border-radius: 8px;
             margin-top: 5px;
         }
+
+        /* --- Enhanced Ledger Styles (From Parser) --- */
+        .trans-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .trans-stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .trans-stat-label { font-size: 13px; color: #666; margin-bottom: 8px; }
+        .trans-stat-value { font-size: 24px; font-weight: 700; }
+
+        .trans-row {
+            padding: 12px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;
+        }
+        .trans-row.new-member { background: #E3F2FD; border-left: 4px solid #2196F3; }
+        .trans-row.matched { background: #E8F5E9; border-left: 4px solid #4CAF50; }
+        .trans-row.unmatched { background: #FFF3E0; border-left: 4px solid #FF9800; }
+        
     </style>
 </head>
 <body>
@@ -257,20 +283,40 @@
             </div>
         </section>
 
-        <!-- LEDGER & RECONCILE VIEW -->
+        <!-- LEDGER & RECONCILE VIEW (INTEGRATED) -->
         <section id="view-ledger" class="hidden">
             <h1>Transaction Reconciliation</h1>
             
+            <!-- Enhanced Parser UI -->
             <div class="card mt-4" style="border-left: 5px solid var(--primary);">
-                <h3>🤖 M-Pesa SMS Parser</h3>
-                <p class="text-sub">Paste raw M-Pesa messages. Click "Extract" to process.</p>
-                <small class="text-sub" style="color:var(--accent)">* If a name exists in multiple departments, you will be asked to select the correct one.</small>
+                <h3>🤖 M-Pesa SMS Parser (Integrated)</h3>
+                <p class="text-sub">Pastes M-Pesa messages. Auto-creates new members if not found.</p>
                 
                 <div class="reconciler-area" contenteditable="true" id="sms-input">
                     Paste M-Pesa messages here...
                 </div>
                 <div style="margin-top: 10px; text-align: right;">
                     <button class="btn btn-primary" onclick="app.parseSMS()">⚡ Extract Transactions</button>
+                </div>
+
+                <!-- Stats from Parser -->
+                <div id="parser-stats" class="trans-stats mt-4 hidden">
+                    <div class="trans-stat-card">
+                        <div class="trans-stat-label">Total Parsed</div>
+                        <div class="trans-stat-value" id="st-total">0</div>
+                    </div>
+                    <div class="trans-stat-card">
+                        <div class="trans-stat-label">New Members</div>
+                        <div class="trans-stat-value" style="color:var(--secondary);" id="st-new">0</div>
+                    </div>
+                    <div class="trans-stat-card">
+                        <div class="trans-stat-label">Matched</div>
+                        <div class="trans-stat-value" style="color:var(--primary);" id="st-matched">0</div>
+                    </div>
+                    <div class="trans-stat-card">
+                        <div class="trans-stat-label">Unmatched</div>
+                        <div class="trans-stat-value" style="color:var(--accent);" id="st-unmatched">0</div>
+                    </div>
                 </div>
 
                 <div id="staged-container" class="hidden">
@@ -335,7 +381,7 @@
                         </div>
                     </div>
                     
-                    <label class="text-sm mt-4">Department Targets (Cannot be negative)</label>
+                    <label class="text-sm mt-4">Department Targets</label>
                     <div id="s-targets-container" class="target-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
                         <!-- JS generates inputs here -->
                     </div>
@@ -354,8 +400,8 @@
 
             <div class="card" style="border-color: var(--danger);">
                 <h3 style="color: var(--danger);">Danger Zone</h3>
-                <p class="text-sub">Reset the entire project. This cannot be undone.</p>
-                <button class="btn btn-danger btn-sm mt-4" onclick="if(confirm('Are you sure? This deletes all data.')) { localStorage.removeItem('landquest_db_v7'); location.reload(); }">Reset All Data</button>
+                <p class="text-sub">Reset entire project. This cannot be undone.</p>
+                <button class="btn btn-danger btn-sm mt-4" onclick="if(confirm('Are you sure? This deletes all data.')) { localStorage.removeItem('landquest_db_v8'); location.reload(); }">Reset All Data</button>
             </div>
         </section>
 
@@ -460,7 +506,7 @@
 
     <script>
         // --- DATA STORE ---
-        const DB_KEY = 'landquest_db_v7';
+        const DB_KEY = 'landquest_db_v8';
         
         const DEPARTMENTS = [
             "Eagles", 
@@ -585,7 +631,6 @@
                 container.innerHTML = '';
                 DEPARTMENTS.forEach(dept => {
                     const div = document.createElement('div');
-                    // min="0" added here
                     div.innerHTML = `<input type="number" min="0" class="s-target-input" data-dept="${dept}" placeholder="${dept} (0)">`;
                     container.appendChild(div);
                 });
@@ -682,7 +727,6 @@
                         </div>
                     `;
                 });
-
 
                 // 4. Pledge Table
                 const pTable = document.getElementById('pledges-table');
@@ -894,53 +938,99 @@
                 link.click();
             },
 
-            // --- Reconciler Logic (UNIQUE JOSH FIX) ---
+            // --- INTEGRATED PARSER LOGIC (V8) ---
             parseSMS: () => {
                 const text = document.getElementById('sms-input').innerText;
                 if(text.includes('Paste')) { alert("Please paste messages first."); return; }
+                
                 const sentences = text.split(/[\.!?]+/).filter(s => s.includes('Ksh') || s.includes('KES') || s.includes('received'));
                 stagedTransactions = [];
                 
+                let newMemberCount = 0;
+                let matchedCount = 0;
+
                 sentences.forEach(s => {
-                    const amtMatch = s.match(/(?:Ksh|KES)\s?([0-9,]+(?:\.\d{2})?)/i);
-                    if(!amtMatch) return;
-                    const amount = parseFloat(amtMatch[1].replace(/,/g, ''));
-
-                    let name = "Unknown";
-                    const nameMatch = s.match(/from\s+([A-Za-z\s\.]+?)(?:\s+07\d{8}|\s+Account|\s+on\s+\d{1,2}\/)/i);
-                    if(nameMatch) name = nameMatch[1].trim();
-
-                    let ref = "N/A";
-                    const refMatch = s.match(/(?:Account\s+Number|Confirmation\s+Code)\s+([A-Za-z0-9]+)/i);
-                    if(refMatch) ref = refMatch[1];
-
-                    // Check for Ambiguity (Josh in Youth vs Josh in Eagles)
-                    const pledges = store.data.pledges.filter(p => p.name.toLowerCase() === name.toLowerCase());
+                    // Robust Regex (From User's Parser)
+                    // Handle "Received From" (Personal)
+                    let amount = null, name = "Unknown", phone = null, ref = "N/A", type = "M-Pesa";
                     
-                    let isAmbiguous = false;
-                    let candidates = [];
-                    let selectedDept = "";
-
-                    if (pledges.length > 1) {
-                        isAmbiguous = true;
-                        // Extract unique departments
-                        candidates = pledges.map(p => p.dept);
-                        selectedDept = candidates[0]; // Default to first
-                    } else if (pledges.length === 1) {
-                        selectedDept = pledges[0].dept;
+                    const receivedMatch = s.match(/You have received Ksh([\d,]+\.?\d*)\s+from\s+([A-Za-z\s]+)\s+(\d+)/i);
+                    if(receivedMatch) {
+                        amount = parseFloat(receivedMatch[1].replace(/,/g, ''));
+                        name = receivedMatch[2].trim();
+                        phone = receivedMatch[3];
+                        ref = "N/A"; // Received messages usually lack account ref in the simple format
+                    } else {
+                        // Handle "Sent To" (Till)
+                        const sentMatch = s.match(/Ksh([\d,]+\.?\d*)\s+sent to\s+([A-Z\s]+)\s+for account\s+(\w+)/i);
+                        if(sentMatch) {
+                            amount = parseFloat(sentMatch[1].replace(/,/g, ''));
+                            // Till messages often don't have sender name in the SMS body, 
+                            // so we assume 'Unknown' and rely on admin or webhooks for names
+                            name = "Till Transaction"; 
+                            ref = sentMatch[3];
+                            // Extract Date if available
+                            const dateMatch = s.match(/on\s+(\d{1,2}\/\d{1,2}\/\d{2})/i);
+                            if(dateMatch) ref += ` (${dateMatch[1]})`;
+                        }
                     }
 
-                    stagedTransactions.push({ amount, name, ref, matchedId: null, isAmbiguous, candidates, selectedDept, id: Math.random() });
+                    if(!amount) return;
+
+                    // AUTO-CREATE LOGIC
+                    // Check if this person exists in our database
+                    // We look by name first. If ambiguous, we handle in commit phase.
+                    const existingPledges = store.data.pledges.filter(p => p.name.toLowerCase() === name.toLowerCase());
+                    let isNewMember = existingPledges.length === 0;
+                    
+                    if(isNewMember) newMemberCount++;
+                    else matchedCount++;
+
+                    // Handle Ambiguity (Josh in multiple Depts)
+                    let isAmbiguous = false;
+                    let candidates = [];
+                    let selectedDept = "Planning Committee"; // Default for new members
+
+                    if (existingPledges.length > 1) {
+                        isAmbiguous = true;
+                        candidates = existingPledges.map(p => p.dept);
+                        selectedDept = candidates[0]; 
+                    } else if (existingPledges.length === 1) {
+                        selectedDept = existingPledges[0].dept;
+                    }
+
+                    stagedTransactions.push({ 
+                        amount, name, ref, phone, isNewMember, isAmbiguous, 
+                        candidates, selectedDept, matchedId: null, id: Math.random() 
+                    });
                 });
 
                 if(stagedTransactions.length > 0) {
                     document.getElementById('staged-container').classList.remove('hidden');
                     document.getElementById('staged-count').innerText = stagedTransactions.length;
+                    document.getElementById('parser-stats').classList.remove('hidden');
+                    
+                    // Update Stats
+                    document.getElementById('st-total').innerText = stagedTransactions.length;
+                    document.getElementById('st-new').innerText = newMemberCount;
+                    document.getElementById('st-matched').innerText = matchedCount;
+                    document.getElementById('st-unmatched').innerText = 0; // In this new logic, we rarely have unmatched unless regex fails
+
                     const list = document.getElementById('staged-list');
                     list.innerHTML = '';
                     
                     stagedTransactions.forEach((t, idx) => {
                         let optionsHtml = '';
+                        let rowClass = 'matched';
+                        let statusText = 'Matched';
+                        let isNewText = '';
+
+                        if (t.isNewMember) {
+                            rowClass = 'new-member';
+                            statusText = 'New Member Created';
+                            isNewText = `<div style="font-size:11px; color:#1976d2; font-weight:bold; margin-bottom:5px;">✨ Auto-Registered as: Planning Committee</div>`;
+                        }
+
                         if (t.isAmbiguous) {
                             optionsHtml = `
                                 <div class="resolution-box">
@@ -950,16 +1040,18 @@
                                     </select>
                                 </div>
                             `;
+                            rowClass = 'unmatched'; // Visually distinct
                         }
 
                         list.innerHTML += `
-                            <div style="padding: 10px; border-bottom: 1px solid #eee; display:flex; justify-content:space-between; align-items:center; flex-direction:column; align-items:flex-start;">
+                            <div class="trans-row ${rowClass}">
                                 <div style="width:100%;">
                                     <div class="flex-between">
                                         <strong>${t.name}</strong>
                                         <span style="font-weight:bold;">${app.formatMoney(t.amount)}</span>
                                     </div>
-                                    <small class="text-sub">Ref: ${t.ref}</small>
+                                    <small class="text-sub">Ref: ${t.ref} ${t.phone ? '• ' + t.phone : ''}</small>
+                                    ${isNewText}
                                     ${optionsHtml}
                                 </div>
                             </div>`;
@@ -974,15 +1066,22 @@
                 for(let i=0; i<stagedTransactions.length; i++) {
                     let t = stagedTransactions[i];
                     
-                    // Handle Resolution if Ambiguous
+                    // 1. AUTO-CREATE MEMBER IF NEEDED
+                    if(t.isNewMember) {
+                        store.addPledge(t.name, t.phone || 'Unknown', "Planning Committee", 0, false);
+                    }
+
+                    // 2. Resolve Dept if Ambiguous
                     if(t.isAmbiguous) {
                         const select = document.querySelector(`.resolve-dept-select[data-idx="${i}"]`);
                         if(select) t.selectedDept = select.value;
                     }
 
+                    // 3. Validate Duplicate Ref
                     const duplicate = store.data.transactions.find(tx => tx.ref === t.ref);
                     if(duplicate) { alert(`Skipping duplicate ref: ${t.ref}`); continue; }
                     
+                    // 4. Add Transaction
                     store.addTransaction({
                         amount: t.amount, name: t.name, ref: t.ref, method: 'M-Pesa',
                         dept: t.selectedDept, // Pass resolved dept
@@ -991,12 +1090,13 @@
                     addedCount++;
                 }
                 app.clearStaged();
-                if(addedCount > 0) alert(`Processed ${addedCount} transactions successfully!`);
+                if(addedCount > 0) alert(`Processed ${addedCount} transactions!`);
             },
 
             clearStaged: () => {
                 stagedTransactions = [];
                 document.getElementById('staged-container').classList.add('hidden');
+                document.getElementById('parser-stats').classList.add('hidden');
                 document.getElementById('sms-input').innerText = 'Paste M-Pesa messages here...';
             },
 
