@@ -190,10 +190,11 @@
             overflow: hidden;
         }
         .modal-overlay.open .modal { transform: scale(1); }
+        .modal-lg { max-width: 800px; }
 
         .modal-header { padding: 20px 24px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: #F9FAFB; }
         .modal-header h3 { margin: 0; }
-        .modal-body { padding: 24px; }
+        .modal-body { padding: 24px; max-height: 70vh; overflow-y: auto; }
         .modal-footer { padding: 16px 24px; background: #F9FAFB; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 12px; }
 
         .close-modal { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-light); line-height: 1; }
@@ -215,6 +216,8 @@
         .flex-between { display: flex; justify-content: space-between; align-items: center; }
         .text-right { text-align: right; }
         .w-full { width: 100%; }
+        .input-group { margin-bottom: 12px; }
+        .input-group label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 0.8rem; }
 
         /* --- MOBILE --- */
         @media (max-width: 768px) {
@@ -394,8 +397,8 @@
             <h1>Admin Settings</h1>
             
             <div class="card">
-                <h3>Manage Phases</h3>
-                <p class="text-light" style="margin-bottom: 16px;">Define fundraising goals and deadlines.</p>
+                <h3>Manage Collection Phases</h3>
+                <p class="text-light" style="margin-bottom: 16px;">Set deadlines and specific targets for each department.</p>
                 
                 <form id="phase-form" onsubmit="app.addPhase(event)">
                     <div class="grid-2">
@@ -408,11 +411,18 @@
                             <input type="date" id="phase-date" required>
                         </div>
                     </div>
-                    <div>
-                        <label>Overall Target (KES)</label>
-                        <input type="number" id="phase-target" required min="1">
+                    
+                    <div style="background: #F9FAFB; padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
+                        <h4 style="margin-bottom: 12px; font-size: 0.9rem; color: var(--text-main);">Department Targets</h4>
+                        <div id="dept-targets-container" class="grid-2" style="gap: 12px;">
+                            <!-- JS will populate inputs here -->
+                        </div>
+                        <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #E5E7EB; font-weight: 600; font-size: 0.9rem; text-align: right;">
+                            Total Project Target: <span id="total-target-preview">KES 0</span>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Add Phase</button>
+
+                    <button type="submit" class="btn btn-primary" style="margin-top: 16px;">Create Phase</button>
                 </form>
 
                 <div style="margin-top: 32px;">
@@ -453,7 +463,7 @@
                     <input type="number" name="amount" required min="1" placeholder="0.00">
                     
                     <small style="color: var(--accent); display:block; margin-top:10px;">
-                        ℹ️ <strong>Note:</strong> If this member already exists, this amount will be ADDED to their total pledge.
+                        ℹ️ <strong>Note:</strong> If this specific Name + Department combination already exists, the amount will be added to their existing pledge.
                     </small>
                 </div>
                 <div class="modal-footer">
@@ -466,13 +476,13 @@
 
     <!-- 2. SMS PARSER MODAL -->
     <div class="modal-overlay" id="modal-sms-parse">
-        <div class="modal" style="max-width: 600px;">
+        <div class="modal modal-lg" style="max-width: 600px;">
             <div class="modal-header">
                 <h3>⚡ M-Pesa SMS Parser</h3>
                 <button class="close-modal" onclick="app.closeModal('sms-parse')">&times;</button>
             </div>
             <div class="modal-body">
-                <p class="text-light">Paste SMS confirmation messages below. The system will extract amounts and names.</p>
+                <p class="text-light">Paste SMS confirmation messages below.</p>
                 <textarea id="sms-input" style="width: 100%; height: 150px; font-family: monospace; font-size: 0.85rem;" placeholder="Paste here... e.g. 'Confirmed. You have received Ksh 5,000 from JOHN DOE...'"></textarea>
                 
                 <div id="staged-area" class="hidden" style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 16px;">
@@ -535,14 +545,14 @@
             "Eagles", "Daughters of Faith", "Youth", 
             "Kingdom Generation", "Planning Committee", "Guests"
         ];
-        const DB_KEY = 'dcd_possess_land_v4'; // Version bump to clear any old messy data
+        const DB_KEY = 'dcd_possess_land_v5';
 
         // --- STORE ---
         const store = {
             data: {
                 pledges: [], // { id, name, department, amount, date }
                 transactions: [], // { id, pledgeId, amount, type, ref, date, method }
-                phases: [] // { id, name, target, date }
+                phases: [] // { id, name, target, date, deptTargets: {Eagles: 1000, ...} }
             },
 
             init() {
@@ -554,8 +564,9 @@
                     this.data.phases.push({
                         id: Date.now(),
                         name: "Initial Phase",
-                        target: 1000000,
-                        date: new Date().toISOString().split('T')[0]
+                        totalTarget: 1000000,
+                        date: new Date().toISOString().split('T')[0],
+                        deptTargets: {} 
                     });
                     this.save();
                 }
@@ -566,21 +577,22 @@
                 app.render();
             },
 
+            // FIX: Match based on Name AND Department
             addPledge(name, dept, amount) {
-                // FIX: Check if member exists to compound pledge
-                const existing = this.data.pledges.find(p => p.name.toLowerCase() === name.toLowerCase());
+                const existing = this.data.pledges.find(p => 
+                    p.name.toLowerCase() === name.toLowerCase() &&
+                    p.department.toLowerCase() === dept.toLowerCase()
+                );
                 
                 if (existing) {
                     // Update existing pledge
                     existing.amount += parseFloat(amount);
-                    // Optional: Update department if changed
-                    existing.department = dept; 
                     this.save();
-                    app.showToast(`Updated pledge for ${name} (New Total: ${app.formatMoney(existing.amount)})`, 'success');
+                    app.showToast(`Updated pledge for ${name} (${dept})`, 'success');
                     return existing.id;
                 } else {
                     // Create new pledge
-                    const id = Date.now().toString();
+                    const id = Date.now().toString() + Math.random().toString(36).substr(2, 5);
                     this.data.pledges.push({
                         id,
                         name,
@@ -602,10 +614,16 @@
                 this.save();
             },
 
-            addPhase(name, target, date) {
+            addPhase(name, date, deptTargets) {
+                // Calculate total
+                const total = Object.values(deptTargets).reduce((a,b) => a+b, 0);
+
                 this.data.phases.push({
                     id: Date.now(),
-                    name, target: parseFloat(target), date
+                    name, 
+                    totalTarget: total, 
+                    date,
+                    deptTargets
                 });
                 this.data.phases.sort((a,b) => new Date(a.date) - new Date(b.date));
                 this.save();
@@ -629,10 +647,10 @@
             init() {
                 store.init();
                 this.populateDeptSelects();
+                this.renderSettingsForm();
                 this.render();
             },
 
-            // Navigation
             router(viewId) {
                 document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden'));
                 document.getElementById(`view-${viewId}`).classList.remove('hidden');
@@ -642,7 +660,6 @@
                 document.querySelectorAll('.nav-item')[map[viewId]].classList.add('active');
             },
 
-            // Modal System
             openModal(type) {
                 document.getElementById(`modal-${type}`).classList.add('open');
             },
@@ -657,7 +674,6 @@
                 }
             },
 
-            // Form Handlers
             populateDeptSelects() {
                 const opts = DEPARTMENTS.map(d => `<option value="${d}">${d}</option>`).join('');
                 document.getElementById('modal-dept-select').innerHTML = opts;
@@ -665,6 +681,52 @@
                 
                 const names = [...new Set(store.data.pledges.map(p => p.name))];
                 document.getElementById('member-list').innerHTML = names.map(n => `<option value="${n}">`).join('');
+            },
+
+            renderSettingsForm() {
+                // Generate inputs for Dept Targets in Settings
+                const container = document.getElementById('dept-targets-container');
+                container.innerHTML = '';
+                
+                DEPARTMENTS.forEach(dept => {
+                    const div = document.createElement('div');
+                    div.className = 'input-group';
+                    div.innerHTML = `
+                        <label>${dept} Target</label>
+                        <input type="number" id="targ-${dept.replace(/\s/g, '')}" class="dept-target-input" placeholder="0" min="0" oninput="app.updateTotalPreview()">
+                    `;
+                    container.appendChild(div);
+                });
+                
+                // Add event listener to form
+                document.getElementById('phase-form').addEventListener('submit', (e) => {
+                    e.preventDefault(); // prevent default refresh
+                    this.addPhaseFromForm();
+                });
+            },
+
+            updateTotalPreview() {
+                let total = 0;
+                document.querySelectorAll('.dept-target-input').forEach(inp => {
+                    total += Number(inp.value) || 0;
+                });
+                document.getElementById('total-target-preview').innerText = app.formatMoney(total);
+            },
+
+            addPhaseFromForm() {
+                const name = document.getElementById('phase-name').value;
+                const date = document.getElementById('phase-date').value;
+                
+                const targets = {};
+                DEPARTMENTS.forEach(dept => {
+                    const val = document.getElementById(`targ-${dept.replace(/\s/g, '')}`).value;
+                    targets[dept] = Number(val) || 0;
+                });
+
+                store.addPhase(name, date, targets);
+                this.showToast('Phase created', 'success');
+                document.getElementById('phase-form').reset();
+                this.updateTotalPreview();
             },
 
             submitPledge(e) {
@@ -682,7 +744,12 @@
                 const amount = document.getElementById('cash-amount').value;
                 const ref = document.getElementById('cash-ref').value || 'Manual Cash';
 
-                let pledge = store.data.pledges.find(p => p.name.toLowerCase() === name.toLowerCase());
+                // FIX: Match by Name AND Dept
+                let pledge = store.data.pledges.find(p => 
+                    p.name.toLowerCase() === name.toLowerCase() &&
+                    p.department.toLowerCase() === dept.toLowerCase()
+                );
+                
                 if (!pledge) {
                     const pid = store.addPledge(name, dept, amount);
                     pledge = store.data.pledges.find(p => p.id === pid);
@@ -702,25 +769,13 @@
                 e.target.reset();
             },
 
-            // Phase Management
-            addPhase(e) {
-                e.preventDefault();
-                store.addPhase(
-                    document.getElementById('phase-name').value,
-                    document.getElementById('phase-target').value,
-                    document.getElementById('phase-date').value
-                );
-                this.showToast('Phase created', 'success');
-                e.target.reset();
-            },
-
             hardReset() {
                 if(confirm("Are you absolutely sure? This deletes all data.")) {
                     store.reset();
                 }
             },
 
-            // --- SMS PARSER LOGIC (UPDATED) ---
+            // --- SMS PARSER LOGIC ---
             processSMS() {
                 const text = document.getElementById('sms-input').value;
                 if(!text.trim()) return;
@@ -730,7 +785,6 @@
 
                 lines.forEach(line => {
                     // Pattern 1: Personal (Incoming)
-                    // Matches: "Confirmed. You have received Ksh5,000.00 from JOHN DOE..." OR "Received Ksh5,000 from..."
                     const matchPerson = line.match(/(?:You have received|Received)\s+Ksh\s+([\d,]+\.?\d*)\s+from\s+([A-Za-z\s]+?)(?:\s+\d{10,}|\.)/i);
                     
                     if (matchPerson) {
@@ -744,7 +798,6 @@
                     }
 
                     // Pattern 2: Till/Paybill (Outgoing to Business)
-                    // Matches: "Confirmed. Ksh2,500.00 sent to LAND FUNDRAISER for account 567892..."
                     const matchTill = line.match(/Confirmed\.\s+Ksh\s+([\d,]+\.?\d*)\s+sent to\s+([A-Z0-9\s]+?)\s+for\s+account/i);
                     
                     if (matchTill) {
@@ -776,6 +829,9 @@
                 list.innerHTML = '';
 
                 this.stagedTx.forEach((tx, idx) => {
+                    // FIX: If multiple matches exist (Josh in Eagles AND Josh in Youth), 
+                    // we need a way to distinguish. For now, we default to finding ANY match 
+                    // or requiring Dept selection if none/new.
                     const existing = store.data.pledges.find(p => p.name.toLowerCase() === tx.name.toLowerCase());
                     
                     let deptSelect = '';
@@ -815,14 +871,17 @@
                         return;
                     }
 
-                    let pledge = store.data.pledges.find(p => p.name.toLowerCase() === tx.name.toLowerCase());
+                    // FIX: Find or Create based on Name AND Dept
+                    let pledge = store.data.pledges.find(p => 
+                        p.name.toLowerCase() === tx.name.toLowerCase() &&
+                        p.department.toLowerCase() === tx.assignedDept.toLowerCase()
+                    );
+                    
                     if(!pledge) {
-                        // If new member, we treat the amount as a pledge
                         const pid = store.addPledge(tx.name, tx.assignedDept, tx.amount);
                         pledge = store.data.pledges.find(p => p.id === pid);
                     }
 
-                    // Record Transaction
                     store.addTransaction({
                         pledgeId: pledge.id,
                         name: pledge.name,
@@ -848,7 +907,7 @@
                 this.renderPledges();
                 this.renderLedger();
                 this.renderTribes();
-                this.renderSettings();
+                this.renderSettingsList();
                 this.populateDeptSelects();
             },
 
@@ -867,7 +926,7 @@
                 phaseContainer.innerHTML = '';
                 
                 store.data.phases.forEach(phase => {
-                    const pct = Math.min(100, Math.round((totalCash / phase.target) * 100));
+                    const pct = Math.min(100, Math.round((totalCash / phase.totalTarget) * 100));
                     phaseContainer.innerHTML += `
                         <div class="progress-wrapper">
                             <div class="progress-info">
@@ -950,18 +1009,27 @@
             renderTribes() {
                 const container = document.getElementById('tribes-container');
                 
+                // Get the latest active phase for targets
+                const activePhase = store.data.phases[store.data.phases.length - 1];
+                
                 const deptStats = DEPARTMENTS.map(dept => {
                     const deptPledges = store.data.pledges.filter(p => p.department === dept);
                     const target = deptPledges.reduce((sum, p) => sum + p.amount, 0);
                     
+                    // Get collected
                     const pIds = deptPledges.map(p => p.id);
                     const collected = store.data.transactions
                         .filter(t => pIds.includes(t.pledgeId))
                         .reduce((sum, t) => sum + t.amount, 0);
 
-                    const pct = target ? Math.round((collected / target) * 100) : 0;
+                    // Use Phase Target if available, else fall back to Pledged total
+                    const phaseTarget = (activePhase && activePhase.deptTargets && activePhase.deptTargets[dept]) 
+                        ? activePhase.deptTargets[dept] 
+                        : target;
 
-                    return { dept, target, collected, pct };
+                    const pct = phaseTarget ? Math.round((collected / phaseTarget) * 100) : 0;
+
+                    return { dept, target, collected, pct, phaseTarget };
                 }).sort((a,b) => b.collected - a.collected);
 
                 container.innerHTML = deptStats.map((d, i) => `
@@ -978,20 +1046,24 @@
                             <strong>${this.formatMoney(d.collected)}</strong>
                         </div>
                         <div class="flex-between" style="font-size:0.9rem;">
-                            <span class="text-light">Target</span>
-                            <strong>${this.formatMoney(d.target)}</strong>
+                            <span class="text-light">Phase Target</span>
+                            <strong>${this.formatMoney(d.phaseTarget)}</strong>
                         </div>
+                        ${d.phaseTarget !== d.target ? `
+                        <div class="flex-between" style="font-size:0.85rem; margin-top:4px; color:#9CA3AF;">
+                            <span>(Pledged: ${this.formatMoney(d.target)})</span>
+                        </div>` : ''}
                     </div>
                 `).join('');
             },
 
-            renderSettings() {
+            renderSettingsList() {
                 const list = document.getElementById('settings-phase-list');
                 list.innerHTML = store.data.phases.map(p => `
                     <div class="flex-between" style="padding: 12px; background: #f9fafb; margin-bottom: 8px; border-radius: 6px;">
                         <div>
                             <strong>${p.name}</strong>
-                            <div class="text-light" style="font-size:0.8rem;">Target: ${this.formatMoney(p.target)} • ${this.formatDate(p.date)}</div>
+                            <div class="text-light" style="font-size:0.8rem;">Target: ${this.formatMoney(p.totalTarget)} • ${this.formatDate(p.date)}</div>
                         </div>
                         <button class="btn btn-sm btn-danger" onclick="store.deletePhase(${p.id})">Delete</button>
                     </div>
