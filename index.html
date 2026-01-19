@@ -545,7 +545,7 @@
             "Eagles", "Daughters of Faith", "Youth", 
             "Kingdom Generation", "Planning Committee", "Guests"
         ];
-        const DB_KEY = 'dcd_possess_land_v7'; // Updated version for duplicate logic
+        const DB_KEY = 'dcd_possess_land_v8'; // Updated for fixed regex
 
         // --- STORE ---
         const store = {
@@ -606,7 +606,7 @@
             },
 
             addTransaction(tx) {
-                // FIX: Include 'department' in the transaction object for filtering
+                // FIX: Include 'department' in the transaction object
                 this.data.transactions.unshift({
                     id: Date.now().toString(),
                     ...tx,
@@ -740,7 +740,7 @@
                 const dept = document.getElementById('cash-dept').value;
                 const amount = parseFloat(document.getElementById('cash-amount').value);
                 const ref = document.getElementById('cash-ref').value || 'Manual Cash';
-                const timestamp = new Date(); // Use CURRENT time for manual cash
+                const timestamp = new Date() // Use CURRENT time for manual cash
 
                 // 1. Check Duplicate
                 const dupe = this.checkDuplicate(name, dept, amount, timestamp);
@@ -765,7 +765,7 @@
                 store.addTransaction({
                     pledgeId: pledge.id,
                     name: pledge.name,
-                    department: dept, // Explicitly save dept
+                    department: dept,
                     amount: amount,
                     type: 'credit',
                     method: 'Cash',
@@ -789,12 +789,10 @@
                 const THIRTY_MINS = 30 * 60 * 1000;
                 const checkTime = dateObj.getTime();
 
-                // Look for any transaction with Same Name, Same Dept, Same Amount
-                // AND where time difference is less than 30 mins
                 return store.data.transactions.some(t => {
                     const isSamePerson = t.name.toLowerCase() === name.toLowerCase() && 
                                          t.department.toLowerCase() === dept.toLowerCase();
-                    const isSameAmount = Math.abs(t.amount - amount) < 0.01; // float comparison
+                    const isSameAmount = Math.abs(t.amount - amount) < 0.01;
                     const txTime = new Date(t.date).getTime();
                     const isRecent = Math.abs(txTime - checkTime) < THIRTY_MINS;
 
@@ -802,7 +800,7 @@
                 });
             },
 
-            // --- SMS PARSER LOGIC ---
+            // --- SMS PARSER LOGIC (FIXED FOR PHONE NUMBERS) ---
             processSMS() {
                 const text = document.getElementById('sms-input').value;
                 if(!text.trim()) return;
@@ -811,8 +809,9 @@
                 const results = [];
 
                 lines.forEach(line => {
-                    // Pattern 1: Personal (Incoming) with Date Capture
-                    const matchPerson = line.match(/(?:You have received|Received)\s+Ksh\s*([\d,]+\.?\d*)\s+from\s+([A-Za-z\s]+?)\s+(?:on\s+(\d{1,2}\/\d{1,2}\/\d{2,4})\s+at\s+(\d{1,2}:\d{2}\s*[AP]M))?(?:\s+\d{10,}|\.)/i);
+                    // FIX: Updated Regex to handle "Name Phone Number Date"
+                    // Structure: Name -> (Optional Phone) -> on Date
+                    const matchPerson = line.match(/(?:You have received|Received)\s+Ksh\s*([\d,]+\.?\d*)\s+from\s+([A-Za-z\s]+?)\s+(?:\d{10,}\s+)?on\s+(\d{1,2}\/\d{1,2}\/\d{2,4})\s+at\s+(\d{1,2}:\d{2}\s*[AP]M)/i);
                     
                     if (matchPerson) {
                         let dateObj = new Date(); // Fallback
@@ -925,8 +924,7 @@
                         return;
                     }
 
-                    // 1. DUPLICATE CHECK HERE TOO
-                    // We use the tx.date (from SMS) as the reference point
+                    // 1. DUPLICATE CHECK
                     const dupe = this.checkDuplicate(tx.name, tx.assignedDept, tx.amount, tx.date);
                     
                     if (dupe) {
@@ -949,12 +947,12 @@
                     store.addTransaction({
                         pledgeId: pledge.id,
                         name: pledge.name,
-                        department: tx.assignedDept, // Save Dept
+                        department: tx.assignedDept,
                         amount: tx.amount,
                         type: 'credit',
                         method: tx.method,
                         ref: tx.ref,
-                        date: tx.date.toISOString() // Use SMS time
+                        date: tx.date.toISOString()
                     });
                     count++;
                 });
@@ -1161,7 +1159,7 @@
                 setTimeout(() => {
                     toast.classList.remove('show');
                     setTimeout(() => toast.remove(), 300);
-                }, 4000); // Increased time for reading error messages
+                }, 4000);
             },
 
             exportCSV(type) {
