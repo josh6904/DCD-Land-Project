@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LandQuest Mobilizer | Finance & Teams</title>
+    <title>LandQuest Mobilizer | Identity & Compliance</title>
     <style>
         :root {
             --primary: #059669; /* Emerald Green */
@@ -144,8 +144,14 @@
         }
         .modal { background: white; width: 90%; max-width: 500px; padding: 24px; border-radius: 12px; max-height: 90vh; overflow-y: auto; }
         
-        /* Receipt Box */
-        .receipt-box { background: #fff; border: 1px dashed #ccc; padding: 15px; font-family: monospace; white-space: pre-wrap; margin-top: 10px; display: none; }
+        /* Resolution Box (Staging) */
+        .resolution-box {
+            border: 1px solid var(--accent);
+            padding: 10px;
+            background: #FFFBEB;
+            border-radius: 8px;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -213,7 +219,7 @@
             </div>
         </section>
 
-        <!-- LEADERBOARD VIEW (NEW) -->
+        <!-- LEADERBOARD VIEW -->
         <section id="view-leaderboard" class="hidden">
             <h1>Department Leaderboard</h1>
             <p class="text-sub mb-4">Current ranking based on Phase Target completion</p>
@@ -258,7 +264,7 @@
             <div class="card mt-4" style="border-left: 5px solid var(--primary);">
                 <h3>🤖 M-Pesa SMS Parser</h3>
                 <p class="text-sub">Paste raw M-Pesa messages. Click "Extract" to process.</p>
-                <small class="text-sub" style="color:var(--accent)">* Future Update: Direct API Integration</small>
+                <small class="text-sub" style="color:var(--accent)">* If a name exists in multiple departments, you will be asked to select the correct one.</small>
                 
                 <div class="reconciler-area" contenteditable="true" id="sms-input">
                     Paste M-Pesa messages here...
@@ -329,7 +335,7 @@
                         </div>
                     </div>
                     
-                    <label class="text-sm mt-4">Department Targets</label>
+                    <label class="text-sm mt-4">Department Targets (Cannot be negative)</label>
                     <div id="s-targets-container" class="target-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
                         <!-- JS generates inputs here -->
                     </div>
@@ -349,7 +355,7 @@
             <div class="card" style="border-color: var(--danger);">
                 <h3 style="color: var(--danger);">Danger Zone</h3>
                 <p class="text-sub">Reset the entire project. This cannot be undone.</p>
-                <button class="btn btn-danger btn-sm mt-4" onclick="if(confirm('Are you sure? This deletes all data.')) { localStorage.removeItem('landquest_db_v6'); location.reload(); }">Reset All Data</button>
+                <button class="btn btn-danger btn-sm mt-4" onclick="if(confirm('Are you sure? This deletes all data.')) { localStorage.removeItem('landquest_db_v7'); location.reload(); }">Reset All Data</button>
             </div>
         </section>
 
@@ -381,7 +387,7 @@
                 </select>
 
                 <label class="text-sub">Pledged Amount (KES)</label>
-                <input type="number" id="p-amount" required>
+                <input type="number" id="p-amount" min="0" required>
 
                 <div class="flex-between mt-4">
                     <button type="button" class="btn btn-secondary" onclick="app.closeModal('pledge')">Cancel</button>
@@ -400,12 +406,12 @@
                 <input type="text" id="c-name" required>
                 
                 <label class="text-sub">Amount (KES)</label>
-                <input type="number" id="c-amount" required>
+                <input type="number" id="c-amount" min="0" required>
 
                 <label class="text-sub">Receipt/Reference</label>
                 <input type="text" id="c-ref" placeholder="e.g. RCPT-001">
 
-                <label class="text-sub">Tribe (Department)</label>
+                <label class="text-sub">Tribe (Department) - Required for Accuracy</label>
                 <select id="c-dept" required>
                     <option>Eagles</option>
                     <option>Daughters of Faith</option>
@@ -422,7 +428,7 @@
         </div>
     </div>
 
-    <!-- MODAL: ADD EXPENSE (NEW) -->
+    <!-- MODAL: ADD EXPENSE -->
     <div class="modal-overlay" id="modal-expense">
         <div class="modal">
             <h2>Record Expense</h2>
@@ -431,7 +437,7 @@
                 <input type="text" id="e-desc" required>
                 
                 <label class="text-sub">Amount (KES)</label>
-                <input type="number" id="e-amount" required>
+                <input type="number" id="e-amount" min="0" required>
 
                 <label class="text-sub">Category</label>
                 <select id="e-cat">
@@ -454,7 +460,7 @@
 
     <script>
         // --- DATA STORE ---
-        const DB_KEY = 'landquest_db_v6';
+        const DB_KEY = 'landquest_db_v7';
         
         const DEPARTMENTS = [
             "Eagles", 
@@ -502,14 +508,25 @@
             }
 
             addTransaction(tx) {
-                // Auto-Link to Pledge
-                let matchedPledge = this.data.pledges.find(p => p.name.toLowerCase() === tx.name.toLowerCase() && p.dept === tx.dept);
+                // MATCHING LOGIC: Josh vs Josh
+                // Priority 1: Exact Name + Dept match (if dept provided)
+                let matchedPledge = null;
+
+                if (tx.dept) {
+                    matchedPledge = this.data.pledges.find(p => p.name.toLowerCase() === tx.name.toLowerCase() && p.dept === tx.dept);
+                } 
+                
+                // Priority 2: Name match only (unique check)
                 if (!matchedPledge) {
-                    matchedPledge = this.data.pledges.find(p => tx.name.toLowerCase().includes(p.name.toLowerCase()));
+                    const allMatches = this.data.pledges.filter(p => p.name.toLowerCase() === tx.name.toLowerCase());
+                    if (allMatches.length === 1) {
+                        matchedPledge = allMatches[0];
+                    }
                 }
 
                 if (matchedPledge) {
-                    tx.name = matchedPledge.name; 
+                    tx.name = matchedPledge.name; // Normalize name
+                    tx.dept = matchedPledge.dept; // Normalize dept
                     tx.pledgeId = matchedPledge.id;
                     matchedPledge.redeemed = (matchedPledge.redeemed || 0) + tx.amount;
                 } else {
@@ -533,6 +550,11 @@
             }
 
             addPhase(name, date, deptTargets) {
+                // Validate non-negative
+                for(let val of Object.values(deptTargets)) {
+                    if(val < 0) { alert("Targets cannot be negative."); return; }
+                }
+
                 const total = Object.values(deptTargets).reduce((a,b) => a+b, 0);
                 this.data.phases.push({
                     id: Date.now(),
@@ -563,7 +585,8 @@
                 container.innerHTML = '';
                 DEPARTMENTS.forEach(dept => {
                     const div = document.createElement('div');
-                    div.innerHTML = `<input type="number" class="s-target-input" data-dept="${dept}" placeholder="${dept} (0)">`;
+                    // min="0" added here
+                    div.innerHTML = `<input type="number" min="0" class="s-target-input" data-dept="${dept}" placeholder="${dept} (0)">`;
                     container.appendChild(div);
                 });
 
@@ -631,7 +654,7 @@
                     `;
                 });
 
-                // 3. Leaderboard (NEW)
+                // 3. Leaderboard
                 const lbContainer = document.getElementById('leaderboard-container');
                 lbContainer.innerHTML = '';
                 let currentPhase = store.data.phases.find(p => new Date(p.date) >= today) || store.data.phases[store.data.phases.length - 1];
@@ -644,7 +667,7 @@
                     const phaseTarget = currentPhase ? (currentPhase.targets[dept] || 0) : 0;
                     const pct = phaseTarget ? (deptCash / phaseTarget) * 100 : 0;
                     return { dept, deptCash, phaseTarget, pct };
-                }).sort((a,b) => b.pct - a.pct); // Sort Descending
+                }).sort((a,b) => b.pct - a.pct); 
 
                 deptStats.forEach((stat, index) => {
                     const rank = index + 1;
@@ -661,7 +684,7 @@
                 });
 
 
-                // 4. Pledge Table (Donor Info)
+                // 4. Pledge Table
                 const pTable = document.getElementById('pledges-table');
                 pTable.innerHTML = '';
                 store.data.pledges.forEach(p => {
@@ -690,18 +713,17 @@
                             <td>${debtDisplay}</td>
                             <td>${status}</td>
                             <td>
-                                ${debt > 0 ? `<button class="btn btn-secondary btn-sm" onclick="app.quickPay(${p.id})">+ Pay</button>` : 
+                                ${debt > 0 ? `<button class="btn btn-secondary btn-sm" onclick="app.quickPay(${p.id}, '${p.dept}')">+ Pay</button>` : 
                                 `<button class="btn btn-secondary btn-sm" onclick="app.viewReceipt(${p.id})">📄 Rec</button>`}
                             </td>
                         </tr>
                     `;
                 });
 
-                // 5. Ledger Table (Combined Income/Expense)
+                // 5. Ledger Table
                 const lTable = document.getElementById('ledger-table');
                 lTable.innerHTML = '';
                 
-                // Combine transactions and expenses, sort by date desc
                 const allRows = [
                     ...store.data.transactions.map(t => ({...t, type: 'Income', desc: t.name, sign: 1})),
                     ...store.data.expenses.map(e => ({...e, type: 'Expense', desc: e.description, sign: -1}))
@@ -794,7 +816,6 @@
                 const ref = document.getElementById('c-ref').value || 'CASH-' + Date.now();
                 const dept = document.getElementById('c-dept').value;
 
-                // Ref Check
                 const duplicate = store.data.transactions.find(t => t.ref === ref);
                 if(duplicate) { alert('Ref Code already exists'); return; }
 
@@ -834,18 +855,16 @@
                 inputs.forEach(i => i.value = '');
             },
 
-            // --- Receipt / Export Logic ---
             generateReceipt: (ref) => {
                 const tx = store.data.transactions.find(t => t.ref === ref);
                 if(!tx) return;
-
-                const msg = `RECEIPT\n---------\nDate: ${new Date(tx.date).toLocaleString()}\nName: ${tx.name}\nAmount: KES ${tx.amount}\nRef: ${tx.ref}\nMethod: ${tx.method}\n\nThank you for your contribution to LandQuest!`;
+                const msg = `RECEIPT\n---------\nDate: ${new Date(tx.date).toLocaleString()}\nName: ${tx.name}\nDept: ${tx.dept}\nAmount: KES ${tx.amount}\nRef: ${tx.ref}\nMethod: ${tx.method}\n\nThank you for your contribution to LandQuest!`;
                 navigator.clipboard.writeText(msg).then(() => alert("Receipt copied to clipboard!"));
             },
 
             viewReceipt: (pledgeId) => {
                 const p = store.data.pledges.find(pl => pl.id === pledgeId);
-                const msg = `PLEDGE RECEIPT\n---------\nMember: ${p.name}\nAmount Pledged: KES ${p.amount}\nPaid: KES ${p.redeemed}\nBalance: KES ${p.amount - p.redeemed}`;
+                const msg = `PLEDGE RECEIPT\n---------\nMember: ${p.name}\nDept: ${p.dept}\nAmount Pledged: KES ${p.amount}\nPaid: KES ${p.redeemed}\nBalance: KES ${p.amount - p.redeemed}`;
                 alert(msg);
             },
 
@@ -854,8 +873,8 @@
                 
                 if(type === 'ledger') {
                     csvContent += "Date,Ref,Description,Type,Amount\n";
-                    [...store.data.transactions.map(t => ({...t, type: 'Income', desc: t.name, sign: 1})),
-                     ...store.data.expenses.map(e => ({...e, type: 'Expense', desc: e.description, sign: -1}))]
+                    [...store.data.transactions.map(t => ({...t, type: 'Income', desc: t.name})),
+                     ...store.data.expenses.map(e => ({...e, type: 'Expense', desc: e.description}))]
                     .sort((a,b) => new Date(b.date) - new Date(a.date))
                     .forEach(t => {
                         csvContent += `${new Date(t.date).toLocaleDateString()},${t.ref},"${t.desc}",${t.type},${t.amount}\n`;
@@ -875,7 +894,7 @@
                 link.click();
             },
 
-            // --- Reconciler Logic ---
+            // --- Reconciler Logic (UNIQUE JOSH FIX) ---
             parseSMS: () => {
                 const text = document.getElementById('sms-input').innerText;
                 if(text.includes('Paste')) { alert("Please paste messages first."); return; }
@@ -895,7 +914,23 @@
                     const refMatch = s.match(/(?:Account\s+Number|Confirmation\s+Code)\s+([A-Za-z0-9]+)/i);
                     if(refMatch) ref = refMatch[1];
 
-                    stagedTransactions.push({ amount, name, ref, matchedId: null, id: Math.random() });
+                    // Check for Ambiguity (Josh in Youth vs Josh in Eagles)
+                    const pledges = store.data.pledges.filter(p => p.name.toLowerCase() === name.toLowerCase());
+                    
+                    let isAmbiguous = false;
+                    let candidates = [];
+                    let selectedDept = "";
+
+                    if (pledges.length > 1) {
+                        isAmbiguous = true;
+                        // Extract unique departments
+                        candidates = pledges.map(p => p.dept);
+                        selectedDept = candidates[0]; // Default to first
+                    } else if (pledges.length === 1) {
+                        selectedDept = pledges[0].dept;
+                    }
+
+                    stagedTransactions.push({ amount, name, ref, matchedId: null, isAmbiguous, candidates, selectedDept, id: Math.random() });
                 });
 
                 if(stagedTransactions.length > 0) {
@@ -903,11 +938,30 @@
                     document.getElementById('staged-count').innerText = stagedTransactions.length;
                     const list = document.getElementById('staged-list');
                     list.innerHTML = '';
-                    stagedTransactions.forEach((t) => {
+                    
+                    stagedTransactions.forEach((t, idx) => {
+                        let optionsHtml = '';
+                        if (t.isAmbiguous) {
+                            optionsHtml = `
+                                <div class="resolution-box">
+                                    <small style="color:var(--accent); font-weight:bold;">⚠️ Name exists in multiple departments. Select Correct Dept:</small>
+                                    <select class="resolve-dept-select" data-idx="${idx}" style="margin-top:5px;">
+                                        ${t.candidates.map(d => `<option value="${d}">${d}</option>`).join('')}
+                                    </select>
+                                </div>
+                            `;
+                        }
+
                         list.innerHTML += `
-                            <div style="padding: 10px; border-bottom: 1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
-                                <div><strong>${t.name}</strong> - ${app.formatMoney(t.amount)} <br><small class="text-sub">Ref: ${t.ref}</small></div>
-                                <span class="badge badge-warn">New Donor ⚠️</span>
+                            <div style="padding: 10px; border-bottom: 1px solid #eee; display:flex; justify-content:space-between; align-items:center; flex-direction:column; align-items:flex-start;">
+                                <div style="width:100%;">
+                                    <div class="flex-between">
+                                        <strong>${t.name}</strong>
+                                        <span style="font-weight:bold;">${app.formatMoney(t.amount)}</span>
+                                    </div>
+                                    <small class="text-sub">Ref: ${t.ref}</small>
+                                    ${optionsHtml}
+                                </div>
                             </div>`;
                     });
                 } else { alert("No valid M-Pesa transactions found in text."); }
@@ -916,18 +970,28 @@
             commitStaged: () => {
                 const entryTime = new Date().toISOString();
                 let addedCount = 0;
-                for(let t of stagedTransactions) {
+                
+                for(let i=0; i<stagedTransactions.length; i++) {
+                    let t = stagedTransactions[i];
+                    
+                    // Handle Resolution if Ambiguous
+                    if(t.isAmbiguous) {
+                        const select = document.querySelector(`.resolve-dept-select[data-idx="${i}"]`);
+                        if(select) t.selectedDept = select.value;
+                    }
+
                     const duplicate = store.data.transactions.find(tx => tx.ref === t.ref);
                     if(duplicate) { alert(`Skipping duplicate ref: ${t.ref}`); continue; }
                     
                     store.addTransaction({
                         amount: t.amount, name: t.name, ref: t.ref, method: 'M-Pesa',
+                        dept: t.selectedDept, // Pass resolved dept
                         matchedId: t.matchedId, date: entryTime
                     });
                     addedCount++;
                 }
                 app.clearStaged();
-                if(addedCount > 0) alert(`Processed ${addedCount} transactions!`);
+                if(addedCount > 0) alert(`Processed ${addedCount} transactions successfully!`);
             },
 
             clearStaged: () => {
@@ -936,13 +1000,12 @@
                 document.getElementById('sms-input').innerText = 'Paste M-Pesa messages here...';
             },
 
-            quickPay: (pledgeId) => {
+            quickPay: (pledgeId, dept) => {
                 const amount = prompt("Enter payment amount (KES):");
                 if(amount && !isNaN(amount)) {
-                    const pledge = store.data.pledges.find(p => p.id === pledgeId);
                     store.addTransaction({
-                        amount: Number(amount), name: pledge.name, ref: 'MAN-' + Date.now(),
-                        method: 'Manual', matchedId: pledgeId, date: new Date().toISOString()
+                        amount: Number(amount), name: 'Manual Payment', ref: 'MAN-' + Date.now(),
+                        method: 'Manual', matchedId: pledgeId, dept: dept, date: new Date().toISOString()
                     });
                 }
             },
